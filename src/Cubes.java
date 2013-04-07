@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class Cubes {
     Renderer renderInstance = Renderer.getInstance();
-    CameraQuat camera = new CameraQuat();
+    CameraQuat camera = new CameraQuat(0,0);
     Model box, ground;
     static final int WIDTH=854, HEIGHT=480;
 
@@ -24,9 +24,9 @@ public class Cubes {
     public Cubes(){
         createDisplay();
         box = new Model();
-//        box.translate(0,1,-2);
+//        box.translate(0,0,0);
         ground = new Model();
-        ground.scale(100,0.1f,100);
+//        ground.scale(100,0.1f,100);
         renderInstance.setCamera(camera);
     }
 
@@ -34,9 +34,11 @@ public class Cubes {
         try {
             Display.setDisplayMode(new DisplayMode(854, 480));
             Display.create();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glViewport(0,0,WIDTH,HEIGHT);
         } catch (LWJGLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -44,7 +46,7 @@ public class Cubes {
         while(!Display.isCloseRequested()){
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT|GL11.GL_COLOR_BUFFER_BIT);
             GL11.glClearColor(0.5f,0.5f,0.5f,0);
-            renderInstance.render(ground);
+//            renderInstance.render(ground);
             renderInstance.render(box);
             Display.update();
             Display.sync(60);

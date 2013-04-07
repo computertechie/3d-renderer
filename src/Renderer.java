@@ -8,8 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class Renderer
-{
+public class Renderer{
     private static Renderer instance = new Renderer();
     private int currentProgram = -1;
     Matrix4f projectionMatrix = new Matrix4f();
@@ -104,8 +103,7 @@ public class Renderer
         model.render();
     }
 
-    public float coTangent(float tan)
-    {
+    public float coTangent(float tan){
         return (float)(1.0D / Math.tan(tan));
     }
 

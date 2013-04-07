@@ -19,7 +19,7 @@ public class Model implements IMatrix
     int vertexShader;
     int fragmentShader;
     int modelMatrixLocation;
-    Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1.0F, 1.0F, 1.0F);
+    Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(2,2,2);
 
     float[] verts = {
             -0.5F, 0.5F, 0.5F,
@@ -34,8 +34,6 @@ public class Model implements IMatrix
     };
 
     byte[] inds = {
-//            0,1,2,
-//            0,2,3
             0, 5, 6,
             0, 6, 1,
             0, 3, 4,
@@ -76,7 +74,7 @@ public class Model implements IMatrix
 
         GL30.glBindVertexArray(VAO);
 
-        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(Renderer.posAttributeLoc);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(0,3,GL11.GL_FLOAT, false, 0,0);
@@ -90,9 +88,8 @@ public class Model implements IMatrix
     }
 
     public void render() {
-        System.out.println("rendering");
         GL30.glBindVertexArray(VAO);
-        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(Renderer.posAttributeLoc);
 
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
         GL11.glDrawElements(GL11.GL_TRIANGLES,inds.length,GL11.GL_UNSIGNED_BYTE,0 );
@@ -109,9 +106,8 @@ public class Model implements IMatrix
         fragmentShader = Renderer.loadShader("src/basic_block_frag.glsl", GL20.GL_FRAGMENT_SHADER);
         programID = GL20.glCreateProgram();
         Renderer.createProgram(programID, vertexShader, fragmentShader);
-        GL20.glUseProgram(programID);
         modelMatrixLocation = GL20.glGetUniformLocation(programID, "modelMatrix");
-        GL20.glUseProgram(0);
+        System.out.println("Model:"+modelMatrixLocation+" VS:"+vertexShader+" FS:"+fragmentShader+" PI:"+programID+" VAO:"+VAO+" VBO:"+vertexVBO+" IBO:"+indVBO);
     }
 
     public void bufferUniforms() {
