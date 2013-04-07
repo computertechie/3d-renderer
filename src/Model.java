@@ -107,7 +107,6 @@ public class Model implements IMatrix
         programID = GL20.glCreateProgram();
         Renderer.createProgram(programID, vertexShader, fragmentShader);
         modelMatrixLocation = GL20.glGetUniformLocation(programID, "modelMatrix");
-        System.out.println("Model:"+modelMatrixLocation+" VS:"+vertexShader+" FS:"+fragmentShader+" PI:"+programID+" VAO:"+VAO+" VBO:"+vertexVBO+" IBO:"+indVBO);
     }
 
     public void bufferUniforms() {

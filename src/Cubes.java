@@ -46,6 +46,7 @@ public class Cubes {
         while(!Display.isCloseRequested()){
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT|GL11.GL_COLOR_BUFFER_BIT);
             GL11.glClearColor(0.5f,0.5f,0.5f,0);
+            camera.reorient();
 //            renderInstance.render(ground);
             renderInstance.render(box);
             Display.update();
