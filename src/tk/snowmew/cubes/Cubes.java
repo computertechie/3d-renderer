@@ -41,9 +41,7 @@ public class Cubes {
             Display.setDisplayMode(new DisplayMode(854, 480));
             Display.create();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
-//            GL11.glEnable(GL11.GL_CULL_FACE);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
-//            GL11.glCullFace(GL11.GL_BACK);
             GL11.glViewport(0, 0, WIDTH, HEIGHT);
             Mouse.create();
             Mouse.setGrabbed(true);

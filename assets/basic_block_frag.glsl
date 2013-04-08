@@ -1,6 +1,5 @@
 #version 140
 
-//out vec4 out_Color;// gl_FragColor;
 in vec4 pos;
 
 void main(void) {
