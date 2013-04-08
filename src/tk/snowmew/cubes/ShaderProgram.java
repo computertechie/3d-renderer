@@ -9,6 +9,10 @@ package tk.snowmew.cubes;
 public class ShaderProgram {
     private int vertexShader, fragmentShader, programID;
     private int projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
+    private int[] vertexAttributes;
 
 
+    public ShaderProgram(String vertFile, String fragFile, int... vertAtts){
+        vertexAttributes = vertAtts;
+    }
 }
