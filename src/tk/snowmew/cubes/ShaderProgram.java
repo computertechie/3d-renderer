@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL20;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,12 +15,14 @@ import java.util.Map;
  * Time: 7:12 PM
  * Project: tk.snowmew.cubes.Cubes
  */
+
 public class ShaderProgram {
-    private int vertexShaderID, fragmentShaderID, programID;
-
+    private int vertexShaderID;
+    private int fragmentShaderID;
+    private int programID;
     private int projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
+    private Map<String,Integer> vertexAttributes = new HashMap<String, Integer>(), uniformAttributes = new HashMap<String, Integer>();
 
-    private Map<String,Integer> vertexAttributes, uniformAttributes;
     public ShaderProgram(String vertFile, String fragFile, String[] vertAtts, String[] uniforms){
         vertexShaderID = loadShader(vertFile, GL20.GL_VERTEX_SHADER);
         fragmentShaderID = loadShader(fragFile, GL20.GL_FRAGMENT_SHADER);
@@ -27,6 +30,20 @@ public class ShaderProgram {
         createProgram(programID, vertexShaderID, fragmentShaderID);
         getUniformLocs(uniforms);
         getVertAttLocs(vertAtts);
+        getMatrixLocs();
+    }
+
+    public ShaderProgram(String vertFile, String fragFile, String...vertAtts){
+        vertexShaderID = loadShader(vertFile, GL20.GL_VERTEX_SHADER);
+        fragmentShaderID = loadShader(fragFile, GL20.GL_FRAGMENT_SHADER);
+        programID = GL20.glCreateProgram();
+        createProgram(programID, vertexShaderID, fragmentShaderID);
+        getVertAttLocs(vertAtts);
+        getMatrixLocs();
+    }
+
+    public int getProgramID() {
+        return programID;
     }
 
     public int getProjectionMatrixLocation() {
@@ -47,13 +64,16 @@ public class ShaderProgram {
         }
     }
 
+    public void getMatrixLocs(){
+        projectionMatrixLocation = GL20.glGetUniformLocation(programID, "projectionMatrix");
+        viewMatrixLocation = GL20.glGetUniformLocation(programID, "viewMatrix");
+        modelMatrixLocation = GL20.glGetUniformLocation(programID, "modelMatrix");
+    }
+
     public void getUniformLocs(String[] atts){
         for(int i = 0; i<atts.length; i++){
             uniformAttributes.put(atts[i],GL20.glGetUniformLocation(programID, atts[i]));
         }
-        projectionMatrixLocation = GL20.glGetUniformLocation(programID, "projectionMatrix");
-        viewMatrixLocation = GL20.glGetUniformLocation(programID, "viewMatrix");
-        modelMatrixLocation = GL20.glGetUniformLocation(programID, "modelMatrix");
     }
 
     public static int loadShader(String filename, int type) {

@@ -8,11 +8,8 @@ import java.nio.FloatBuffer;
 
 public class Renderer{
     private static Renderer instance = new Renderer();
-    private int currentProgram = -1;
+    private int currentProgram = -1, projUniformLoc = -1;
     Matrix4f projectionMatrix = new Matrix4f();
-    int projUniformLoc;
-    int viewUniformLoc;
-    static int posAttributeLoc;
     CameraQuat camera;
 
     private Renderer(){
@@ -47,11 +44,12 @@ public class Renderer{
     }
 
     public void render(Model model) {
-        if (currentProgram != model.programID)
-            useProgram(model.programID);
+        if (currentProgram != model.getProgramID())
+            useProgram(model.getProgramID());
+        projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
         bufferUniforms();
         model.bufferUniforms();
-        camera.bufferUniforms(viewUniformLoc);
+        camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());
         model.render();
     }
 
@@ -69,9 +67,6 @@ public class Renderer{
     public void useProgram(int programID) {
         currentProgram = programID;
         GL20.glUseProgram(currentProgram);
-        projUniformLoc = GL20.glGetUniformLocation(programID, "projectionMatrix");
-        viewUniformLoc = GL20.glGetUniformLocation(programID, "viewMatrix");
-        posAttributeLoc = GL20.glGetAttribLocation(programID, "position");
     }
 
     public static float degreesToRadians(float degrees) {

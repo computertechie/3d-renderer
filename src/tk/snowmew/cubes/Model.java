@@ -14,13 +14,8 @@ import java.nio.FloatBuffer;
 public class Model implements IMatrix
 {
     Matrix4f modelMatrix = new Matrix4f();
-    int VAO;
-    int vertexVBO;
-    int indVBO;
-    int programID;
-    int vertexShader;
-    int fragmentShader;
-    int modelMatrixLocation;
+    int VAO, vertexVBO, indVBO;
+    ShaderProgram shaderProgram;
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
 
     float[] verts = {
@@ -52,6 +47,7 @@ public class Model implements IMatrix
 
     public Model()
     {
+        shaderProgram = new ShaderProgram("assets/basic_block_vert.glsl","assets/basic_block_frag.glsl","position");
         genIDs();
         buffer();
         update();
@@ -76,10 +72,10 @@ public class Model implements IMatrix
 
         GL30.glBindVertexArray(VAO);
 
-        GL20.glEnableVertexAttribArray(Renderer.posAttributeLoc);
+        GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation("position"));
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0,3,GL11.GL_FLOAT, false, 0,0);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"),3,GL11.GL_FLOAT, false, 0,0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
@@ -87,6 +83,10 @@ public class Model implements IMatrix
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         GL30.glBindVertexArray(0);
+    }
+
+    public int getProgramID(){
+        return shaderProgram.getProgramID();
     }
 
     public void render() {
@@ -103,18 +103,13 @@ public class Model implements IMatrix
         VAO = GL30.glGenVertexArrays();
         vertexVBO = GL15.glGenBuffers();
         indVBO = GL15.glGenBuffers();
-        vertexShader = Renderer.loadShader("assets/basic_block_vert.glsl", GL20.GL_VERTEX_SHADER);
-        fragmentShader = Renderer.loadShader("assets/basic_block_frag.glsl", GL20.GL_FRAGMENT_SHADER);
-        programID = GL20.glCreateProgram();
-        Renderer.createProgram(programID, vertexShader, fragmentShader);
-        modelMatrixLocation = GL20.glGetUniformLocation(programID, "modelMatrix");
     }
 
     public void bufferUniforms() {
         FloatBuffer buf = BufferUtils.createFloatBuffer(16);
         modelMatrix.store(buf);
         buf.flip();
-        GL20.glUniformMatrix4(modelMatrixLocation, false, buf);
+        GL20.glUniformMatrix4(shaderProgram.getModelMatrixLocation(), false, buf);
     }
 
     public void translate(float x, float y, float z){
