@@ -18,8 +18,7 @@ public class Model implements IMatrix
     ShaderProgram shaderProgram;
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
 
-    float[] verts = {
-            -0.5F, 0.5F, 0.5F,
+    float[] verts = { -0.5F, 0.5F, 0.5F,
             0.5F, 0.5F, 0.5F,
             0.5F, 0.5F, -0.5F,
             -0.5F, 0.5F, -0.5F,
@@ -27,11 +26,9 @@ public class Model implements IMatrix
             -0.5F, -0.5F, -0.5F,
             -0.5F, -0.5F, 0.5F,
             0.5F, -0.5F, 0.5F,
-            0.5F, -0.5F, -0.5F
-    };
+            0.5F, -0.5F, -0.5F};
 
-    byte[] inds = {
-            0, 5, 6,
+    byte[] inds = {0, 5, 6,
             0, 6, 1,
             0, 3, 4,
             0, 4, 5,
@@ -42,12 +39,14 @@ public class Model implements IMatrix
             7, 1, 6,
             7, 1, 2,
             7, 4, 3,
-            7, 3, 2
+            7, 3, 2};
+
+    String[] vertAttribs = {
+            "position"
     };
 
-    public Model()
-    {
-        shaderProgram = new ShaderProgram("assets/basic_block_vert.glsl","assets/basic_block_frag.glsl","position");
+    public Model() {
+        shaderProgram = new ShaderProgram("assets/basic_block_vert.glsl","assets/basic_block_frag.glsl",vertAttribs);
         genIDs();
         buffer();
         update();
@@ -72,9 +71,12 @@ public class Model implements IMatrix
 
         GL30.glBindVertexArray(VAO);
 
-        GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation("position"));
+        for(int i = 0; i<vertAttribs.length;i++)
+            GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
+
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
+
         GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"),3,GL11.GL_FLOAT, false, 0,0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
@@ -83,10 +85,6 @@ public class Model implements IMatrix
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         GL30.glBindVertexArray(0);
-    }
-
-    public int getProgramID(){
-        return shaderProgram.getProgramID();
     }
 
     public void render() {

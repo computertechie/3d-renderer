@@ -44,8 +44,8 @@ public class Renderer{
     }
 
     public void render(Model model) {
-        if (currentProgram != model.getProgramID())
-            useProgram(model.getProgramID());
+        if (currentProgram != model.shaderProgram.getProgramID())
+            useProgram(model.shaderProgram.getProgramID());
         projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
         bufferUniforms();
         model.bufferUniforms();
