@@ -11,9 +11,14 @@ public class Renderer{
     private int currentProgram = -1, projUniformLoc = -1;
     Matrix4f projectionMatrix = new Matrix4f();
     CameraQuat camera;
+    TextureManager textureManager;
 
     private Renderer(){
         createProjectionMatrix();
+    }
+
+    public void setTextureManager(TextureManager manager){
+        textureManager = manager;
     }
 
     public void setCamera(CameraQuat cam) {
@@ -47,6 +52,7 @@ public class Renderer{
         if (currentProgram != model.shaderProgram.getProgramID())
             useProgram(model.shaderProgram.getProgramID());
         projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
+        textureManager.bindTexture(model.textureName);
         bufferUniforms();
         model.bufferUniforms();
         camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());

@@ -17,6 +17,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Cubes {
     Renderer renderInstance = Renderer.getInstance();
+    TextureManager textureManagerInstance = TextureManager.getInstance();
     CameraQuat camera = new CameraQuat(0,0);
     Model box, ground;
     static final int WIDTH=854, HEIGHT=480;
@@ -28,12 +29,14 @@ public class Cubes {
 
     public Cubes(){
         createDisplay();
+        renderInstance.setCamera(camera);
+        renderInstance.setTextureManager(textureManagerInstance);
+        textureManagerInstance.createTexture("assets/textures/creeper.png");
+        camera.setPosition(new Vector3f(0,1,-1));
         box = new Model();
         box.translate(0,1,0);
         ground = new Model();
         ground.scale(100,0.1f,100);
-        camera.setPosition(new Vector3f(0,1,-1));
-        renderInstance.setCamera(camera);
     }
 
     public void createDisplay(){
