@@ -14,10 +14,11 @@ public class Vertex {
     private float[] vertex = new float[]{};
     private float[] normals = new float[]{};
     private float[] texcoords = new float[]{};
-    private int vertOffset = 0, texOffset = 0, normOffset = 0, stride = 0;
+    private int vertOffset = 0, texOffset = 0, normOffset = 0;
+    static int stride = 24;
     private int sizeOfFloat = 4, vertElementCount = 4, texElementCount = 2, normalElementCount=0, totalElementCount;
 
-    public Vertex(float[] verts, float[] texes, float[] norms){
+    /*public Vertex(float[] verts, float[] texes, float[] norms){
         vertex = verts;
         normals = norms;
         texcoords = texes;
@@ -26,7 +27,7 @@ public class Vertex {
         normalElementCount = norms.length;
         totalElementCount = vertElementCount + texElementCount + normalElementCount;
         stride = sizeOfFloat * vertElementCount + sizeOfFloat * texElementCount + sizeOfFloat * normalElementCount;
-    }
+    }*/
 
     public Vertex(float[] verts, float[] texes){
         vertex = verts;
@@ -46,14 +47,15 @@ public class Vertex {
         buffer.put(vertex);
         if(texcoords.length>0)
             buffer.put(texcoords);
-        if(normals.length > 0)
-            buffer.put(normals);
+//        if(normals.length > 0)
+//            buffer.put(normals);
         buffer.flip();
         return buffer;
     }
 
     public float[] getElementsAsFloatArray(){
         float[] arr = new float[totalElementCount];
+
         for(int i = 0; i<vertex.length;i++)
             arr[i] = vertex[i];
         if(texcoords.length > 0)

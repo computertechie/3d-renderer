@@ -21,9 +21,9 @@ public class Model implements IMatrix
     Vertex[] verts = {
             //top
             new Vertex(new float[]{-0.5F, 0.5F, 0.5F,1f}, new float[]{0,0}),
-            new Vertex(new float[]{0.5F, 0.5F, 0.5F, 1f}, new float[]{1,0}),
-            new Vertex(new float[]{0.5F, 0.5F, -0.5F, 1f}, new float[]{1,1}),
-            new Vertex(new float[]{-0.5F, 0.5F, -0.5F, 1f}, new float[]{0,1})
+            new Vertex(new float[]{0.5F, 0.5F, 0.5F, 1f}, new float[]{0,8}),
+            new Vertex(new float[]{0.5F, 0.5F, -0.5F, 1f}, new float[]{8,8}),
+            new Vertex(new float[]{-0.5F, 0.5F, -0.5F, 1f}, new float[]{8,0})
 
 //            -0.5F, -0.5F, -0.5F,
 //            -0.5F, -0.5F, 0.5F,
@@ -34,7 +34,7 @@ public class Model implements IMatrix
     byte[] inds = {
             //top
             0, 1, 2,
-            0, 2, 3,
+            0, 2, 3
 //            0, 5, 6,
 //            0, 6, 1,
 //            0, 3, 4,
@@ -57,7 +57,7 @@ public class Model implements IMatrix
     };
 
     public Model() {
-        shaderProgram = new ShaderProgram("assets/basic_block_vert.glsl","assets/basic_block_frag.glsl",vertAttribs,uniformAttribs);
+        shaderProgram = new ShaderProgram("assets/basic_block_vert.glsl", "assets/basic_block_frag.glsl", vertAttribs, uniformAttribs);
         genIDs();
         buffer();
         update();
@@ -73,10 +73,12 @@ public class Model implements IMatrix
     }
 
     public void buffer() {
-        FloatBuffer vBuf = BufferUtils.createFloatBuffer(verts.length*6);
+        FloatBuffer vBuf = BufferUtils.createFloatBuffer(verts[0].getElementsAsFloatArray().length*verts.length);
+
         for(int i = 0; i<verts.length;i++)
             vBuf.put(verts[i].getElementsAsFloatArray());
         vBuf.flip();
+
         ByteBuffer iBuf = BufferUtils.createByteBuffer(inds.length);
         iBuf.put(inds);
         iBuf.flip();
@@ -87,10 +89,10 @@ public class Model implements IMatrix
             GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 4, GL11.GL_FLOAT, false, 24, 0);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 24, 0);
 
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"),4,GL11.GL_FLOAT, false, 24,0);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"),2,GL11.GL_FLOAT, false, 24, 16);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
@@ -102,11 +104,11 @@ public class Model implements IMatrix
 
     public void render() {
         GL30.glBindVertexArray(VAO);
-
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
-        GL11.glDrawElements(GL11.GL_TRIANGLES,inds.length,GL11.GL_UNSIGNED_BYTE,0 );
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
+        GL11.glDrawElements(GL11.GL_TRIANGLES,inds.length,GL11.GL_UNSIGNED_BYTE,0);
+
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
     }
 
@@ -122,7 +124,7 @@ public class Model implements IMatrix
         buf.flip();
         GL20.glUniformMatrix4(shaderProgram.getModelMatrixLocation(), false, buf);
         Texture temp = TextureManager.getInstance().getTexture(textureName);
-        GL20.glUniform1i(shaderProgram.getUniformLocation("texture"),temp.getTexUnit());
+//        GL20.glUniform1i(shaderProgram.getUniformLocation("texture"),temp.getTexUnit());
     }
 
     public void translate(float x, float y, float z){

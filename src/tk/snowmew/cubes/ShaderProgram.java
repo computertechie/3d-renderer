@@ -73,6 +73,7 @@ public class ShaderProgram {
     public void getUniformLocs(String[] atts){
         for(int i = 0; i<atts.length; i++){
             uniformAttributes.put(atts[i],GL20.glGetUniformLocation(programID, atts[i]));
+            System.out.println(uniformAttributes.get(atts[i]));
         }
     }
 
@@ -98,6 +99,12 @@ public class ShaderProgram {
         shaderID = GL20.glCreateShader(type);
         GL20.glShaderSource(shaderID, shaderSource);
         GL20.glCompileShader(shaderID);
+
+        int error = GL11.glGetError();
+
+        if(error != 0){
+            System.err.println("some gl error " + error);
+        }
 
         if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE)
             System.err.println(GL20.glGetShaderInfoLog(shaderID, 1024));

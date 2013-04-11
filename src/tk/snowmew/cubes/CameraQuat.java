@@ -97,8 +97,8 @@ public class CameraQuat
         Vector3f cross = Vector3f.cross(direction, up, null);
 
         position.x += cross.x * units;
-
         position.z += cross.z * units;
+
         reorient();
     }
 
@@ -113,7 +113,9 @@ public class CameraQuat
 
     public void setPosition(Vector3f inPosition)
     {
-        position = inPosition;
+        position.x = -inPosition.x;
+        position.y = inPosition.y;
+        position.z = -inPosition.z;
     }
 
     public Vector3f getDirection()

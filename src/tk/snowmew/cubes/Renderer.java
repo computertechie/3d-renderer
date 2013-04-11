@@ -12,9 +12,14 @@ public class Renderer{
     Matrix4f projectionMatrix = new Matrix4f();
     CameraQuat camera;
     TextureManager textureManager;
+    Cubes cubeInstance;
 
     private Renderer(){
-        createProjectionMatrix();
+//        createProjectionMatrix();
+    }
+
+    public void setCubeInstance(Cubes cube){
+        cubeInstance = cube;
     }
 
     public void setTextureManager(TextureManager manager){
@@ -25,10 +30,10 @@ public class Renderer{
         camera = cam;
     }
 
-    public void createProjectionMatrix(){
+    public  void createProjectionMatrix(){
         projectionMatrix = new Matrix4f();
         float fieldOfView = 60.0F;
-        float aspectRatio = Cubes.WIDTH/Cubes.HEIGHT;
+        float aspectRatio = cubeInstance.getWidth()/cubeInstance.getHeight();
         float near_plane = 0.1F;
         float far_plane = 100.0F;
 
@@ -52,10 +57,10 @@ public class Renderer{
         if (currentProgram != model.shaderProgram.getProgramID())
             useProgram(model.shaderProgram.getProgramID());
         projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
-        textureManager.bindTexture(model.textureName);
-        bufferUniforms();
         model.bufferUniforms();
+        bufferUniforms();
         camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());
+        textureManager.bindTexture(model.textureName);
         model.render();
     }
 
