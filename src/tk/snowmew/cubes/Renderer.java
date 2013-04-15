@@ -35,7 +35,7 @@ public class Renderer{
         float fieldOfView = 60.0F;
         float aspectRatio = cubeInstance.getWidth()/cubeInstance.getHeight();
         float near_plane = 0.1F;
-        float far_plane = 100.0F;
+        float far_plane = 1000.0F;
 
         float y_scale = coTangent(degreesToRadians(fieldOfView / 2.0F));
         float x_scale = y_scale / aspectRatio;
@@ -57,10 +57,10 @@ public class Renderer{
         if (currentProgram != model.shaderProgram.getProgramID())
             useProgram(model.shaderProgram.getProgramID());
         projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
+        textureManager.bindTexture(model.textureName);
         model.bufferUniforms();
         bufferUniforms();
         camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());
-        textureManager.bindTexture(model.textureName);
         model.render();
     }
 

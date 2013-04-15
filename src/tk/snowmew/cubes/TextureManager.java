@@ -36,64 +36,24 @@ public class TextureManager {
                 decoder.decode(buf, decoder.getWidth()*4, PNGDecoder.Format.RGBA);
                 buf.flip();
 
-                int error = GL11.glGetError();
-
-                if(error != 0){
-                    System.err.println("some gl error " + error);
-                }
-
                 int pos = file.getName().lastIndexOf('.');
                 String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
 
-                int id = GL11.glGenTextures();
-                Texture texture = new Texture(name, GL11.GL_TEXTURE_2D, id, decoder.getWidth(), decoder.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, GL13.GL_TEXTURE0, buf);
-                 error = GL11.glGetError();
+                Texture texture = new Texture(name, GL11.GL_TEXTURE_2D, GL11.glGenTextures(), decoder.getWidth(), decoder.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, GL13.GL_TEXTURE0, buf);
 
-                if(error != 0){
-                    System.err.println("post genTextures" + error);
-                }
                 GL13.glActiveTexture(texture.getTexUnit());
-                error = GL11.glGetError();
-
-                if(error != 0){
-                    System.err.println("post glActiveTexture" + error);
-                }
                 GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
-                error = GL11.glGetError();
-                if(error != 0){
-                    System.err.println("post glBindTexture " + error);
-                }
+
                 GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT,1);
-                error = GL11.glGetError();
-                if(error != 0){
-                    System.err.println("glPixelStore" + error);
-                }
 
                 GL11.glTexImage2D(texture.getTexTarget(), 0, texture.getDataFormat(), texture.getWidth(), texture.getHeight(), 0, texture.getDataFormat(), texture.getDataType(), texture.getBuffer());
-                error = GL11.glGetError();
-                if(error != 0){
-                    System.err.println("glTexImage2D " + error);
-                }
+
                 GL30.glGenerateMipmap(texture.getTexTarget());
-                error = GL11.glGetError();
-                if(error != 0){
-                    System.err.println("glGenerateMipmap" + error);
-                }
+
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);//_MIPMAP_LINEAR);
-                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);//_MIPMAP_LINEAR);
-                error = GL11.glGetError();
-                if(error != 0){
-                    System.err.println("glTexParameter " + error);
-                }
-//                GL11.glBindTexture(GL11.GL_TEXTURE_2D,0);
-//                GL13.glActiveTexture(0);
-
-                error = GL11.glGetError();
-                if(error != 0){
-                    System.err.println("unbind texture" + error);
-                }
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
                 addTexture(texture);
             }

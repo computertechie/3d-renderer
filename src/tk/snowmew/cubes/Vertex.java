@@ -18,7 +18,7 @@ public class Vertex {
     static int stride = 24;
     private int sizeOfFloat = 4, vertElementCount = 4, texElementCount = 2, normalElementCount=0, totalElementCount;
 
-    /*public Vertex(float[] verts, float[] texes, float[] norms){
+    public Vertex(float[] verts, float[] texes, float[] norms){
         vertex = verts;
         normals = norms;
         texcoords = texes;
@@ -27,7 +27,7 @@ public class Vertex {
         normalElementCount = norms.length;
         totalElementCount = vertElementCount + texElementCount + normalElementCount;
         stride = sizeOfFloat * vertElementCount + sizeOfFloat * texElementCount + sizeOfFloat * normalElementCount;
-    }*/
+    }
 
     public Vertex(float[] verts, float[] texes){
         vertex = verts;
@@ -66,6 +66,14 @@ public class Vertex {
                 arr[i] = normals[i];
 
         return arr;
+    }
+
+    public float[] getVertex(){
+        return vertex;
+    }
+
+    public float[] getTexture(){
+        return texcoords;
     }
 
     public int getVertOffset() {

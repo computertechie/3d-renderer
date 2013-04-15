@@ -34,16 +34,16 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         textureManagerInstance.createTexture("assets/textures/creeper.png");
-        camera.setPosition(new Vector3f(0, 1, 1));
+        camera.setPosition(new Vector3f(0, 1, 0));
         box = new Model();
-        box.translate(0, 1, 0);
-        ground = new Model();
-        ground.scale(100, 0.1f, 100);
+        box.translate(0, 1, 1);
+//        ground = new Model();
+//        ground.scale(100, 0.1f, 100);
     }
 
     public void createDisplay(){
         try {
-            Display.setDisplayMode(new DisplayMode(854, 480));
+            Display.setDisplayMode(new DisplayMode(width, height));
             Display.create();
             Display.setResizable(true);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -80,7 +80,9 @@ public class Cubes {
             GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
             getInput();
             camera.reorient();
-            renderInstance.render(ground);
+            box.update();
+//            ground.update();
+//            renderInstance.render(ground);
             renderInstance.render(box);
             Display.update();
             Display.sync(60);
@@ -110,6 +112,10 @@ public class Cubes {
             } catch (LWJGLException e) {
                 e.printStackTrace();
             }
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_0)){
+            camera.zeroBearing();
+            camera.zeroPitch();
         }
 
         int dx = Mouse.getDX(), dy = Mouse.getDY();

@@ -73,7 +73,6 @@ public class ShaderProgram {
     public void getUniformLocs(String[] atts){
         for(int i = 0; i<atts.length; i++){
             uniformAttributes.put(atts[i],GL20.glGetUniformLocation(programID, atts[i]));
-            System.out.println(uniformAttributes.get(atts[i]));
         }
     }
 
@@ -84,7 +83,6 @@ public class ShaderProgram {
         {
             BufferedReader reader;
             reader = new BufferedReader(new FileReader(filename));
-//            reader = new BufferedReader(new InputStreamReader(instance.getClass().getClassLoader().getResourceAsStream(filename)));
             String line;
             while ((line = reader.readLine()) != null) {
                 shaderSource.append(line).append("\n");

@@ -67,6 +67,15 @@ public class CameraQuat
         reorient();
     }
 
+    public void zeroBearing(){
+        bearingAngle = 0;
+        reorient();
+    }
+
+    public void zeroPitch(){
+        pitchAngle = 0;
+        reorient();
+    }
     public void pitch(float pitchDelta)
     {
         pitchAngle -= pitchDelta;

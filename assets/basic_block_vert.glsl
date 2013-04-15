@@ -12,7 +12,7 @@ in vec2 in_tex;
 
 void main(void) {
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0);
-	pos = vec4(position, 1.0);//copy to go to fragment for colour based on position - simplest way
+	pos = vec4(position, 1.0);
 
 	out_tex = in_tex;
 }
