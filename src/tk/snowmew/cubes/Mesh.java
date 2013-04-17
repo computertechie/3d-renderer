@@ -1,5 +1,8 @@
 package tk.snowmew.cubes;
 
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 /**
@@ -12,6 +15,7 @@ public class Mesh {
     private ArrayList<Vertex> vertexes;
 
     public Mesh(ArrayList<Vertex> verts){
+        System.out.println("new mesh");
         vertexes = verts;
     }
 
@@ -38,5 +42,26 @@ public class Mesh {
 
     public int sizeOfMesh(){
         return sizeOfVertCoords() + sizeOfTexCoords() + sizeOfNormals();
+    }
+
+    public FloatBuffer getMeshVertexesAsFloatBuffer(){
+        FloatBuffer verts = BufferUtils.createFloatBuffer(sizeOfVertCoords());
+        for(Vertex vertex : vertexes)
+            verts.put(vertex.getVertexesAsPrimFloatArray());
+        return verts;
+    }
+
+    public FloatBuffer getMeshTexturesAsFloatBuffer(){
+        FloatBuffer textures = BufferUtils.createFloatBuffer(sizeOfTexCoords());
+        for(Vertex vertex : vertexes)
+            textures.put(vertex.getTexturesAsPrimFloatArray());
+        return textures;
+    }
+
+    public FloatBuffer getMeshNormalsAsFloatBuffer(){
+        FloatBuffer norms = BufferUtils.createFloatBuffer(sizeOfNormals());
+        for(Vertex vertex : vertexes)
+            norms.put(vertex.getNormalsAsPrimFloatArray());
+        return norms;
     }
 }

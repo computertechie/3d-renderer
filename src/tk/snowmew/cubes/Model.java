@@ -9,7 +9,6 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -131,20 +130,18 @@ public class Model implements IMatrix
             size += mesh.sizeOfNormals();
         return size;
     }
-    public void buffer() {
-        FloatBuffer vBuf = BufferUtils.createFloatBuffer();
-        FloatBuffer tBuf = BufferUtils.createFloatBuffer(verts[0].getTexture().length * verts.length);
 
-        for(int i = 0; i<verts.length;i++){
-            vBuf.put(verts[i].getVertexes());
-            tBuf.put(verts[i].getTexture());
+    public void buffer() {
+        FloatBuffer vBuf = BufferUtils.createFloatBuffer(getSizeOfModelVertexCoords());
+        FloatBuffer tBuf = BufferUtils.createFloatBuffer(getSizeOfModelTextureCoords());
+
+        for(Mesh mesh : meshes){
+            vBuf.put(mesh.getMeshVertexesAsFloatBuffer());
+            tBuf.put(mesh.getMeshTexturesAsFloatBuffer());
         }
+        System.out.println(vBuf.toString());
         vBuf.flip();
         tBuf.flip();
-
-        ByteBuffer iBuf = BufferUtils.createByteBuffer(inds.length);
-        iBuf.put(inds);
-        iBuf.flip();
 
         GL30.glBindVertexArray(VAO);
 
@@ -160,20 +157,12 @@ public class Model implements IMatrix
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tBuf, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, iBuf, GL15.GL_STATIC_DRAW);
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-
         GL30.glBindVertexArray(0);
     }
 
     public void render() {
         GL30.glBindVertexArray(VAO);
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
-
-//        GL11.glDrawElements(GL11.GL_TRIANGLES, inds.length, GL11.GL_UNSIGNED_BYTE, 0);
-
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords());
         GL30.glBindVertexArray(0);
     }
 

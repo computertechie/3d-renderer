@@ -18,6 +18,8 @@ public class ObjFileParser {
     private ArrayList<ArrayList<Integer>> indexes = new ArrayList<ArrayList<Integer>>();
     private BufferedReader bufferedFileReader;
     private static final int VERT_LINE = 0, TEX_LINE = 1, NORM_LINE = 2, FACE_LINE = 3, PARAM_LINE = 4;
+    private boolean firstGroup = true;
+    private int totalVertexCount=0,tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
 
     public ObjFileParser(String fileName){
         try {
@@ -61,6 +63,12 @@ public class ObjFileParser {
                     }
                     break;
                 case 'g':
+                case 'o':
+                    if(firstGroup){
+                        firstGroup = !firstGroup;
+                        startGroup();
+                        continue;
+                    }
                     endGroup();
                     startGroup();
                     break;
@@ -77,18 +85,23 @@ public class ObjFileParser {
     }
 
     public void endGroup(){
+        System.out.println("endGroup");
         ArrayList<Vertex> tempVertList = new ArrayList<Vertex>();
         Vertex vertex;
-        Mesh mesh;
         for(ArrayList<Integer> list : indexes){
             vertex = new Vertex();
-            vertex.setVertexes(vertCoords.get(list.get(0)));
-            vertex.setTextures(textureCoords.get(list.get(1)));
-            vertex.setNormals(normals.get(list.get(2)));
+            if(list.get(0) != Integer.MAX_VALUE)
+                vertex.setVertexes(vertCoords.get(list.get(0)-totalVertexCount-1));
+            if(list.get(1) != Integer.MAX_VALUE)
+                vertex.setTextures(textureCoords.get(list.get(1)-totalTextureCount-1));
+            if(list.get(2) != Integer.MAX_VALUE)
+                vertex.setNormals(normals.get(list.get(2)-totalNormalCount-1));
             tempVertList.add(vertex);
         }
-        mesh = new Mesh(tempVertList);
-        meshGroups.add(mesh);
+        totalTextureCount += tempTextureCount;
+        totalVertexCount += tempVertexCount;
+        totalNormalCount += tempNormalCount;
+        meshGroups.add(new Mesh(tempVertList));
     }
 
     public void startGroup(){
@@ -96,6 +109,7 @@ public class ObjFileParser {
         textureCoords = new ArrayList<ArrayList<Float>>();
         normals = new ArrayList<ArrayList<Float>>();
         indexes = new ArrayList<ArrayList<Integer>>();
+        tempNormalCount = tempTextureCount = tempVertexCount = 0;
     }
 
     public ArrayList<Mesh> getMeshes(){
@@ -114,12 +128,15 @@ public class ObjFileParser {
         switch(lineType){
             case VERT_LINE:
                 vertCoords.add(coordList);
+                tempVertexCount++;
                 break;
             case TEX_LINE:
                 textureCoords.add(coordList);
+                tempTextureCount++;
                 break;
             case NORM_LINE:
                 normals.add(coordList);
+                tempNormalCount++;
                 break;
         }
     }
@@ -133,17 +150,17 @@ public class ObjFileParser {
             switch(attribIndexes.length){
                 case 1:
                     tempList.add(Integer.parseInt(attribIndexes[0]));
-                    tempList.add(null);
-                    tempList.add(null);
+                    tempList.add(Integer.MAX_VALUE);
+                    tempList.add(Integer.MAX_VALUE);
                     break;
                 case 2:
                     tempList.add(Integer.parseInt(attribIndexes[0]));
                     tempList.add(Integer.parseInt(attribIndexes[1]));
-                    tempList.add(null);
+                    tempList.add(Integer.MAX_VALUE);
                     break;
                 case 3:
                     tempList.add(Integer.parseInt(attribIndexes[0]));
-                    tempList.add(attribIndexes[1] == "" ? null : Integer.parseInt(attribIndexes[1]));
+                    tempList.add(attribIndexes[1] == "" ? Integer.MAX_VALUE : Integer.parseInt(attribIndexes[1]));
                     tempList.add(Integer.parseInt(attribIndexes[2]));
                     break;
             }

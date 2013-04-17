@@ -84,6 +84,31 @@ public class Vertex {
         return texCoords;
     }
 
+    public ArrayList<Float> getNormals(){
+        return normals;
+    }
+
+    public float[] getVertexesAsPrimFloatArray(){
+        float[] attribs = new float[vertexes.size()];
+        for(int i = 0; i<vertexes.size(); i++)
+            attribs[i] = vertexes.get(i);
+        return attribs;
+    }
+
+    public float[] getTexturesAsPrimFloatArray(){
+        float[] attribs = new float[texCoords.size()];
+        for(int i = 0; i<texCoords.size(); i++)
+            attribs[i] = texCoords.get(i);
+        return attribs;
+    }
+
+    public float[] getNormalsAsPrimFloatArray(){
+        float[] attribs = new float[normals.size()];
+        for(int i = 0; i<normals.size(); i++)
+            attribs[i] = normals.get(i);
+        return attribs;
+    }
+
     public void setTextures(ArrayList<Float> list){
         texCoords = list;
     }
