@@ -8,8 +8,10 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 public class Model implements IMatrix
 {
@@ -18,6 +20,9 @@ public class Model implements IMatrix
     ShaderProgram shaderProgram;
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
     String textureName = "creeper";
+    ArrayList<Mesh> meshes;
+    private ObjFileParser parser;
+/*
     Vertex[] verts = {
             //top
             new Vertex(new float[]{-0.5F, 0.5F, 0.5F, 1f}, new float[]{0.25f,0.5f}),//0
@@ -30,7 +35,9 @@ public class Model implements IMatrix
             new Vertex(new float[]{0.5F, -0.5F, 0.5F, 1}, new float[]{1,1}),//6
             new Vertex(new float[]{0.5F, -0.5F, -0.5F, 1}, new float[]{0,1})//7
     };
+*/
 
+/*
     byte[] inds = {
             //top
             0, 1, 2,
@@ -52,18 +59,37 @@ public class Model implements IMatrix
             7, 4, 3,
             7, 3, 2
     };
+*/
 
     String[] vertAttribs = {
             "position",
-            "in_tex"
-    };
+            "in_tex"};
 
     String[] uniformAttribs= {
             "texture"
     };
 
-    public Model() {
-        shaderProgram = new ShaderProgram("assets/basic_block_vert.glsl", "assets/basic_block_frag.glsl", vertAttribs, uniformAttribs);
+    public Model(File file) {
+        this(file,"assets/shaders/basic_block_vert.glsl","assets/shaders/basic_block_frag.glsl");
+    }
+
+    public Model(String file){
+        this(file,"assets/shaders/basic_block_vert.glsl","assets/shaders/basic_block_frag.glsl");
+    }
+
+    public Model(String file, String vert, String frag){
+        parser = new ObjFileParser(file);
+        meshes = parser.getMeshes();
+        shaderProgram = new ShaderProgram(vert, frag, vertAttribs, uniformAttribs);
+        genIDs();
+        buffer();
+        update();
+    }
+
+    public Model(File file, String vert, String frag){
+        parser = new ObjFileParser(file);
+        meshes = parser.getMeshes();
+        shaderProgram = new ShaderProgram(vert, frag, vertAttribs, uniformAttribs);
         genIDs();
         buffer();
         update();
@@ -78,12 +104,39 @@ public class Model implements IMatrix
         modelMatrix.scale(scale);
     }
 
+    private int getSizeOfModel(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.sizeOfMesh();
+        return size;
+    }
+
+    private int getSizeOfModelVertexCoords(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.sizeOfVertCoords();
+        return size;
+    }
+
+    private int getSizeOfModelTextureCoords(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.sizeOfTexCoords();
+        return size;
+    }
+
+    private int getSizeOfModelNormals(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.sizeOfNormals();
+        return size;
+    }
     public void buffer() {
-        FloatBuffer vBuf = BufferUtils.createFloatBuffer(verts[0].getVertex().length * verts.length);
+        FloatBuffer vBuf = BufferUtils.createFloatBuffer();
         FloatBuffer tBuf = BufferUtils.createFloatBuffer(verts[0].getTexture().length * verts.length);
 
         for(int i = 0; i<verts.length;i++){
-            vBuf.put(verts[i].getVertex());
+            vBuf.put(verts[i].getVertexes());
             tBuf.put(verts[i].getTexture());
         }
         vBuf.flip();
@@ -118,7 +171,7 @@ public class Model implements IMatrix
         GL30.glBindVertexArray(VAO);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indVBO);
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, inds.length, GL11.GL_UNSIGNED_BYTE, 0);
+//        GL11.glDrawElements(GL11.GL_TRIANGLES, inds.length, GL11.GL_UNSIGNED_BYTE, 0);
 
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
