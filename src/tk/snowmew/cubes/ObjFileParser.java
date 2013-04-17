@@ -82,10 +82,11 @@ public class ObjFileParser {
                     continue;
             }
         }
+        endGroup();
     }
 
     public void endGroup(){
-        System.out.println("endGroup");
+        System.out.println("end group");
         ArrayList<Vertex> tempVertList = new ArrayList<Vertex>();
         Vertex vertex;
         for(ArrayList<Integer> list : indexes){
@@ -105,6 +106,7 @@ public class ObjFileParser {
     }
 
     public void startGroup(){
+        System.out.println("new group");
         vertCoords = new ArrayList<ArrayList<Float>>();
         textureCoords = new ArrayList<ArrayList<Float>>();
         normals = new ArrayList<ArrayList<Float>>();
@@ -142,6 +144,7 @@ public class ObjFileParser {
     }
 
     public void parseFaces(String line){
+        System.out.println("parseFace");
         String[] dataIndexes = line.trim().split(" ");
         ArrayList<Integer> tempList;
         for(int i = 1; i<dataIndexes.length; i++){

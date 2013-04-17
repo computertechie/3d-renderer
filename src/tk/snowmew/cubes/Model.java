@@ -139,7 +139,7 @@ public class Model implements IMatrix
             vBuf.put(mesh.getMeshVertexesAsFloatBuffer());
             tBuf.put(mesh.getMeshTexturesAsFloatBuffer());
         }
-        System.out.println(vBuf.toString());
+        System.out.println(meshes.size());
         vBuf.flip();
         tBuf.flip();
 
@@ -149,20 +149,20 @@ public class Model implements IMatrix
             GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 4, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 3, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, texVBO);
         GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tBuf, GL15.GL_STATIC_DRAW);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
     }
 
     public void render() {
         GL30.glBindVertexArray(VAO);
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords());
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords()/3);
         GL30.glBindVertexArray(0);
     }
 
