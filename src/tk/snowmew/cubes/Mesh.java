@@ -16,7 +16,6 @@ public class Mesh {
     private ArrayList<Vertex> vertexes;
 
     public Mesh(ArrayList<Vertex> verts){
-        System.out.println("new mesh");
         vertexes = verts;
     }
 

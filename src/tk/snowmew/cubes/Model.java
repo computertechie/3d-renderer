@@ -136,12 +136,19 @@ public class Model implements IMatrix
         FloatBuffer tBuf = BufferUtils.createFloatBuffer(getSizeOfModelTextureCoords());
 
         for(Mesh mesh : meshes){
+            System.out.println("Mesh");
+            for(int i = 0; i<mesh.sizeOfVertCoords(); i++)
+                System.out.print(mesh.getMeshVertexesAsFloatBuffer().get(i)+" ");
             vBuf.put(mesh.getMeshVertexesAsFloatBuffer());
             tBuf.put(mesh.getMeshTexturesAsFloatBuffer());
         }
-        System.out.println(meshes.size());
+        System.out.println();
+        System.out.println("buffer");
         vBuf.flip();
         tBuf.flip();
+        for(int i = 0; i < getSizeOfModelVertexCoords(); i++)
+            System.out.print(vBuf.get(i)+" ");
+        System.out.println();
 
         GL30.glBindVertexArray(VAO);
 
@@ -162,7 +169,7 @@ public class Model implements IMatrix
 
     public void render() {
         GL30.glBindVertexArray(VAO);
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords()/3);
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords());
         GL30.glBindVertexArray(0);
     }
 

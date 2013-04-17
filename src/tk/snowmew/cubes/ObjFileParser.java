@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 
 public class ObjFileParser {
-    private ArrayList<Mesh> meshGroups = new ArrayList<Mesh>();
+    private ArrayList<Mesh> meshes = new ArrayList<Mesh>();
     private ArrayList<ArrayList<Float>> vertCoords = new ArrayList<ArrayList <Float>>();
     private ArrayList<ArrayList<Float>> textureCoords = new ArrayList<ArrayList<Float>>();
     private ArrayList<ArrayList<Float>> normals = new ArrayList<ArrayList<Float>>();
@@ -57,6 +57,9 @@ public class ObjFileParser {
                         case 'p':
                             parseLine(line, PARAM_LINE);
                             break;
+                        case 'n':
+                            parseLine(line, NORM_LINE);
+                            break;
                         default:
                             parseLine(line, VERT_LINE);
                             break;
@@ -86,12 +89,12 @@ public class ObjFileParser {
     }
 
     public void endGroup(){
-        System.out.println("end group");
         ArrayList<Vertex> tempVertList = new ArrayList<Vertex>();
         Vertex vertex;
         for(ArrayList<Integer> list : indexes){
             vertex = new Vertex();
             if(list.get(0) != Integer.MAX_VALUE)
+                System.out.println(vertCoords.get(list.get(0)-totalVertexCount-1).toString());
                 vertex.setVertexes(vertCoords.get(list.get(0)-totalVertexCount-1));
             if(list.get(1) != Integer.MAX_VALUE)
                 vertex.setTextures(textureCoords.get(list.get(1)-totalTextureCount-1));
@@ -102,11 +105,10 @@ public class ObjFileParser {
         totalTextureCount += tempTextureCount;
         totalVertexCount += tempVertexCount;
         totalNormalCount += tempNormalCount;
-        meshGroups.add(new Mesh(tempVertList));
+        meshes.add(new Mesh(tempVertList));
     }
 
     public void startGroup(){
-        System.out.println("new group");
         vertCoords = new ArrayList<ArrayList<Float>>();
         textureCoords = new ArrayList<ArrayList<Float>>();
         normals = new ArrayList<ArrayList<Float>>();
@@ -115,7 +117,7 @@ public class ObjFileParser {
     }
 
     public ArrayList<Mesh> getMeshes(){
-        return meshGroups;
+        return meshes;
     }
 
     public void parseSmoothing(String line){
@@ -129,6 +131,7 @@ public class ObjFileParser {
             coordList.add(Float.parseFloat(coords[i]));
         switch(lineType){
             case VERT_LINE:
+                System.out.println("Vertex: "+coordList.toString());
                 vertCoords.add(coordList);
                 tempVertexCount++;
                 break;
@@ -144,7 +147,6 @@ public class ObjFileParser {
     }
 
     public void parseFaces(String line){
-        System.out.println("parseFace");
         String[] dataIndexes = line.trim().split(" ");
         ArrayList<Integer> tempList;
         for(int i = 1; i<dataIndexes.length; i++){

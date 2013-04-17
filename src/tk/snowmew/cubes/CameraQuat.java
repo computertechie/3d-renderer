@@ -89,6 +89,9 @@ public class CameraQuat
 
     public void move(float units)
     {
+        float tempPitch = pitchAngle;
+        pitchAngle = 0;
+        reorient();
         if(bearingAngle < 90 && bearingAngle > 270){
             position.z += units * direction.z;
             position.x += units * direction.x;
@@ -97,6 +100,7 @@ public class CameraQuat
             position.z -= units * direction.z;
             position.x -= units * direction.x;
         }
+        pitchAngle = tempPitch;
         reorient();
     }
 
