@@ -20,6 +20,7 @@ public class ObjFileParser {
     private static final int VERT_LINE = 0, TEX_LINE = 1, NORM_LINE = 2, FACE_LINE = 3, PARAM_LINE = 4;
     private boolean firstGroup = true;
     private int totalVertexCount=0,tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
+    int lineCount = 0;
 
     public ObjFileParser(String fileName){
         try {
@@ -84,6 +85,7 @@ public class ObjFileParser {
                 default:
                     continue;
             }
+            lineCount++;
         }
         endGroup();
     }
@@ -92,9 +94,10 @@ public class ObjFileParser {
         ArrayList<Vertex> tempVertList = new ArrayList<Vertex>();
         Vertex vertex;
         for(ArrayList<Integer> list : indexes){
+//            System.out.println(list.toString());
+//            System.out.println(totalVertexCount+" "+totalTextureCount+" "+totalNormalCount);
             vertex = new Vertex();
             if(list.get(0) != Integer.MAX_VALUE)
-                System.out.println(vertCoords.get(list.get(0)-totalVertexCount-1).toString());
                 vertex.setVertexes(vertCoords.get(list.get(0)-totalVertexCount-1));
             if(list.get(1) != Integer.MAX_VALUE)
                 vertex.setTextures(textureCoords.get(list.get(1)-totalTextureCount-1));
@@ -131,7 +134,6 @@ public class ObjFileParser {
             coordList.add(Float.parseFloat(coords[i]));
         switch(lineType){
             case VERT_LINE:
-                System.out.println("Vertex: "+coordList.toString());
                 vertCoords.add(coordList);
                 tempVertexCount++;
                 break;
@@ -150,6 +152,8 @@ public class ObjFileParser {
         String[] dataIndexes = line.trim().split(" ");
         ArrayList<Integer> tempList;
         for(int i = 1; i<dataIndexes.length; i++){
+            if(dataIndexes[i].equals(""))
+                continue;
             tempList = new ArrayList<Integer>();
             String[] attribIndexes = dataIndexes[i].trim().split("/");
             switch(attribIndexes.length){

@@ -21,6 +21,7 @@ public class Cubes {
     CameraQuat camera = new CameraQuat(0,0);
     Model box, ground;
     int width =854, height=480;
+    float mouseSensitivity = 0.2f;
 
     public static void main(String[] args){
         Cubes cube = new Cubes();
@@ -35,7 +36,8 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         textureManagerInstance.createTexture("assets/textures/creeper.png");
         camera.setPosition(new Vector3f(0, 1, 0));
-        box = new Model("assets/models/cube.obj");
+        box = new Model("assets/models/axe.obj");
+//        box.scale(0.01f,0.01f,0.01f);
 //        ground = new Model();
 //        ground.scale(100, 0.1f, 100);
     }
@@ -118,7 +120,11 @@ public class Cubes {
         }
 
         int dx = Mouse.getDX(), dy = Mouse.getDY();
-        camera.pitch((dy*75)/height);
-        camera.bearing((dx*100)/width);
+        float temp1 = mouseSensitivity * 0.6f + 0.1f;
+        temp1 = (float)Math.pow((double)temp1, 2) * 8F;
+        dy *= temp1;
+        dx *= temp1;
+        camera.pitch(dy);
+        camera.bearing(dx);
     }
 }

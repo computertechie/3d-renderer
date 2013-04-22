@@ -21,45 +21,6 @@ public class Model implements IMatrix
     String textureName = "creeper";
     ArrayList<Mesh> meshes;
     private ObjFileParser parser;
-/*
-    Vertex[] verts = {
-            //top
-            new Vertex(new float[]{-0.5F, 0.5F, 0.5F, 1f}, new float[]{0.25f,0.5f}),//0
-            new Vertex(new float[]{0.5F, 0.5F, 0.5F, 1f}, new float[]{0.125f,0.5f}),//1
-            new Vertex(new float[]{0.5F, 0.5F, -0.5F, 1f}, new float[]{0.125f,0.25f}),//2
-            new Vertex(new float[]{-0.5F, 0.5F, -0.5F, 1f}, new float[]{0.25f,0.25f}),//3
-
-            new Vertex(new float[]{-0.5F, -0.5F, -0.5F, 1}, new float[]{0,0}),//4
-            new Vertex(new float[]{-0.5F, -0.5F, 0.5F, 1}, new float[]{1,0}),//5
-            new Vertex(new float[]{0.5F, -0.5F, 0.5F, 1}, new float[]{1,1}),//6
-            new Vertex(new float[]{0.5F, -0.5F, -0.5F, 1}, new float[]{0,1})//7
-    };
-*/
-
-/*
-    byte[] inds = {
-            //top
-            0, 1, 2,
-            0, 2, 3,
-
-            0, 5, 6,
-            0, 1, 6,
-
-            0, 3, 4,
-            0, 4, 5,
-
-
-            7, 5, 6,
-            7, 4, 5,
-
-            7, 1, 6,
-            7, 1, 2,
-
-            7, 4, 3,
-            7, 3, 2
-    };
-*/
-
     String[] vertAttribs = {
             "position",
             "in_tex"};
@@ -136,19 +97,17 @@ public class Model implements IMatrix
         FloatBuffer tBuf = BufferUtils.createFloatBuffer(getSizeOfModelTextureCoords());
 
         for(Mesh mesh : meshes){
-            System.out.println("Mesh");
-            for(int i = 0; i<mesh.sizeOfVertCoords(); i++)
-                System.out.print(mesh.getMeshVertexesAsFloatBuffer().get(i)+" ");
-            vBuf.put(mesh.getMeshVertexesAsFloatBuffer());
-            tBuf.put(mesh.getMeshTexturesAsFloatBuffer());
+            FloatBuffer buffer = mesh.getMeshVertexesAsFloatBuffer();
+            for(int i = 0; i<buffer.limit(); i++){
+                vBuf.put(buffer.get(i));
+            }
+            buffer = mesh.getMeshTexturesAsFloatBuffer();
+            for(int i = 0; i<buffer.limit(); i++){
+                tBuf.put(buffer.get(i));
+            }
         }
-        System.out.println();
-        System.out.println("buffer");
         vBuf.flip();
         tBuf.flip();
-        for(int i = 0; i < getSizeOfModelVertexCoords(); i++)
-            System.out.print(vBuf.get(i)+" ");
-        System.out.println();
 
         GL30.glBindVertexArray(VAO);
 
