@@ -82,6 +82,10 @@ public class ObjFileParser {
                 case 's':
                     parseSmoothing(line);
                     break;
+                case 'u':
+                    break;
+                case 'm':
+
                 default:
                     continue;
             }
@@ -94,8 +98,6 @@ public class ObjFileParser {
         ArrayList<Vertex> tempVertList = new ArrayList<Vertex>();
         Vertex vertex;
         for(ArrayList<Integer> list : indexes){
-//            System.out.println(list.toString());
-//            System.out.println(totalVertexCount+" "+totalTextureCount+" "+totalNormalCount);
             vertex = new Vertex();
             if(list.get(0) != Integer.MAX_VALUE)
                 vertex.setVertexes(vertCoords.get(list.get(0)-totalVertexCount-1));

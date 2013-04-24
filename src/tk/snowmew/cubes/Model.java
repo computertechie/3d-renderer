@@ -23,7 +23,8 @@ public class Model implements IMatrix
     private ObjFileParser parser;
     String[] vertAttribs = {
             "position",
-            "in_tex"};
+            "in_tex"
+    };
 
     String[] uniformAttribs= {
             "texture"
