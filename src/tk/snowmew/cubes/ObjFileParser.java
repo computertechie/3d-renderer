@@ -17,7 +17,7 @@ public class ObjFileParser {
     private ArrayList<ArrayList<Float>> normals = new ArrayList<ArrayList<Float>>();
     private ArrayList<ArrayList<Integer>> indexes = new ArrayList<ArrayList<Integer>>();
     private BufferedReader bufferedFileReader;
-    private static final int VERT_LINE = 0, TEX_LINE = 1, NORM_LINE = 2, FACE_LINE = 3, PARAM_LINE = 4;
+    private static final int VERT_LINE = 0, TEX_LINE = 1, NORM_LINE = 2, PARAM_LINE = 3;
     private boolean firstGroup = true;
     private int totalVertexCount=0,tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
     int lineCount = 0;
@@ -47,6 +47,8 @@ public class ObjFileParser {
     public void parseFile() throws IOException {
         String line;
         while((line = bufferedFileReader.readLine()) != null){
+            if(line.equals(""))
+                continue;
             switch(line.charAt(0)){
                 case '#':
                     continue;
