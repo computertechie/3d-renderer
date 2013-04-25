@@ -85,7 +85,7 @@ public class ObjFileParser {
                 case 'u':
                     break;
                 case 'm':
-
+                    break;
                 default:
                     continue;
             }
