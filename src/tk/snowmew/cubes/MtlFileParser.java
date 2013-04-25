@@ -1,6 +1,8 @@
 package tk.snowmew.cubes;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 /**
@@ -19,4 +21,15 @@ public class MtlFileParser {
     private int illumModel;
     private Material currentMaterial;
 
+    public MtlFileParser(String lib){
+        try {
+            bufferedReader = new BufferedReader(new FileReader(lib));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseFile(){
+
+    }
 }
