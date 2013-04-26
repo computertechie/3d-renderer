@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Pepper
@@ -14,10 +14,10 @@ import java.util.ArrayList;
  */
 public class MtlFileParser {
     private BufferedReader bufferedReader;
-    private ArrayList<Float> diffuse;
-    private ArrayList<Float> specular;
-    private ArrayList<Float> ambient;
-    private ArrayList<Float> filter;
+    private List<Float> diffuse;
+    private List<Float> specular;
+    private List<Float> ambient;
+    private List<Float> filter;
     private float specularPower, transparency, refraction;
     private int illumModel;
     private Material currentMaterial;
@@ -82,19 +82,15 @@ public class MtlFileParser {
     }
 
     public void endMaterial(){
-        System.out.println("material end");
         MaterialManager.getInstance().addMaterial(currentMaterial);
     }
 
     public void startMaterial(String line){
-        System.out.println("material start");
         currentMaterial = new Material();
         currentMaterial.setName(line.trim().split(" ")[1]);
-        System.out.println(currentMaterial.getName());
     }
 
     public void parseLine(String line, int type){
-//        System.out.println("parseLine "+line+" "+type);
         String[] data = line.trim().split(" ");
         float[] dataAsFloat = new float[data.length-1];
         for(int i = 1; i < data.length; i++)
@@ -122,7 +118,6 @@ public class MtlFileParser {
                 break;
             case ILLUM_MODE_LINE:
                 currentMaterial.setIllumModel((int)dataAsFloat[0]);
-
         }
     }
 }
