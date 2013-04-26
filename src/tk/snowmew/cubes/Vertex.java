@@ -50,29 +50,35 @@ public class Vertex {
 
     public FloatBuffer getElementsAsBuffer(){
         FloatBuffer buffer = BufferUtils.createFloatBuffer(totalElementCount);
-        for(int i = 0; i< vertexes.size(); i++)
-            buffer.put(vertexes.get(i));
+        for(Float f : vertexes)
+            buffer.put(f);
         if(texCoords.size()>0)
-            for(int i = 0; i< texCoords.size(); i++)
-                buffer.put(texCoords.get(i));
+            for(Float f : texCoords)
+                buffer.put(f);
         if(normals.size() > 0)
-            for(int i = 0; i< texCoords.size(); i++)
-                buffer.put(normals.get(i));
+            for(Float f : normals)
+                buffer.put(f);
         buffer.flip();
         return buffer;
     }
 
     public float[] getElementsAsFloatArray(){
          float[] arr = new float[totalElementCount];
-
-        for(int i = 0; i< vertexes.size(); i++)
-            arr[i] = vertexes.get(i);
+        int vC = 0, tC = 0, nC = 0;
+        for(Float f : vertexes){
+            arr[vC] = f;
+            vC++;
+        }
         if(texCoords.size() > 0)
-            for(int i = texOffset; i< texCoords.size(); i++)
-                arr[i] = texCoords.get(i);
+            for(Float f : texCoords){
+                arr[tC] = f;
+                tC++;
+            }
         if(normals.size() > 0)
-            for(int i = normOffset; i<normals.size(); i++)
-                arr[i] = normals.get(i);
+            for(Float f : normals){
+                arr[nC] = f;
+                nC++;
+            }
 
         return arr;
     }
@@ -91,22 +97,31 @@ public class Vertex {
 
     public float[] getVertexesAsPrimFloatArray(){
         float[] attribs = new float[vertexes.size()];
-        for(int i = 0; i<vertexes.size(); i++)
-            attribs[i] = vertexes.get(i);
+        int count = 0;
+        for(Float f : vertexes){
+            attribs[count] = f;
+            count++;
+        }
         return attribs;
     }
 
     public float[] getTexturesAsPrimFloatArray(){
         float[] attribs = new float[texCoords.size()];
-        for(int i = 0; i<texCoords.size(); i++)
-            attribs[i] = texCoords.get(i);
+        int count = 0;
+        for(Float f : texCoords){
+            attribs[count] = f;
+            count++;
+        }
         return attribs;
     }
 
     public float[] getNormalsAsPrimFloatArray(){
         float[] attribs = new float[normals.size()];
-        for(int i = 0; i<normals.size(); i++)
-            attribs[i] = normals.get(i);
+        int count = 0;
+        for(Float f : normals){
+            attribs[count] = f;
+            count++;
+        }
         return attribs;
     }
 
