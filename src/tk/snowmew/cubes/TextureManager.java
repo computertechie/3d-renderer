@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL30;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Pepper
@@ -18,8 +19,8 @@ import java.util.HashMap;
 
 public class TextureManager {
     private static TextureManager instance = new TextureManager();
-    private HashMap<String,Texture> nameTexMap = new HashMap<String, Texture>();
-    private HashMap<Integer,String> idNameMap = new HashMap<Integer, String>();
+    private Map<String,Texture> nameTexMap = new HashMap<String, Texture>();
+    private Map<Integer,String> idNameMap = new HashMap<Integer, String>();
 
     private TextureManager(){
 

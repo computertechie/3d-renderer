@@ -3,7 +3,7 @@ package tk.snowmew.cubes;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Pepper
@@ -13,10 +13,10 @@ import java.util.ArrayList;
  */
 
 public class Mesh {
-    private ArrayList<Vertex> vertexes;
+    private List<Vertex> vertexes;
     private String material;
 
-    public Mesh(ArrayList<Vertex> verts, String mat){
+    public Mesh(List<Vertex> verts, String mat){
         vertexes = verts;
         material = mat;
     }

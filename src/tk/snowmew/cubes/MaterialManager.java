@@ -2,6 +2,8 @@ package tk.snowmew.cubes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: Pepper
@@ -11,8 +13,8 @@ import java.util.HashMap;
  */
 public class MaterialManager {
     private static MaterialManager materialManager = new MaterialManager();
-    private HashMap<String,Material> nameToMaterial = new HashMap<String, Material>();
-    private ArrayList<String> registeredMaterialLibraries = new ArrayList<String>();
+    private Map<String,Material> nameToMaterial = new HashMap<String, Material>();
+    private List<String> registeredMaterialLibraries = new ArrayList<String>();
 
     private MaterialManager(){
 

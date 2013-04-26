@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Pepper
@@ -12,14 +13,14 @@ import java.util.ArrayList;
  * Project: Cubes
  */
 public class Vertex {
-    private ArrayList<Float> vertexes = new ArrayList<Float>();
-    private ArrayList<Float> normals = new ArrayList<Float>();
-    private ArrayList<Float> texCoords = new ArrayList<Float>();
+    private List<Float> vertexes = new ArrayList<Float>();
+    private List<Float> normals = new ArrayList<Float>();
+    private List<Float> texCoords = new ArrayList<Float>();
     private int vertOffset = 0, texOffset = 0, normOffset = 0;
     static int stride = 24;
     private int sizeOfFloat = 4, vertElementCount = 4, texElementCount = 2, normalElementCount=0, totalElementCount;
 
-    public Vertex(ArrayList<Float> verts, ArrayList<Float> texes, ArrayList<Float> norms){
+    public Vertex(List<Float> verts, List<Float> texes, List<Float> norms){
         vertexes = verts;
         normals = norms;
         texCoords = texes;
@@ -30,7 +31,7 @@ public class Vertex {
         stride = sizeOfFloat * vertElementCount + sizeOfFloat * texElementCount + sizeOfFloat * normalElementCount;
     }
 
-    public Vertex(ArrayList<Float> verts, ArrayList<Float> texes){
+    public Vertex(List<Float> verts, List<Float> texes){
         vertexes = verts;
         texCoords = texes;
         texOffset = sizeOfFloat * vertElementCount;
@@ -38,7 +39,7 @@ public class Vertex {
         stride = sizeOfFloat * vertElementCount + sizeOfFloat * texElementCount;
     }
 
-    public Vertex(ArrayList<Float> verts){
+    public Vertex(List<Float> verts){
         vertexes = verts;
         totalElementCount = vertElementCount;
     }
@@ -76,15 +77,15 @@ public class Vertex {
         return arr;
     }
 
-    public ArrayList<Float> getVertexes(){
+    public List<Float> getVertexes(){
         return vertexes;
     }
 
-    public ArrayList<Float> getTexture(){
+    public List<Float> getTexture(){
         return texCoords;
     }
 
-    public ArrayList<Float> getNormals(){
+    public List<Float> getNormals(){
         return normals;
     }
 
@@ -109,15 +110,15 @@ public class Vertex {
         return attribs;
     }
 
-    public void setTextures(ArrayList<Float> list){
+    public void setTextures(List<Float> list){
         texCoords = list;
     }
 
-    public void setNormals(ArrayList<Float> list){
+    public void setNormals(List<Float> list){
         normals = list;
     }
 
-    public void setVertexes(ArrayList<Float> list){
+    public void setVertexes(List<Float> list){
         vertexes = list;
     }
 

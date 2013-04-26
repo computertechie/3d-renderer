@@ -82,8 +82,6 @@ public class Cubes {
             getInput();
             camera.reorient();
             box.update();
-//            ground.update();
-//            renderInstance.render(ground);
             renderInstance.render(box);
             Display.update();
             Display.sync(60);

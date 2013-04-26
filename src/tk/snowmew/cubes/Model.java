@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Model implements IMatrix
 {
@@ -19,7 +19,7 @@ public class Model implements IMatrix
     ShaderProgram shaderProgram;
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
     String textureName = "creeper";
-    ArrayList<Mesh> meshes;
+    List<Mesh> meshes;
     private ObjFileParser parser;
     String[] vertAttribs = {
             "position",
