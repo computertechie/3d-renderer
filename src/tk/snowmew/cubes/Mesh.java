@@ -14,9 +14,11 @@ import java.util.ArrayList;
 
 public class Mesh {
     private ArrayList<Vertex> vertexes;
+    private String material;
 
-    public Mesh(ArrayList<Vertex> verts){
+    public Mesh(ArrayList<Vertex> verts, String mat){
         vertexes = verts;
+        material = mat;
     }
 
     public int sizeOfVertCoords(){

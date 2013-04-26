@@ -17,10 +17,7 @@ public class Material {
     private int illumModel;
     private String name, ambientMap, diffuseMap, specColourMap, specHighlightMap, alphaMap, bumpMap;
 
-    public Material(String matName, float matDiffuse, float matSpecular){
-//        diffuse = matDiffuse;
-//        specular = matSpecular;
-        name = matName;
+    public Material(){
     }
 
     public void setDiffuse(float r, float g, float b){

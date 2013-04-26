@@ -16,10 +16,14 @@ public class ObjFileParser {
     private ArrayList<ArrayList<Float>> textureCoords = new ArrayList<ArrayList<Float>>();
     private ArrayList<ArrayList<Float>> normals = new ArrayList<ArrayList<Float>>();
     private ArrayList<ArrayList<Integer>> indexes = new ArrayList<ArrayList<Integer>>();
+    private String material;
+
     private BufferedReader bufferedFileReader;
+
     private static final int VERT_LINE = 0, TEX_LINE = 1, NORM_LINE = 2, PARAM_LINE = 3;
     private boolean firstGroup = true;
-    private int totalVertexCount=0,tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
+
+    private int totalVertexCount=0, tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
     int lineCount = 0;
 
     public ObjFileParser(String fileName){
@@ -85,8 +89,13 @@ public class ObjFileParser {
                     parseSmoothing(line);
                     break;
                 case 'u':
+                    String[] words = line.trim().split(" ");
+                    material = words[1];
                     break;
                 case 'm':
+                    String[] com = line.trim().split(" ");
+                    if(!MaterialManager.getInstance().isMaterialLibraryRegistered(com[1]))
+                        MaterialManager.getInstance().registerMaterialLibrary(com[1]);
                     break;
                 default:
                     continue;
@@ -112,7 +121,7 @@ public class ObjFileParser {
         totalTextureCount += tempTextureCount;
         totalVertexCount += tempVertexCount;
         totalNormalCount += tempNormalCount;
-        meshes.add(new Mesh(tempVertList));
+        meshes.add(new Mesh(tempVertList, material));
     }
 
     public void startGroup(){
@@ -120,6 +129,7 @@ public class ObjFileParser {
         textureCoords = new ArrayList<ArrayList<Float>>();
         normals = new ArrayList<ArrayList<Float>>();
         indexes = new ArrayList<ArrayList<Integer>>();
+        material = "";
         tempNormalCount = tempTextureCount = tempVertexCount = 0;
     }
 
