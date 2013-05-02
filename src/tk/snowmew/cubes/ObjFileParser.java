@@ -2,6 +2,7 @@ package tk.snowmew.cubes;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Pepper
@@ -11,11 +12,11 @@ import java.util.ArrayList;
  */
 
 public class ObjFileParser {
-    private ArrayList<Mesh> meshes = new ArrayList<Mesh>();
-    private ArrayList<ArrayList<Float>> vertCoords = new ArrayList<ArrayList <Float>>();
-    private ArrayList<ArrayList<Float>> textureCoords = new ArrayList<ArrayList<Float>>();
-    private ArrayList<ArrayList<Float>> normals = new ArrayList<ArrayList<Float>>();
-    private ArrayList<ArrayList<Integer>> indexes = new ArrayList<ArrayList<Integer>>();
+    private List<Mesh> meshes = new ArrayList<Mesh>();
+    private List<List<Float>> vertCoords = new ArrayList<List <Float>>();
+    private List<List<Float>> textureCoords = new ArrayList<List<Float>>();
+    private List<List<Float>> normals = new ArrayList<List<Float>>();
+    private List<List<Integer>> indexes = new ArrayList<List<Integer>>();
     private String material;
 
     private BufferedReader bufferedFileReader;
@@ -108,7 +109,7 @@ public class ObjFileParser {
     public void endGroup(){
         ArrayList<Vertex> tempVertList = new ArrayList<Vertex>();
         Vertex vertex;
-        for(ArrayList<Integer> list : indexes){
+        for(List<Integer> list : indexes){
             vertex = new Vertex();
             if(list.get(0) != Integer.MAX_VALUE)
                 vertex.setVertexes(vertCoords.get(list.get(0)-totalVertexCount-1));
@@ -125,15 +126,15 @@ public class ObjFileParser {
     }
 
     public void startGroup(){
-        vertCoords = new ArrayList<ArrayList<Float>>();
-        textureCoords = new ArrayList<ArrayList<Float>>();
-        normals = new ArrayList<ArrayList<Float>>();
-        indexes = new ArrayList<ArrayList<Integer>>();
+        vertCoords = new ArrayList<List<Float>>();
+        textureCoords = new ArrayList<List<Float>>();
+        normals = new ArrayList<List<Float>>();
+        indexes = new ArrayList<List<Integer>>();
         material = "";
         tempNormalCount = tempTextureCount = tempVertexCount = 0;
     }
 
-    public ArrayList<Mesh> getMeshes(){
+    public List<Mesh> getMeshes(){
         return meshes;
     }
 

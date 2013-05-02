@@ -11,6 +11,7 @@ import java.util.Map;
  * Time: 4:14 PM
  * Project: Cubes
  */
+
 public class MaterialManager {
     private static MaterialManager materialManager = new MaterialManager();
     private Map<String,Material> nameToMaterial = new HashMap<String, Material>();
