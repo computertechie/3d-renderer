@@ -2,6 +2,8 @@ package tk.snowmew.cubes;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import java.nio.FloatBuffer;
+
 /**
  * User: Pepper
  * Date: 4/25/13
@@ -10,11 +12,20 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class SpotLight extends Light {
     Vector3f direction;
-    float halfAngle;
+    float halfAngle, range;
 
     public SpotLight(Vector3f dir, Vector3f pos, float range, float angle, byte lCR, byte lCG, byte lCB){
-        super(lCR, lCG, lCB, pos, range);
+        super(lCR, lCG, lCB, pos);
         direction = dir;
         halfAngle = angle;
+        this.range = range;
+        sizeOf = 9;
+    }
+
+    public void getLightAsFloatBuffer(FloatBuffer buffer){
+        super.getLightAsFloatBuffer(buffer);
+        direction.store(buffer);
+        buffer.put(halfAngle);
+        buffer.put(range);
     }
 }

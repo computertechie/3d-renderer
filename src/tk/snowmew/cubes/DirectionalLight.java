@@ -10,14 +10,12 @@ import org.lwjgl.util.vector.Vector3f;
  */
 
 public class DirectionalLight extends Light {
-    Vector3f direction;
 
-    public DirectionalLight(Vector3f dir){
-
-        direction = dir;
+    public DirectionalLight(Vector3f dir, byte red, byte green, byte blue){
+        super(red, green, blue, dir);
     }
 
     public Vector3f getDirection(){
-        return direction;
+        return position;
     }
 }
