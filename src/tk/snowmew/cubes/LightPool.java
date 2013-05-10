@@ -1,5 +1,7 @@
 package tk.snowmew.cubes;
 
+import org.lwjgl.BufferUtils;
+
 import java.nio.FloatBuffer;
 import java.util.List;
 
@@ -34,7 +36,13 @@ public abstract class LightPool {
         modified = false;
     }
 
-    public abstract FloatBuffer getPoolAsBuffer();
+    public FloatBuffer getPoolAsBuffer(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getPoolSizeInFloat());
+        for(Light light : lights){
+            light.getLightAsFloatBuffer(buffer);
+        }
+        return buffer;
+    }
 
     public abstract int getPoolSizeInFloat();
 }

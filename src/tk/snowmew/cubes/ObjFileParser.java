@@ -25,7 +25,6 @@ public class ObjFileParser {
     private boolean firstGroup = true;
 
     private int totalVertexCount=0, tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
-    int lineCount = 0;
 
     public ObjFileParser(String fileName){
         try {
@@ -101,7 +100,6 @@ public class ObjFileParser {
                 default:
                     continue;
             }
-            lineCount++;
         }
         endGroup();
     }

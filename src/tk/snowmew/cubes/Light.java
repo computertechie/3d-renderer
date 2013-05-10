@@ -41,7 +41,7 @@ public abstract class Light {
         position.store(buffer);
     }
 
-    public int getSizeOf(){
+    public static int getSizeOf(){
         return sizeOf;
     }
 }
