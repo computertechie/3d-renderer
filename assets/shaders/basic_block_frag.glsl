@@ -3,7 +3,7 @@
 uniform sampler2D texture;
 
 in vec4 worldPos;
-in vec4 worldNormal;
+in vec3 worldNormal;
 in vec3 modelPos;
 in vec2 out_tex;
 
@@ -28,18 +28,18 @@ uniform Light dirLight;
 
 void main(void) {
 
-    vec3 ambient = dirLight.color * dirLight.intensity;
+    vec4 ambient = vec4(dirLight.color, 1f) * dirLight.intensity;
 
-    float diffuseFactor = dot(worldNormal, vec4(-dirLight.position,1));
-    vec3 diffuse;
+    float diffuseFactor = dot(worldNormal, -dirLight.position);
+    vec4 diffuse;
 
     if(diffuseFactor > 0){
-        diffuse = dirLight.color * dirLight.intensity * diffuseFactor;
+        diffuse = vec4(dirLight.color, 1f) * dirLight.intensity * diffuseFactor;
     }
     else{
-        diffuse = vec3(0,0,0);
+        diffuse = vec4(1,0.5,0.25,0);
     }
+    //gl_FragColor = vec4(modelPos, 0);
 
-    //gl_FragColor = vec4(modelPos, 1) * vec4(ambient+diffuse,1);
-    gl_FragColor = vec4(modelPos, 1);
+    gl_FragColor = vec4(0.5,0.5,0.5,1) * (diffuse);
 }

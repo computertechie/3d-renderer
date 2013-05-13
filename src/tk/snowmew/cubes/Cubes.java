@@ -20,7 +20,7 @@ public class Cubes {
     TextureManager textureManagerInstance = TextureManager.getInstance();
     CameraQuat camera = new CameraQuat(0,0);
     Model box, ground;
-    DirectionalLight sun = new DirectionalLight(new Vector3f(50,50,50), new Vector3f(0.75f, 0.75f, 0.75f), 0.5f);
+    DirectionalLight sun = new DirectionalLight(new Vector3f(1,1,1), new Vector3f(1,1,1), 1f);
     int width =854, height=480;
     float mouseSensitivity = 0.2f;
 
@@ -37,7 +37,7 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         textureManagerInstance.createTexture("assets/textures/creeper.png");
         camera.setPosition(new Vector3f(0, 1, 0));
-        box = new Model("assets/models/cube.obj");
+        box = new Model("assets/models/doberman.obj");
 //        ground = new Model("assets/models/cube.obj");
 //        ground.scale(100, 0.1f, 100);
     }

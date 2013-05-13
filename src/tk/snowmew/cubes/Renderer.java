@@ -60,7 +60,7 @@ public class Renderer{
         textureManager.bindTexture(model.textureName);
         model.bufferUniforms();
         bufferUniforms();
-//        bufferDirLight(model);
+        bufferDirLight(model);
         camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());
         model.render();
     }
