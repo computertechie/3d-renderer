@@ -14,8 +14,8 @@ public class SpotLight extends Light {
     Vector3f direction;
     float halfAngle, range;
 
-    public SpotLight(Vector3f dir, Vector3f pos, float range, float angle, byte lCR, byte lCG, byte lCB){
-        super(lCR, lCG, lCB, pos);
+    public SpotLight(Vector3f pos, Vector3f dir, Vector3f col, float range, float angle, float intensity){
+        super(pos, col, intensity);
         direction = dir;
         halfAngle = angle;
         this.range = range;

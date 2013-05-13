@@ -2,12 +2,15 @@
 
 uniform sampler2D texture;
 
-in vec4 pos;
+in vec4 worldPos;
+in vec4 worldNormal;
+in vec3 modelPos;
 in vec2 out_tex;
 
 struct Light{
     vec3 position;
-    int color;
+    vec3 color;
+    float intensity;
 };
 
 struct PointLight{
@@ -17,13 +20,26 @@ struct PointLight{
 
 uniform Light dirLight;
 
-uniform PointLights{
-    PointLight lights[];
-};
+//uniform PointLights{
+  //  PointLight lights[100];
+//};
 
-uniform int numPointLights;
+//uniform int numPointLights;
 
 void main(void) {
-//    gl_FragColor = texture2D(texture, out_tex);
-    gl_FragColor = pos;
+
+    vec3 ambient = dirLight.color * dirLight.intensity;
+
+    float diffuseFactor = dot(worldNormal, vec4(-dirLight.position,1));
+    vec3 diffuse;
+
+    if(diffuseFactor > 0){
+        diffuse = dirLight.color * dirLight.intensity * diffuseFactor;
+    }
+    else{
+        diffuse = vec3(0,0,0);
+    }
+
+    //gl_FragColor = vec4(modelPos, 1) * vec4(ambient+diffuse,1);
+    gl_FragColor = vec4(modelPos, 1);
 }

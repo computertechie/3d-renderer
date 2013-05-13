@@ -13,8 +13,8 @@ import java.nio.FloatBuffer;
 public class PointLight extends Light {
     private float range;
 
-    public PointLight(byte red, byte green, byte blue, Vector3f pos, float range){
-        super(red, green, blue, pos);
+    public PointLight(Vector3f pos, Vector3f col, float range, float intensity){
+        super(pos, col, intensity);
         this.range = range;
         sizeOf = 5;
     }

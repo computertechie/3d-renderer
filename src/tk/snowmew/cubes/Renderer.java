@@ -60,6 +60,7 @@ public class Renderer{
         textureManager.bindTexture(model.textureName);
         model.bufferUniforms();
         bufferUniforms();
+//        bufferDirLight(model);
         camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());
         model.render();
     }
@@ -73,6 +74,12 @@ public class Renderer{
         projectionMatrix.store(buffer);
         buffer.flip();
         GL20.glUniformMatrix4(projUniformLoc, false, buffer);
+    }
+
+    public void bufferDirLight(Model model){
+        GL20.glUniform3(model.shaderProgram.getDirLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
+        GL20.glUniform3(model.shaderProgram.getDirLightPosLocation(), cubeInstance.sun.getPositionAsFBuffer());
+        GL20.glUniform1f(model.shaderProgram.getDirLightIntensityLocation(), cubeInstance.sun.getIntensity());
     }
 
     public void useProgram(int programID) {

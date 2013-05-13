@@ -1,5 +1,6 @@
 package tk.snowmew.cubes;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.nio.FloatBuffer;
@@ -11,15 +12,14 @@ import java.nio.FloatBuffer;
  * Project: Cubes
  */
 public abstract class Light {
-    protected byte lightColorR, lightColorG, lightColorB;
-    protected Vector3f position;
+    protected Vector3f position, color;
     protected static int sizeOf;
+    protected float intensity;
 
-    public Light(byte lCR, byte lCG, byte lCB, Vector3f pos){
-        lightColorR = lCR;
-        lightColorB = lCB;
-        lightColorG = lCG;
+    public Light(Vector3f pos, Vector3f col, float intens){
         position = pos;
+        color = col;
+        intensity = intens;
         sizeOf = 4;
     }
 
@@ -36,12 +36,27 @@ public abstract class Light {
     }
 
     public void getLightAsFloatBuffer(FloatBuffer buffer){
-        int temp = lightColorR << 24 | lightColorG << 16 | lightColorB << 8;
-        buffer.put((float)temp);
+        color.store(buffer);
         position.store(buffer);
     }
 
     public static int getSizeOf(){
         return sizeOf;
+    }
+
+    public FloatBuffer getColorAsFBuffer(){
+        FloatBuffer temp = BufferUtils.createFloatBuffer(3);
+        color.store(temp);
+        return temp;
+    }
+
+    public FloatBuffer getPositionAsFBuffer(){
+        FloatBuffer temp = BufferUtils.createFloatBuffer(3);
+        position.store(temp);
+        return temp;
+    }
+
+    public float getIntensity(){
+        return intensity;
     }
 }

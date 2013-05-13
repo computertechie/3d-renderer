@@ -20,7 +20,7 @@ public class ShaderProgram {
     private int vertexShaderID;
     private int fragmentShaderID;
     private int programID;
-    private int projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
+    private int projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation, dirLightPosLocation, dirLightColorLocation, dirLightIntensityLocation;
     private Map<String,Integer> vertexAttributes = new HashMap<String, Integer>(), uniformAttributes = new HashMap<String, Integer>();
 
     public ShaderProgram(String vertFile, String fragFile, String[] vertAtts, String[] uniforms){
@@ -31,6 +31,7 @@ public class ShaderProgram {
         getUniformLocs(uniforms);
         getVertAttLocs(vertAtts);
         getMatrixLocs();
+        getDirLightLocs();
     }
 
     public ShaderProgram(String vertFile, String fragFile, String...vertAtts){
@@ -40,6 +41,13 @@ public class ShaderProgram {
         createProgram(programID, vertexShaderID, fragmentShaderID);
         getVertAttLocs(vertAtts);
         getMatrixLocs();
+        getDirLightLocs();
+    }
+
+    private void getDirLightLocs(){
+        dirLightColorLocation = GL20.glGetUniformLocation(programID, "dirLight.color");
+        dirLightIntensityLocation = GL20.glGetUniformLocation(programID, "dirLight.intensity");
+        dirLightPosLocation = GL20.glGetUniformLocation(programID,  "dirLight.position");
     }
 
     public int getProgramID() {
@@ -58,19 +66,31 @@ public class ShaderProgram {
         return modelMatrixLocation;
     }
 
-    public void getVertAttLocs(String[] atts){
+    public int getDirLightPosLocation(){
+        return dirLightPosLocation;
+    }
+
+    public int getDirLightColorLocation(){
+        return dirLightPosLocation;
+    }
+
+    public int getDirLightIntensityLocation(){
+        return dirLightIntensityLocation;
+    }
+
+    private void getVertAttLocs(String[] atts){
         for (int i = 0; i<atts.length;i++){
             vertexAttributes.put(atts[i],GL20.glGetAttribLocation(programID, atts[i]));
         }
     }
 
-    public void getMatrixLocs(){
+    private void getMatrixLocs(){
         projectionMatrixLocation = GL20.glGetUniformLocation(programID, "projectionMatrix");
         viewMatrixLocation = GL20.glGetUniformLocation(programID, "viewMatrix");
         modelMatrixLocation = GL20.glGetUniformLocation(programID, "modelMatrix");
     }
 
-    public void getUniformLocs(String[] atts){
+    private void getUniformLocs(String[] atts){
         for(int i = 0; i<atts.length; i++){
             uniformAttributes.put(atts[i],GL20.glGetUniformLocation(programID, atts[i]));
         }
