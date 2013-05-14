@@ -30,7 +30,7 @@ void main(void) {
 
     vec4 ambient = vec4(dirLight.color, 1f) * dirLight.intensity;
 
-    float diffuseFactor = dot(normalize(worldNormal), -dirLight.position);
+    float diffuseFactor = dot(worldNormal, -dirLight.position);
     vec4 diffuse;
 
     if(diffuseFactor > 0){
