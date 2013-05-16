@@ -66,4 +66,8 @@ public class Mesh {
             norms.put(vertex.getNormalsAsPrimFloatArray());
         return norms;
     }
+
+    public Vertex getVertex(int i){
+        return vertexes.get(i);
+    }
 }

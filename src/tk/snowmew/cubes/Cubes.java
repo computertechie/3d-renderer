@@ -20,9 +20,9 @@ public class Cubes {
     TextureManager textureManagerInstance = TextureManager.getInstance();
     CameraQuat camera = new CameraQuat(0,0);
     Model box, ground;
-    DirectionalLight sun = new DirectionalLight(new Vector3f(1,1,1), new Vector3f(1,1,1), 1f);
+    DirectionalLight sun = new DirectionalLight(new Vector3f(1,1,1), new Vector3f(0.25f,0.5f,0.75f), 1f);
     int width =854, height=480;
-    float mouseSensitivity = 0.2f;
+    float mouseSensitivity = 0.1f;
 
     public static void main(String[] args){
         Cubes cube = new Cubes();
@@ -64,6 +64,7 @@ public class Cubes {
         height = Display.getHeight();
         renderInstance.createProjectionMatrix();
         GL11.glViewport(0,0,width, height);
+        camera.reorient();
     }
 
     public int getWidth(){

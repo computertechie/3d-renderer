@@ -77,8 +77,9 @@ public class Renderer{
     }
 
     public void bufferDirLight(Model model){
-        GL20.glUniform3(model.shaderProgram.getDirLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
+
         GL20.glUniform3(model.shaderProgram.getDirLightPosLocation(), cubeInstance.sun.getPositionAsFBuffer());
+        GL20.glUniform3(model.shaderProgram.getDirLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
         GL20.glUniform1f(model.shaderProgram.getDirLightIntensityLocation(), cubeInstance.sun.getIntensity());
     }
 

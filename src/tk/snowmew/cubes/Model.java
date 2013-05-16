@@ -21,6 +21,7 @@ public class Model implements IMatrix
     String textureName = "creeper";
     List<Mesh> meshes;
     private ObjFileParser parser;
+    Light sun;
     String[] vertAttribs = {
             "position",
             "in_tex",
@@ -55,6 +56,10 @@ public class Model implements IMatrix
         genIDs();
         buffer();
         update();
+    }
+
+    public void setSun(Light light){
+        sun = light;
     }
 
     public void update() {
@@ -98,7 +103,7 @@ public class Model implements IMatrix
         FloatBuffer vBuf = BufferUtils.createFloatBuffer(getSizeOfModelVertexCoords());
         FloatBuffer tBuf = BufferUtils.createFloatBuffer(getSizeOfModelTextureCoords());
         FloatBuffer nBuf = BufferUtils.createFloatBuffer(getSizeOfModelNormals());
-        System.out.println(getSizeOfModelNormals() + " " + getSizeOfModelTextureCoords() + " " + getSizeOfModelVertexCoords());
+//        System.out.println(getSizeOfModelNormals() + " " + getSizeOfModelTextureCoords() + " " + getSizeOfModelVertexCoords());
 
         for(Mesh mesh : meshes){
             FloatBuffer buffer = mesh.getMeshVertexesAsFloatBuffer();
@@ -113,6 +118,7 @@ public class Model implements IMatrix
 
             buffer = mesh.getMeshNormalsAsFloatBuffer();
             for(int i = 0; i<buffer.limit(); i++){
+//                System.out.println(Vector3f.dot(mesh.getVertex(i).,sun.position));
                 nBuf.put(buffer.get(i));
             }
 //            vBuf.put(mesh.getMeshVertexesAsFloatBuffer());

@@ -20,7 +20,7 @@ public abstract class Light {
         position = pos;
         color = col;
         intensity = intens;
-        sizeOf = 4;
+        sizeOf = 7;
     }
 
     public Light(){
@@ -47,16 +47,22 @@ public abstract class Light {
     public FloatBuffer getColorAsFBuffer(){
         FloatBuffer temp = BufferUtils.createFloatBuffer(3);
         color.store(temp);
+        temp.flip();
         return temp;
     }
 
     public FloatBuffer getPositionAsFBuffer(){
         FloatBuffer temp = BufferUtils.createFloatBuffer(3);
         position.store(temp);
+        temp.flip();
         return temp;
     }
 
     public float getIntensity(){
         return intensity;
+    }
+
+    public Vector3f getColor(){
+        return color;
     }
 }

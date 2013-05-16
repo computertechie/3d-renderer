@@ -48,6 +48,7 @@ public class ShaderProgram {
         dirLightColorLocation = GL20.glGetUniformLocation(programID, "dirLight.color");
         dirLightIntensityLocation = GL20.glGetUniformLocation(programID, "dirLight.intensity");
         dirLightPosLocation = GL20.glGetUniformLocation(programID,  "dirLight.position");
+        System.out.println(dirLightColorLocation + " " + dirLightIntensityLocation + " " + dirLightPosLocation);
     }
 
     public int getProgramID() {
