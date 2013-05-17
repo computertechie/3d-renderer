@@ -20,7 +20,7 @@ public class Cubes {
     TextureManager textureManagerInstance = TextureManager.getInstance();
     CameraQuat camera = new CameraQuat(0,0);
     Model box, ground;
-    DirectionalLight sun = new DirectionalLight(new Vector3f(1,1,1), new Vector3f(0.25f,0.5f,0.75f), 1f);
+    DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480;
     float mouseSensitivity = 0.1f;
     long tick = 0;
@@ -85,12 +85,21 @@ public class Cubes {
             getInput();
             camera.reorient();
             box.update();
-            sun.setDirection(new Vector3f(sun.getDirection().x + 0.1f, sun.getDirection().y - 0.1f, sun.getDirection().z + 0.1f));
+            if(tick%10 == 0){
+                float newX=0, newY=0;
+                if(sun.getDirection().x == 10)
+                    newX = -10;
+                else
+                    newX = sun.getDirection().x+0.1f;
+
+                newY = (float)Math.sqrt((double)(100-(Math.pow((double)newX,2d))));
+                sun.setDirection(new Vector3f(newX, -newY, 0));
+            }
 //            ground.update();
             renderInstance.render(box);
 //            renderInstance.render(ground);
             Display.update();
-            Display.sync(30);
+            Display.sync(60);
         }
     }
 
