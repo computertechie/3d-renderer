@@ -23,6 +23,7 @@ public class Cubes {
     DirectionalLight sun = new DirectionalLight(new Vector3f(1,1,1), new Vector3f(0.25f,0.5f,0.75f), 1f);
     int width =854, height=480;
     float mouseSensitivity = 0.1f;
+    long tick = 0;
 
     public static void main(String[] args){
         Cubes cube = new Cubes();
@@ -37,7 +38,7 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         textureManagerInstance.createTexture("assets/textures/creeper.png");
         camera.setPosition(new Vector3f(0, 1, 0));
-        box = new Model("assets/models/axe.obj");
+        box = new Model("assets/models/doberman.obj");
 //        ground = new Model("assets/models/cube.obj");
 //        ground.scale(100, 0.1f, 100);
     }
@@ -77,17 +78,19 @@ public class Cubes {
 
     public void tick(){
         while(!Display.isCloseRequested()){
+            tick++;
             checkForResize();
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
             GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
             getInput();
             camera.reorient();
             box.update();
+            sun.setDirection(new Vector3f(sun.getDirection().x + 0.1f, sun.getDirection().y - 0.1f, sun.getDirection().z + 0.1f));
 //            ground.update();
             renderInstance.render(box);
 //            renderInstance.render(ground);
             Display.update();
-            Display.sync(60);
+            Display.sync(30);
         }
     }
 

@@ -20,7 +20,7 @@ public class ShaderProgram {
     private int vertexShaderID;
     private int fragmentShaderID;
     private int programID;
-    private int projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation, dirLightPosLocation, dirLightColorLocation, dirLightIntensityLocation;
+    private int projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation, directionalLightPositionLocation, directionalLightColorLocation, directionalLightIntensityLocation;
     private Map<String,Integer> vertexAttributes = new HashMap<String, Integer>(), uniformAttributes = new HashMap<String, Integer>();
 
     public ShaderProgram(String vertFile, String fragFile, String[] vertAtts, String[] uniforms){
@@ -45,10 +45,10 @@ public class ShaderProgram {
     }
 
     private void getDirLightLocs(){
-        dirLightColorLocation = GL20.glGetUniformLocation(programID, "dirLight.color");
-        dirLightIntensityLocation = GL20.glGetUniformLocation(programID, "dirLight.intensity");
-        dirLightPosLocation = GL20.glGetUniformLocation(programID,  "dirLight.position");
-        System.out.println(dirLightColorLocation + " " + dirLightIntensityLocation + " " + dirLightPosLocation);
+        directionalLightColorLocation = GL20.glGetUniformLocation(programID, "dirLight.color");
+        directionalLightIntensityLocation = GL20.glGetUniformLocation(programID, "dirLight.intensity");
+        directionalLightPositionLocation = GL20.glGetUniformLocation(programID,  "dirLight.position");
+        System.out.println(directionalLightColorLocation + " " + directionalLightIntensityLocation + " " + directionalLightPositionLocation);
     }
 
     public int getProgramID() {
@@ -67,16 +67,16 @@ public class ShaderProgram {
         return modelMatrixLocation;
     }
 
-    public int getDirLightPosLocation(){
-        return dirLightPosLocation;
+    public int getDirectionalLightPositionLocation(){
+        return directionalLightPositionLocation;
     }
 
-    public int getDirLightColorLocation(){
-        return dirLightPosLocation;
+    public int getDirectionalLightColorLocation(){
+        return directionalLightColorLocation;
     }
 
-    public int getDirLightIntensityLocation(){
-        return dirLightIntensityLocation;
+    public int getDirectionalLightIntensityLocation(){
+        return directionalLightIntensityLocation;
     }
 
     private void getVertAttLocs(String[] atts){

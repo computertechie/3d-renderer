@@ -18,4 +18,8 @@ public class DirectionalLight extends Light {
     public Vector3f getDirection(){
         return position;
     }
+
+    public void setDirection(Vector3f direction){
+        super.setPosition(direction);
+    }
 }
