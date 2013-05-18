@@ -1,9 +1,6 @@
 package tk.snowmew.cubes;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -24,9 +21,9 @@ public class MtlFileParser {
     private static final int DIFFUSE_LINE = 0, AMBIENT_LINE = 1, SPECULAR_COLOR_LINE = 2, REFRACTION_LINE = 3, DISSOLVE_LINE = 4, SPECULAR_POWER_LINE = 5, TRANS_FILTER_LINE = 6, ILLUM_MODE_LINE = 7;
     private boolean firstMaterial = true;
 
-    public MtlFileParser(String lib){
+    public MtlFileParser(String base, String lib){
         try {
-            bufferedReader = new BufferedReader(new FileReader("assets/models/"+lib));
+            bufferedReader = new BufferedReader(new FileReader(base+ File.separator+lib));
             parseFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

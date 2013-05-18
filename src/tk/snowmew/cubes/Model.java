@@ -103,7 +103,6 @@ public class Model implements IMatrix
         FloatBuffer vBuf = BufferUtils.createFloatBuffer(getSizeOfModelVertexCoords());
         FloatBuffer tBuf = BufferUtils.createFloatBuffer(getSizeOfModelTextureCoords());
         FloatBuffer nBuf = BufferUtils.createFloatBuffer(getSizeOfModelNormals());
-//        System.out.println(getSizeOfModelNormals() + " " + getSizeOfModelTextureCoords() + " " + getSizeOfModelVertexCoords());
 
         for(Mesh mesh : meshes){
             FloatBuffer buffer = mesh.getMeshVertexesAsFloatBuffer();

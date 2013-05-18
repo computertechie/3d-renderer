@@ -18,7 +18,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class Cubes {
     Renderer renderInstance = Renderer.getInstance();
     TextureManager textureManagerInstance = TextureManager.getInstance();
-    CameraQuat camera = new CameraQuat(0,0);
+    Camera camera = new Camera(0,0);
     Model box, ground;
     DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480;
@@ -38,7 +38,7 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         textureManagerInstance.createTexture("assets/textures/creeper.png");
         camera.setPosition(new Vector3f(0, 1, 0));
-        box = new Model("assets/models/doberman.obj");
+        box = new Model("assets/models/006 - Charizard.brres/Lizardon.obj");
 //        ground = new Model("assets/models/cube.obj");
 //        ground.scale(100, 0.1f, 100);
     }
@@ -85,14 +85,14 @@ public class Cubes {
             getInput();
             camera.reorient();
             box.update();
-            if(tick%10 == 0){
+            if(tick%10== 0){
                 float newX=0, newY=0;
                 if(sun.getDirection().x == 10)
-                    newX = -10;
+                    newX = -9.9f;
                 else
                     newX = sun.getDirection().x+0.1f;
 
-                newY = (float)Math.sqrt((double)(100-(Math.pow((double)newX,2d))));
+                newY = (float)Math.sqrt(100-(Math.pow(newX,2)));
                 sun.setDirection(new Vector3f(newX, -newY, 0));
             }
 //            ground.update();

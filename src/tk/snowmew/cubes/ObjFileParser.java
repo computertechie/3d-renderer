@@ -25,10 +25,15 @@ public class ObjFileParser {
     private boolean firstGroup = true;
 
     private int totalVertexCount=0, tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
+    private String fileBase;
 
     public ObjFileParser(String fileName){
         try {
             bufferedFileReader = new BufferedReader(new FileReader(fileName));
+            File temp = new File(fileName);
+            System.out.println(temp.getParent());
+            System.out.println(temp.getParentFile());
+            fileBase = temp.getParent();
             parseFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -94,8 +99,10 @@ public class ObjFileParser {
                     break;
                 case 'm':
                     String[] com = line.trim().split(" ");
-                    if(!MaterialManager.getInstance().isMaterialLibraryRegistered(com[1]))
+                    if(!MaterialManager.getInstance().isMaterialLibraryRegistered(com[1])){
                         MaterialManager.getInstance().registerMaterialLibrary(com[1]);
+                        new MtlFileParser(fileBase,com[1]);
+                    }
                     break;
                 default:
                     continue;

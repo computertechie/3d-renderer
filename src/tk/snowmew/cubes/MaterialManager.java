@@ -39,7 +39,6 @@ public class MaterialManager {
 
     public void registerMaterialLibrary(String library){
         registeredMaterialLibraries.add(library);
-        new MtlFileParser(library);
     }
 
     public Material getMaterialFromName(String name){

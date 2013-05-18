@@ -10,7 +10,7 @@ public class Renderer{
     private static Renderer instance = new Renderer();
     private int currentProgram = -1, projUniformLoc = -1;
     Matrix4f projectionMatrix = new Matrix4f();
-    CameraQuat camera;
+    Camera camera;
     TextureManager textureManager;
     Cubes cubeInstance;
 
@@ -26,7 +26,7 @@ public class Renderer{
         textureManager = manager;
     }
 
-    public void setCamera(CameraQuat cam) {
+    public void setCamera(Camera cam) {
         camera = cam;
     }
 
