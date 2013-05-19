@@ -31,8 +31,6 @@ public class ObjFileParser {
         try {
             bufferedFileReader = new BufferedReader(new FileReader(fileName));
             File temp = new File(fileName);
-            System.out.println(temp.getParent());
-            System.out.println(temp.getParentFile());
             fileBase = temp.getParent();
             parseFile();
         } catch (FileNotFoundException e) {
@@ -189,7 +187,7 @@ public class ObjFileParser {
                     break;
                 case 3:
                     tempList.add(Integer.parseInt(attribIndexes[0]));
-                    tempList.add(attribIndexes[1] == "" ? Integer.MAX_VALUE : Integer.parseInt(attribIndexes[1]));
+                    tempList.add(attribIndexes[1].equals("") ? Integer.MAX_VALUE : Integer.parseInt(attribIndexes[1]));
                     tempList.add(Integer.parseInt(attribIndexes[2]));
                     break;
             }

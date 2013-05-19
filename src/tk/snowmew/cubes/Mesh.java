@@ -49,22 +49,36 @@ public class Mesh {
     public FloatBuffer getMeshVertexesAsFloatBuffer(){
         FloatBuffer verts = BufferUtils.createFloatBuffer(sizeOfVertCoords());
         for(Vertex vertex : vertexes)
-            verts.put(vertex.getVertexesAsPrimFloatArray());
+            verts.put(vertex.getVertexesAsBuffer());
+        verts.flip();
         return verts;
     }
 
     public FloatBuffer getMeshTexturesAsFloatBuffer(){
         FloatBuffer textures = BufferUtils.createFloatBuffer(sizeOfTexCoords());
         for(Vertex vertex : vertexes)
-            textures.put(vertex.getTexturesAsPrimFloatArray());
+            textures.put(vertex.getTexturesAsBuffer());
+        textures.flip();
         return textures;
     }
 
     public FloatBuffer getMeshNormalsAsFloatBuffer(){
         FloatBuffer norms = BufferUtils.createFloatBuffer(sizeOfNormals());
         for(Vertex vertex : vertexes)
-            norms.put(vertex.getNormalsAsPrimFloatArray());
+            norms.put(vertex.getNormalsAsBuffer());
+        norms.flip();
         return norms;
+    }
+
+    public FloatBuffer getInterleavedMeshBuffer(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(sizeOfMesh());
+        for(Vertex vert : vertexes){
+            buffer.put(vert.getVertexesAsBuffer());
+            buffer.put(vert.getNormalsAsBuffer());
+            buffer.put(vert.getTexturesAsBuffer());
+        }
+        buffer.flip();
+        return buffer;
     }
 
     public Vertex getVertex(int i){

@@ -38,7 +38,7 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         textureManagerInstance.createTexture("assets/textures/creeper.png");
         camera.setPosition(new Vector3f(0, 1, 0));
-        box = new Model("assets/models/006 - Charizard.brres/Lizardon.obj");
+        box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
 //        ground = new Model("assets/models/cube.obj");
 //        ground.scale(100, 0.1f, 100);
     }

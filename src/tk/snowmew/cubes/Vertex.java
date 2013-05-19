@@ -63,7 +63,7 @@ public class Vertex {
     }
 
     public float[] getElementsAsFloatArray(){
-         float[] arr = new float[totalElementCount];
+        float[] arr = new float[totalElementCount];
         int vC = 0, tC = 0, nC = 0;
         for(Float f : vertexes){
             arr[vC] = f;
@@ -95,34 +95,31 @@ public class Vertex {
         return normals;
     }
 
-    public float[] getVertexesAsPrimFloatArray(){
-        float[] attribs = new float[vertexes.size()];
-        int count = 0;
+    public FloatBuffer getVertexesAsBuffer(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNormalsSize());
         for(Float f : vertexes){
-            attribs[count] = f;
-            count++;
+            buffer.put(f);
         }
-        return attribs;
+        buffer.flip();
+        return buffer;
     }
 
-    public float[] getTexturesAsPrimFloatArray(){
-        float[] attribs = new float[texCoords.size()];
-        int count = 0;
+    public FloatBuffer getTexturesAsBuffer(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNormalsSize());
         for(Float f : texCoords){
-            attribs[count] = f;
-            count++;
+            buffer.put(f);
         }
-        return attribs;
+        buffer.flip();
+        return buffer;
     }
 
-    public float[] getNormalsAsPrimFloatArray(){
-        float[] attribs = new float[normals.size()];
-        int count = 0;
+    public FloatBuffer getNormalsAsBuffer(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNormalsSize());
         for(Float f : normals){
-            attribs[count] = f;
-            count++;
+            buffer.put(f);
         }
-        return attribs;
+        buffer.flip();
+        return buffer;
     }
 
     public void setTextures(List<Float> list){

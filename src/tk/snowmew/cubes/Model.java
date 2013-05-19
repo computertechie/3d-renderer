@@ -15,7 +15,7 @@ import java.util.List;
 public class Model implements IMatrix
 {
     Matrix4f modelMatrix = new Matrix4f();
-    int VAO, vertexVBO, texVBO, normVBO;
+    int VAO, attributeVBO, texVBO, normVBO;
     ShaderProgram shaderProgram;
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
     String textureName = "creeper";
@@ -100,51 +100,21 @@ public class Model implements IMatrix
     }
 
     public void buffer() {
-        FloatBuffer vBuf = BufferUtils.createFloatBuffer(getSizeOfModelVertexCoords());
-        FloatBuffer tBuf = BufferUtils.createFloatBuffer(getSizeOfModelTextureCoords());
-        FloatBuffer nBuf = BufferUtils.createFloatBuffer(getSizeOfModelNormals());
-
-        for(Mesh mesh : meshes){
-            FloatBuffer buffer = mesh.getMeshVertexesAsFloatBuffer();
-            for(int i = 0; i<buffer.limit(); i++){
-                vBuf.put(buffer.get(i));
-            }
-
-            buffer = mesh.getMeshTexturesAsFloatBuffer();
-            for(int i = 0; i<buffer.limit(); i++){
-                tBuf.put(buffer.get(i));
-            }
-
-            buffer = mesh.getMeshNormalsAsFloatBuffer();
-            for(int i = 0; i<buffer.limit(); i++){
-//                System.out.println(Vector3f.dot(mesh.getVertex(i).,sun.position));
-                nBuf.put(buffer.get(i));
-            }
-//            vBuf.put(mesh.getMeshVertexesAsFloatBuffer());
-//            tBuf.put(mesh.getMeshTexturesAsFloatBuffer());
-//            nBuf.put(mesh.getMeshNormalsAsFloatBuffer());
-        }
-
-        vBuf.flip();
-        tBuf.flip();
-        nBuf.flip();
+        FloatBuffer aBuf = BufferUtils.createFloatBuffer(getSizeOfModel());
+        for(Mesh mesh : meshes)
+            aBuf.put(mesh.getInterleavedMeshBuffer());
+        aBuf.flip();
 
         GL30.glBindVertexArray(VAO);
 
         for(int i = 0; i<vertAttribs.length; i++)
             GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
 
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 3, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vBuf, GL15.GL_STATIC_DRAW);
-
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, texVBO);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, tBuf, GL15.GL_STATIC_DRAW);
-
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, normVBO);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, nBuf, GL15.GL_STATIC_DRAW);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, attributeVBO);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 3, GL11.GL_FLOAT, false, 32, 0);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, 32, 12);
+        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 32, 24);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
@@ -158,9 +128,7 @@ public class Model implements IMatrix
 
     public void genIDs() {
         VAO = GL30.glGenVertexArrays();
-        vertexVBO = GL15.glGenBuffers();
-        normVBO = GL15.glGenBuffers();
-        texVBO = GL15.glGenBuffers();
+        attributeVBO = GL15.glGenBuffers();
     }
 
     public void bufferUniforms() {
