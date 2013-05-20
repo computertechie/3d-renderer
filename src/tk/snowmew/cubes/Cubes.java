@@ -16,8 +16,9 @@ import org.lwjgl.util.vector.Vector3f;
  */
 
 public class Cubes {
-    Renderer renderInstance = Renderer.getInstance();
-    TextureManager textureManagerInstance = TextureManager.getInstance();
+    static Renderer renderInstance = Renderer.getInstance();
+    static TextureManager textureManagerInstance = TextureManager.getInstance();
+    static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     Camera camera = new Camera(0,0);
     Model box, ground;
     DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
@@ -36,7 +37,6 @@ public class Cubes {
         renderInstance.setTextureManager(textureManagerInstance);
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
-        textureManagerInstance.createTexture("assets/textures/creeper.png");
         camera.setPosition(new Vector3f(0, 1, 0));
         box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
 //        ground = new Model("assets/models/cube.obj");

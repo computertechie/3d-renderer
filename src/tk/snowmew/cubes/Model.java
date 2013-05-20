@@ -10,57 +10,45 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.io.File;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.List;
 
 public class Model implements IMatrix
 {
     Matrix4f modelMatrix = new Matrix4f();
-    int VAO, attributeVBO, texVBO, normVBO;
+    IntBuffer meshVBOs, meshVAOs;
     ShaderProgram shaderProgram;
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
-    String textureName = "creeper";
     List<Mesh> meshes;
     private ObjFileParser parser;
-    Light sun;
-    String[] vertAttribs = {
-            "position",
-            "in_tex",
-            "normal"
-    };
+//    Light sun;
+    String[] vertAttribs = {"position","in_tex","normal"};
+    String[] uniformAttribs= {"texture"};
 
-    String[] uniformAttribs= {
-            "texture"
-    };
+
 
     public Model(File file) {
         this(file,"assets/shaders/basic_block_vert.glsl","assets/shaders/basic_block_frag.glsl");
     }
 
     public Model(String file){
-        this(file,"assets/shaders/basic_block_vert.glsl","assets/shaders/basic_block_frag.glsl");
-    }
-
-    public Model(String file, String vert, String frag){
-        parser = new ObjFileParser(file);
-        meshes = parser.getMeshes();
-        shaderProgram = new ShaderProgram(vert, frag, vertAttribs, uniformAttribs);
-        genIDs();
-        buffer();
-        update();
+        this(new File(file),"assets/shaders/basic_block_vert.glsl","assets/shaders/basic_block_frag.glsl");
     }
 
     public Model(File file, String vert, String frag){
         parser = new ObjFileParser(file);
         meshes = parser.getMeshes();
         shaderProgram = new ShaderProgram(vert, frag, vertAttribs, uniformAttribs);
+        meshVBOs = BufferUtils.createIntBuffer(meshes.size());
+        meshVAOs = BufferUtils.createIntBuffer(meshes.size());
         genIDs();
         buffer();
         update();
     }
 
-    public void setSun(Light light){
-        sun = light;
-    }
+//    public void setSun(Light light){
+//        sun = light;
+//    }
 
     public void update() {
         modelMatrix = new Matrix4f();
@@ -100,35 +88,43 @@ public class Model implements IMatrix
     }
 
     public void buffer() {
-        FloatBuffer aBuf = BufferUtils.createFloatBuffer(getSizeOfModel());
-        for(Mesh mesh : meshes)
-            aBuf.put(mesh.getInterleavedMeshBuffer());
-        aBuf.flip();
+        for(int vao = 0; vao < meshVAOs.limit(); vao++){
+            FloatBuffer aBuf = BufferUtils.createFloatBuffer(meshes.get(vao).sizeOfMesh());
+            aBuf.put(meshes.get(vao).getInterleavedMeshBuffer());
+            aBuf.flip();
 
-        GL30.glBindVertexArray(VAO);
+            GL30.glBindVertexArray(vao);
 
-        for(int i = 0; i<vertAttribs.length; i++)
-            GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
+            for(int i = 0; i<vertAttribs.length; i++)
+                GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
 
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, attributeVBO);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 3, GL11.GL_FLOAT, false, 32, 0);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, 32, 12);
-        GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 32, 24);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, meshVBOs.get(vao));
+            GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("position"), 3, GL11.GL_FLOAT, false, 32, 0);
+            GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, 32, 12);
+            GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 32, 24);
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
 
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        GL30.glBindVertexArray(0);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+            GL30.glBindVertexArray(0);
+        }
     }
 
     public void render() {
-        GL30.glBindVertexArray(VAO);
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords());
-        GL30.glBindVertexArray(0);
+        String map;
+        for(int i = 0; i<meshVAOs.limit(); i++){
+            map = Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseMap();
+            Texture temp = Cubes.textureManagerInstance.getTexture(map);
+            Cubes.textureManagerInstance.bindTexture(map);
+            GL20.glUniform1i(shaderProgram.getUniformLocation("texture"),temp.getTexUnit());
+            GL30.glBindVertexArray(i);
+            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords());
+        }
+            GL30.glBindVertexArray(0);
     }
 
     public void genIDs() {
-        VAO = GL30.glGenVertexArrays();
-        attributeVBO = GL15.glGenBuffers();
+        GL30.glGenVertexArrays(meshVAOs);
+        GL15.glGenBuffers(meshVBOs);
     }
 
     public void bufferUniforms() {
@@ -136,8 +132,7 @@ public class Model implements IMatrix
         modelMatrix.store(buf);
         buf.flip();
         GL20.glUniformMatrix4(shaderProgram.getModelMatrixLocation(), false, buf);
-//        Texture temp = TextureManager.getInstance().getTexture(textureName);
-//        GL20.glUniform1i(shaderProgram.getUniformLocation("texture"),temp.getTexUnit());
+
     }
 
     public void translate(float x, float y, float z){

@@ -28,21 +28,13 @@ public class ObjFileParser {
     private String fileBase;
 
     public ObjFileParser(String fileName){
-        try {
-            bufferedFileReader = new BufferedReader(new FileReader(fileName));
-            File temp = new File(fileName);
-            fileBase = temp.getParent();
-            parseFile();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this(new File(fileName));
     }
 
     public ObjFileParser(File file){
         try {
             bufferedFileReader = new BufferedReader(new FileReader(file));
+            fileBase = file.getParent();
             parseFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

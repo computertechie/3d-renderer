@@ -1,7 +1,6 @@
 package tk.snowmew.cubes;
 
 import java.io.*;
-import java.util.List;
 
 /**
  * User: Pepper
@@ -11,19 +10,15 @@ import java.util.List;
  */
 public class MtlFileParser {
     private BufferedReader bufferedReader;
-    private List<Float> diffuse;
-    private List<Float> specular;
-    private List<Float> ambient;
-    private List<Float> filter;
-    private float specularPower, transparency, refraction;
-    private int illumModel;
     private Material currentMaterial;
     private static final int DIFFUSE_LINE = 0, AMBIENT_LINE = 1, SPECULAR_COLOR_LINE = 2, REFRACTION_LINE = 3, DISSOLVE_LINE = 4, SPECULAR_POWER_LINE = 5, TRANS_FILTER_LINE = 6, ILLUM_MODE_LINE = 7;
     private boolean firstMaterial = true;
+    String fileBase;
 
     public MtlFileParser(String base, String lib){
         try {
             bufferedReader = new BufferedReader(new FileReader(base+ File.separator+lib));
+            fileBase = base;
             parseFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -37,6 +32,7 @@ public class MtlFileParser {
         while((line = bufferedReader.readLine())!=null){
             if(line.equals(""))
                 continue;
+            String[] lineComponents = line.trim().split(" ");
             switch(line.charAt(0)){
                 case 'K':
                     switch(line.charAt(1)){
@@ -73,6 +69,39 @@ public class MtlFileParser {
                 case 'i':
                     parseLine(line, ILLUM_MODE_LINE);
                     break;
+                case 'm':
+                    int pos = lineComponents[1].lastIndexOf('.');
+                    String name = pos > 0 ? lineComponents[1].substring(0, pos) : lineComponents[1];
+                    switch(line.charAt(4)){
+                        case 'K':
+                            switch(line.charAt(5)){
+                                case 'a':
+                                    Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                                    currentMaterial.setAmbientMap(name);
+                                    break;
+                                case 'd':
+                                    Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                                    currentMaterial.setDiffuseMap(name);
+                                    break;
+                                case 's':
+                                    Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                                    currentMaterial.setSpecColourMap(name);
+                                    break;
+                            }
+                            break;
+                        case 'N':
+                            Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                            currentMaterial.setSpecHighlightMap(name);
+                            break;
+                        case 'd':
+                            Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                            currentMaterial.setAlphaMap(name);
+                            break;
+                        case 'b':
+                            Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                            currentMaterial.setBumpMap(name);
+                            break;
+                    }
             }
         }
         endMaterial();

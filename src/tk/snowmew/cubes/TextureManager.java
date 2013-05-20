@@ -21,6 +21,7 @@ public class TextureManager {
     private static TextureManager instance = new TextureManager();
     private Map<String,Texture> nameTexMap = new HashMap<String, Texture>();
     private Map<Integer,String> idNameMap = new HashMap<Integer, String>();
+    private int textureUnit = 0;
 
     private TextureManager(){
 
@@ -39,8 +40,7 @@ public class TextureManager {
 
                 int pos = file.getName().lastIndexOf('.');
                 String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
-
-                Texture texture = new Texture(name, GL11.GL_TEXTURE_2D, GL11.glGenTextures(), decoder.getWidth(), decoder.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, GL13.GL_TEXTURE0, buf);
+                Texture texture = new Texture(name, GL11.GL_TEXTURE_2D, GL11.glGenTextures(), decoder.getWidth(), decoder.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureUnit, buf);
 
                 GL13.glActiveTexture(texture.getTexUnit());
                 GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
@@ -57,6 +57,7 @@ public class TextureManager {
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
                 addTexture(texture);
+                textureUnit++;
             }
             catch(FileNotFoundException ex){
                 System.err.println("Texture file not found");
@@ -69,7 +70,7 @@ public class TextureManager {
 
     public void bindTexture(String name){
         Texture texture = nameTexMap.get(name);
-        GL13.glActiveTexture(texture.getTexUnit());
+        GL13.glActiveTexture(GL13.GL_TEXTURE0+texture.getTexUnit());
         GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
     }
 

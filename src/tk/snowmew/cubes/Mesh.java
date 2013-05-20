@@ -21,6 +21,10 @@ public class Mesh {
         material = mat;
     }
 
+    public String getMaterial(){
+        return material;
+    }
+
     public int sizeOfVertCoords(){
         int size = 0;
         for(Vertex vertex : vertexes)

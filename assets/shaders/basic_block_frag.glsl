@@ -1,6 +1,6 @@
 #version 140
 
-//uniform sampler2D texture;
+uniform sampler2D texture;
 
 in vec4 worldPos;
 in vec3 worldNormal;
@@ -39,5 +39,5 @@ void main(void) {
         diffuse = vec4(0,0,0,0);
     }
 
-    gl_FragColor = vec4(1,1,0,0) * (diffuse +ambient);
+    gl_FragColor = texture(texture,out_tex) * (diffuse +ambient);
 }

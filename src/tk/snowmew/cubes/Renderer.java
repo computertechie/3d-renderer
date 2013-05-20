@@ -57,7 +57,6 @@ public class Renderer{
         if (currentProgram != model.shaderProgram.getProgramID())
             useProgram(model.shaderProgram.getProgramID());
         projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
-        textureManager.bindTexture(model.textureName);
         model.bufferUniforms();
         bufferUniforms();
         bufferDirLight(model);
