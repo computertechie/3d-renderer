@@ -82,6 +82,7 @@ public class MtlFileParser {
                                 case 'd':
                                     Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
                                     currentMaterial.setDiffuseMap(name);
+                                    currentMaterial.setDiffuseMapped(true);
                                     break;
                                 case 's':
                                     Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);

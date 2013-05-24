@@ -39,7 +39,8 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
         box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
-//        ground = new Model("assets/models/cube.obj");
+        ground = new Model("assets/models/Doberman.obj");
+        ground.translate(0,0,10);
 //        ground.scale(100, 0.1f, 100);
     }
 
@@ -49,10 +50,12 @@ public class Cubes {
             Display.create();
             Display.setResizable(true);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
+//            GL11.glEnable(GL11.GL_CULL_FACE);
+//            GL11.glCullFace(GL11.GL_BACK);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glViewport(0, 0, width, height);
             Mouse.create();
-            Mouse.setGrabbed(true);
+//            Mouse.setGrabbed(true);
             Keyboard.create();
         } catch (LWJGLException e) {
             e.printStackTrace();
@@ -61,11 +64,13 @@ public class Cubes {
     }
 
     public void checkForResize(){
-        width = Display.getWidth();
-        height = Display.getHeight();
-        renderInstance.createProjectionMatrix();
-        GL11.glViewport(0,0,width, height);
-        camera.reorient();
+        if(width != Display.getWidth() || height != Display.getHeight()){
+            width = Display.getWidth();
+            height = Display.getHeight();
+            renderInstance.createProjectionMatrix();
+            GL11.glViewport(0,0,width, height);
+            camera.reorient();
+        }
     }
 
     public int getWidth(){
@@ -81,11 +86,11 @@ public class Cubes {
             tick++;
             checkForResize();
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
-            GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
+//            GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
             getInput();
             camera.reorient();
             box.update();
-            if(tick%10== 0){
+            if(tick%10== 0 && tick <=100){
                 float newX=0, newY=0;
                 if(sun.getDirection().x == 10)
                     newX = -9.9f;
@@ -95,11 +100,11 @@ public class Cubes {
                 newY = (float)Math.sqrt(100-(Math.pow(newX,2)));
                 sun.setDirection(new Vector3f(newX, -newY, 0));
             }
-//            ground.update();
+            ground.update();
             renderInstance.render(box);
-//            renderInstance.render(ground);
+            renderInstance.render(ground);
             Display.update();
-            Display.sync(60);
+            Display.sync(30);
         }
     }
 

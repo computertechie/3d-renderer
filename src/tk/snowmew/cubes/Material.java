@@ -1,5 +1,9 @@
 package tk.snowmew.cubes;
 
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
+
 /**
  * User: Pepper
  * Date: 4/23/13
@@ -16,8 +20,17 @@ public class Material {
     private float refraction;
     private int illumModel;
     private String name, ambientMap, diffuseMap, specColourMap, specHighlightMap, alphaMap, bumpMap;
+    private boolean diffuseMapped=false, ambientMapped=false, specularMapped=false, alphaMapped=false, bumpMapped=false;
 
     public Material(){
+    }
+
+    public boolean isDiffuseMapped(){
+        return diffuseMapped;
+    }
+
+    public void setDiffuseMapped(boolean bool){
+        diffuseMapped = bool;
     }
 
     public void setDiffuse(float r, float g, float b){
@@ -103,6 +116,15 @@ public class Material {
 
     public float getDiffuseB() {
         return diffuseB;
+    }
+
+    public FloatBuffer getDiffuseColor(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
+        buffer.put(diffuseR);
+        buffer.put(diffuseG);
+        buffer.put(diffuseB);
+        buffer.flip();
+        return buffer;
     }
 
     public float getSpecularR() {

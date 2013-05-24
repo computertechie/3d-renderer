@@ -15,39 +15,55 @@ import java.util.List;
 public class Mesh {
     private List<Vertex> vertexes;
     private String material;
+    private int sizeOfVertCoords = 0, sizeOfTexCoords = 0, sizeOfNormals = 0;
 
     public Mesh(List<Vertex> verts, String mat){
         vertexes = verts;
         material = mat;
+        sizeOfVertCoords = sizeOfVertCoords();
+        sizeOfTexCoords = sizeOfTexCoords();
+        sizeOfNormals = sizeOfNormals();
     }
 
     public String getMaterial(){
         return material;
     }
 
-    public int sizeOfVertCoords(){
+    private int sizeOfVertCoords(){
         int size = 0;
         for(Vertex vertex : vertexes)
             size += vertex.getVertexCoordSize();
         return size;
     }
 
-    public int sizeOfTexCoords(){
+    public int getNumberOfVertexes(){
+        return sizeOfVertCoords;
+    }
+
+    private int sizeOfTexCoords(){
         int size = 0;
         for(Vertex vertex : vertexes)
             size += vertex.getTextureCoordSize();
         return size;
     }
 
-    public int sizeOfNormals(){
+    public int getNumberOfTextureCoords(){
+        return sizeOfTexCoords;
+    }
+
+    private int sizeOfNormals(){
         int size = 0;
         for(Vertex vertex : vertexes)
             size += vertex.getNormalsSize();
         return size;
     }
 
+    public int getNumberOfNormals(){
+        return sizeOfNormals;
+    }
+
     public int sizeOfMesh(){
-        return sizeOfVertCoords() + sizeOfTexCoords() + sizeOfNormals();
+        return sizeOfVertCoords + sizeOfTexCoords + sizeOfNormals;
     }
 
     public FloatBuffer getMeshVertexesAsFloatBuffer(){

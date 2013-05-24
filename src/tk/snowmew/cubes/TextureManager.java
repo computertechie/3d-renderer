@@ -21,7 +21,7 @@ public class TextureManager {
     private static TextureManager instance = new TextureManager();
     private Map<String,Texture> nameTexMap = new HashMap<String, Texture>();
     private Map<Integer,String> idNameMap = new HashMap<Integer, String>();
-    private int textureUnit = 0;
+    private int textureUnit = 0, activeTextureTarget = 0;
 
     private TextureManager(){
 
@@ -72,12 +72,17 @@ public class TextureManager {
         Texture texture = nameTexMap.get(name);
         GL13.glActiveTexture(GL13.GL_TEXTURE0+texture.getTexUnit());
         GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
+        activeTextureTarget = texture.getTexTarget();
     }
 
     public void bindTexture(int texID){
-        Texture texture = nameTexMap.get(idNameMap.get(texID));
-        GL13.glActiveTexture(texture.getTexUnit());
-        GL11.glBindTexture(texture.getTexTarget(), texID);
+        bindTexture(idNameMap.get(texID));
+    }
+
+    public void unbindTexture(){
+        GL11.glBindTexture(activeTextureTarget,0);
+        GL13.glActiveTexture(0);
+        activeTextureTarget = 0;
     }
 
     public Texture getTexture(String name){

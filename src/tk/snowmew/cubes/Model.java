@@ -21,11 +21,9 @@ public class Model implements IMatrix
     Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
     List<Mesh> meshes;
     private ObjFileParser parser;
-//    Light sun;
     String[] vertAttribs = {"position","in_tex","normal"};
-    String[] uniformAttribs= {"texture"};
-
-
+    String[] uniformAttribs= {"texture","diffuseColor"};
+    private int numVerts, numTexes, numNormals;
 
     public Model(File file) {
         this(file,"assets/shaders/basic_block_vert.glsl","assets/shaders/basic_block_frag.glsl");
@@ -41,14 +39,13 @@ public class Model implements IMatrix
         shaderProgram = new ShaderProgram(vert, frag, vertAttribs, uniformAttribs);
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());
         meshVAOs = BufferUtils.createIntBuffer(meshes.size());
+        numVerts = getSizeOfModelVertexCoords();
+        numTexes = getSizeOfModelTextureCoords();
+        numNormals = getSizeOfModelNormals();
         genIDs();
         buffer();
         update();
     }
-
-//    public void setSun(Light light){
-//        sun = light;
-//    }
 
     public void update() {
         modelMatrix = new Matrix4f();
@@ -69,31 +66,32 @@ public class Model implements IMatrix
     private int getSizeOfModelVertexCoords(){
         int size = 0;
         for(Mesh mesh : meshes)
-            size += mesh.sizeOfVertCoords();
+            size += mesh.getNumberOfVertexes();
         return size;
     }
 
     private int getSizeOfModelTextureCoords(){
         int size = 0;
         for(Mesh mesh : meshes)
-            size += mesh.sizeOfTexCoords();
+            size += mesh.getNumberOfTextureCoords();
         return size;
     }
 
     private int getSizeOfModelNormals(){
         int size = 0;
         for(Mesh mesh : meshes)
-            size += mesh.sizeOfNormals();
+            size += mesh.getNumberOfNormals();
         return size;
     }
 
     public void buffer() {
+        FloatBuffer aBuf;
         for(int vao = 0; vao < meshVAOs.limit(); vao++){
-            FloatBuffer aBuf = BufferUtils.createFloatBuffer(meshes.get(vao).sizeOfMesh());
+            aBuf = BufferUtils.createFloatBuffer(meshes.get(vao).sizeOfMesh());
             aBuf.put(meshes.get(vao).getInterleavedMeshBuffer());
             aBuf.flip();
 
-            GL30.glBindVertexArray(vao);
+            GL30.glBindVertexArray(meshVAOs.get(vao));
 
             for(int i = 0; i<vertAttribs.length; i++)
                 GL20.glEnableVertexAttribArray(shaderProgram.getAttribLocation(vertAttribs[i]));
@@ -104,22 +102,29 @@ public class Model implements IMatrix
             GL20.glVertexAttribPointer(shaderProgram.getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 32, 24);
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
 
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-            GL30.glBindVertexArray(0);
         }
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL30.glBindVertexArray(0);
     }
 
     public void render() {
         String map;
+        Texture temp;
         for(int i = 0; i<meshVAOs.limit(); i++){
-            map = Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseMap();
-            Texture temp = Cubes.textureManagerInstance.getTexture(map);
-            Cubes.textureManagerInstance.bindTexture(map);
-            GL20.glUniform1i(shaderProgram.getUniformLocation("texture"),temp.getTexUnit());
-            GL30.glBindVertexArray(i);
-            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, getSizeOfModelVertexCoords());
+            if(Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).isDiffuseMapped()){
+                map = Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseMap();
+                temp = Cubes.textureManagerInstance.getTexture(map);
+                Cubes.textureManagerInstance.bindTexture(map);
+                GL20.glUniform1i(shaderProgram.getUniformLocation("texture"),temp.getTexUnit());
+            }
+            else{
+                GL20.glUniform3(shaderProgram.getUniformLocation("diffuseColor"),Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
+            }
+            GL30.glBindVertexArray(meshVAOs.get(i));
+            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, numVerts);
+            Cubes.textureManagerInstance.unbindTexture();
         }
-            GL30.glBindVertexArray(0);
+        GL30.glBindVertexArray(0);
     }
 
     public void genIDs() {
