@@ -2,7 +2,9 @@ package tk.snowmew.cubes;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Pepper
@@ -17,6 +19,8 @@ public class ObjFileParser {
     private List<List<Float>> textureCoords = new ArrayList<List<Float>>();
     private List<List<Float>> normals = new ArrayList<List<Float>>();
     private List<List<Integer>> indexes = new ArrayList<List<Integer>>();
+
+    private Map<String,Mesh> materialMeshMap = new HashMap<String, Mesh>();
     private String material;
 
     private BufferedReader bufferedFileReader;
@@ -117,7 +121,12 @@ public class ObjFileParser {
         totalTextureCount += tempTextureCount;
         totalVertexCount += tempVertexCount;
         totalNormalCount += tempNormalCount;
-        meshes.add(new Mesh(tempVertList, material));
+//        meshes.add(new Mesh(tempVertList, material));
+        if(materialMeshMap.containsKey(material)){
+            materialMeshMap.get(material).addVertexes(tempVertList);
+        }
+        else
+            materialMeshMap.put(material, new Mesh(tempVertList,material));
     }
 
     public void startGroup(){
@@ -130,7 +139,8 @@ public class ObjFileParser {
     }
 
     public List<Mesh> getMeshes(){
-        return meshes;
+        return new ArrayList<Mesh>(materialMeshMap.values());
+//        return meshes;
     }
 
     public void parseSmoothing(String line){

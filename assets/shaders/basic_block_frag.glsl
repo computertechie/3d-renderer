@@ -40,7 +40,7 @@ void main(void) {
         diffuse = vec4(0,0,0,0);
     }
     if(all(equal(diffuseColor,vec3(-1,-1,-1)))){
-        gl_FragColor = texture(texture,out_tex) * (diffuse + ambient);
+        gl_FragColor = texture2D(texture,out_tex) * (diffuse + ambient);
     }
     else{
         gl_FragColor = vec4(diffuseColor,0) * (diffuse + ambient);

@@ -54,13 +54,13 @@ public class Renderer{
     }
 
     public void render(Model model) {
-        if (currentProgram != model.shaderProgram.getProgramID())
-            useProgram(model.shaderProgram.getProgramID());
-        projUniformLoc = model.shaderProgram.getProjectionMatrixLocation();
+        if (currentProgram != model.getShaderProgram().getProgramID())
+            useProgram(model.getShaderProgram().getProgramID());
+        projUniformLoc = model.getShaderProgram().getProjectionMatrixLocation();
         model.bufferUniforms();
         bufferUniforms();
         bufferDirLight(model);
-        camera.bufferUniforms(model.shaderProgram.getViewMatrixLocation());
+        camera.bufferUniforms(model.getShaderProgram().getViewMatrixLocation());
         model.render();
     }
 
@@ -77,9 +77,9 @@ public class Renderer{
 
     public void bufferDirLight(Model model){
 
-        GL20.glUniform3(model.shaderProgram.getDirectionalLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
-        GL20.glUniform3(model.shaderProgram.getDirectionalLightPositionLocation(), cubeInstance.sun.getPositionAsFBuffer());
-        GL20.glUniform1f(model.shaderProgram.getDirectionalLightIntensityLocation(), cubeInstance.sun.getIntensity());
+        GL20.glUniform3(model.getShaderProgram().getDirectionalLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
+        GL20.glUniform3(model.getShaderProgram().getDirectionalLightPositionLocation(), cubeInstance.sun.getPositionAsFBuffer());
+        GL20.glUniform1f(model.getShaderProgram().getDirectionalLightIntensityLocation(), cubeInstance.sun.getIntensity());
     }
 
     public void useProgram(int programID) {

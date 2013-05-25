@@ -20,6 +20,9 @@ public class Mesh {
     public Mesh(List<Vertex> verts, String mat){
         vertexes = verts;
         material = mat;
+    }
+
+    private void recalcSize(){
         sizeOfVertCoords = sizeOfVertCoords();
         sizeOfTexCoords = sizeOfTexCoords();
         sizeOfNormals = sizeOfNormals();
@@ -103,5 +106,18 @@ public class Mesh {
 
     public Vertex getVertex(int i){
         return vertexes.get(i);
+    }
+
+    public void addVertexes(List<Vertex> verts){
+        vertexes.addAll(verts);
+        recalcSize();
+    }
+
+    public List<Vertex> getVertexList(){
+        return vertexes;
+    }
+
+    public static void combine(Mesh with, Mesh to){
+        with.addVertexes(to.getVertexList());
     }
 }

@@ -15,14 +15,14 @@ import java.util.List;
 
 public class Model implements IMatrix
 {
-    Matrix4f modelMatrix = new Matrix4f();
-    IntBuffer meshVBOs, meshVAOs;
-    ShaderProgram shaderProgram;
-    Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
-    List<Mesh> meshes;
+    private Matrix4f modelMatrix = new Matrix4f();
+    private IntBuffer meshVBOs, meshVAOs;
+    private ShaderProgram shaderProgram;
+    private Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
+    private List<Mesh> meshes;
     private ObjFileParser parser;
-    String[] vertAttribs = {"position","in_tex","normal"};
-    String[] uniformAttribs= {"texture","diffuseColor"};
+    private String[] vertAttribs = {"position","in_tex","normal"};
+    private String[] uniformAttribs= {"texture","diffuseColor"};
     private int numVerts, numTexes, numNormals;
 
     public Model(File file) {
@@ -39,6 +39,7 @@ public class Model implements IMatrix
         shaderProgram = new ShaderProgram(vert, frag, vertAttribs, uniformAttribs);
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());
         meshVAOs = BufferUtils.createIntBuffer(meshes.size());
+        System.out.println(meshes.size());
         numVerts = getSizeOfModelVertexCoords();
         numTexes = getSizeOfModelTextureCoords();
         numNormals = getSizeOfModelNormals();
@@ -54,34 +55,6 @@ public class Model implements IMatrix
         modelMatrix.rotate(rotation.y, new Vector3f(0.0F, 1.0F, 0.0F));
         modelMatrix.rotate(rotation.z, new Vector3f(0.0F, 0.0F, 1.0F));
         modelMatrix.scale(scale);
-    }
-
-    private int getSizeOfModel(){
-        int size = 0;
-        for(Mesh mesh : meshes)
-            size += mesh.sizeOfMesh();
-        return size;
-    }
-
-    private int getSizeOfModelVertexCoords(){
-        int size = 0;
-        for(Mesh mesh : meshes)
-            size += mesh.getNumberOfVertexes();
-        return size;
-    }
-
-    private int getSizeOfModelTextureCoords(){
-        int size = 0;
-        for(Mesh mesh : meshes)
-            size += mesh.getNumberOfTextureCoords();
-        return size;
-    }
-
-    private int getSizeOfModelNormals(){
-        int size = 0;
-        for(Mesh mesh : meshes)
-            size += mesh.getNumberOfNormals();
-        return size;
     }
 
     public void buffer() {
@@ -163,5 +136,37 @@ public class Model implements IMatrix
     public void rotateZ(float angle){
         rotation.z += Renderer.degreesToRadians(angle);
         update();
+    }
+
+    public ShaderProgram getShaderProgram(){
+        return shaderProgram;
+    }
+
+    private int getSizeOfModel(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.sizeOfMesh();
+        return size;
+    }
+
+    private int getSizeOfModelVertexCoords(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.getNumberOfVertexes();
+        return size;
+    }
+
+    private int getSizeOfModelTextureCoords(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.getNumberOfTextureCoords();
+        return size;
+    }
+
+    private int getSizeOfModelNormals(){
+        int size = 0;
+        for(Mesh mesh : meshes)
+            size += mesh.getNumberOfNormals();
+        return size;
     }
 }
