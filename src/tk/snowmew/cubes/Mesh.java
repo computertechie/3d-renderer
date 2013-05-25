@@ -20,6 +20,7 @@ public class Mesh {
     public Mesh(List<Vertex> verts, String mat){
         vertexes = verts;
         material = mat;
+        recalcSize();
     }
 
     private void recalcSize(){

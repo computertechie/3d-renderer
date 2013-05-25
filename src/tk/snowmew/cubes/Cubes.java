@@ -38,7 +38,7 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
-//        box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
+        box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
         ground = new Model("assets/models/doberman.obj");
         ground.translate(0,0,10);
 //        ground.scale(100, 0.1f, 100);
@@ -89,7 +89,7 @@ public class Cubes {
             GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
             getInput();
             camera.reorient();
-//            box.update();
+            box.update();
             if(tick%10== 0 && tick <=100){
                 float newX=0, newY=0;
                 if(sun.getDirection().x == 10)
@@ -101,7 +101,7 @@ public class Cubes {
                 sun.setDirection(new Vector3f(newX, -newY, 0));
             }
             ground.update();
-//            renderInstance.render(box);
+            renderInstance.render(box);
             renderInstance.render(ground);
             Display.update();
 //            Display.sync(30);
