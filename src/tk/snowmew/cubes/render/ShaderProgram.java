@@ -1,4 +1,4 @@
-package tk.snowmew.cubes;
+package tk.snowmew.cubes.render;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;

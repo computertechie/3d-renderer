@@ -1,4 +1,6 @@
-package tk.snowmew.cubes;
+package tk.snowmew.cubes.render;
+
+import tk.snowmew.cubes.Cubes;
 
 import java.io.*;
 

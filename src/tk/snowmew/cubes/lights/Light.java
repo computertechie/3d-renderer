@@ -1,4 +1,4 @@
-package tk.snowmew.cubes;
+package tk.snowmew.cubes.lights;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;

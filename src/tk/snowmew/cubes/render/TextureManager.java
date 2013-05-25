@@ -1,4 +1,4 @@
-package tk.snowmew.cubes;
+package tk.snowmew.cubes.render;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.opengl.GL11;

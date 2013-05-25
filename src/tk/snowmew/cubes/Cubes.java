@@ -7,6 +7,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
+import tk.snowmew.cubes.lights.DirectionalLight;
+import tk.snowmew.cubes.render.MaterialManager;
+import tk.snowmew.cubes.render.Model;
+import tk.snowmew.cubes.render.Renderer;
+import tk.snowmew.cubes.render.TextureManager;
 
 /**
  * User: Pepper
@@ -16,17 +21,18 @@ import org.lwjgl.util.vector.Vector3f;
  */
 
 public class Cubes {
-    static Renderer renderInstance = Renderer.getInstance();
-    static TextureManager textureManagerInstance = TextureManager.getInstance();
-    static MaterialManager materialManagerInstance = MaterialManager.getInstance();
+    final int TIME_CONVERSION = 100000000;
+    public static Renderer renderInstance = Renderer.getInstance();
+    public static TextureManager textureManagerInstance = TextureManager.getInstance();
+    public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     Camera camera = new Camera(0,0);
     Model box, ground;
-    DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
+    public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480;
     float mouseSensitivity = 0.1f;
     long tick = 0;
 
-    double t = 0, dt = 0.01, currentTime = System.nanoTime()/10000000, accumulator=0,frameTime =0;
+    double t = 0, dt = 0.01, currentTime = System.nanoTime()/TIME_CONVERSION, accumulator=0,frameTime =0;
 
     public static void main(String[] args){
         Cubes cube = new Cubes();
@@ -84,9 +90,8 @@ public class Cubes {
     public void tick(){
         double newTime = 0;
         while(!Display.isCloseRequested()){
-            newTime = System.nanoTime()/10000000;
+            newTime = System.nanoTime()/TIME_CONVERSION;
             frameTime = newTime - currentTime;
-            System.out.println(frameTime);
 
             if(frameTime > 0.25)
                 frameTime = 0.25;

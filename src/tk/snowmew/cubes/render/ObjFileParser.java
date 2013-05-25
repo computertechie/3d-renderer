@@ -1,4 +1,4 @@
-package tk.snowmew.cubes;
+package tk.snowmew.cubes.render;
 
 import java.io.*;
 import java.util.ArrayList;
