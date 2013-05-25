@@ -14,7 +14,6 @@ import java.util.Map;
  */
 
 public class ObjFileParser {
-    private List<Mesh> meshes = new ArrayList<Mesh>();
     private List<List<Float>> vertCoords = new ArrayList<List <Float>>();
     private List<List<Float>> textureCoords = new ArrayList<List<Float>>();
     private List<List<Float>> normals = new ArrayList<List<Float>>();
@@ -121,10 +120,8 @@ public class ObjFileParser {
         totalTextureCount += tempTextureCount;
         totalVertexCount += tempVertexCount;
         totalNormalCount += tempNormalCount;
-//        meshes.add(new Mesh(tempVertList, material));
-        if(materialMeshMap.containsKey(material)){
+        if(materialMeshMap.containsKey(material))
             materialMeshMap.get(material).addVertexes(tempVertList);
-        }
         else
             materialMeshMap.put(material, new Mesh(tempVertList,material));
     }

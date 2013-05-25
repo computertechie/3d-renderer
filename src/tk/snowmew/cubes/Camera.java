@@ -33,6 +33,7 @@ public class Camera
         rotation = new Quaternion();
         bearingAngle = initialBearing;
         pitchAngle = initialPitch;
+        reorient();
     }
 
     public void reorient()
