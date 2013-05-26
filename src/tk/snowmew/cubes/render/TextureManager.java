@@ -64,7 +64,8 @@ public class TextureManager {
             }
         }
         catch(IOException iex){
-            System.err.println("I/O exception occurred.");
+            System.err.println("I/O exception occurred. "+filePath);
+            iex.printStackTrace();
         }
     }
 

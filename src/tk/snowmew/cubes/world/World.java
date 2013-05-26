@@ -1,5 +1,10 @@
 package tk.snowmew.cubes.world;
 
+import tk.snowmew.cubes.entities.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: Pepper
  * Date: 5/25/13
@@ -9,4 +14,10 @@ package tk.snowmew.cubes.world;
 
 
 public class World {
+    private List<Entity> entityList;
+
+    public World(){
+        entityList = new ArrayList<Entity>();
+    }
+
 }

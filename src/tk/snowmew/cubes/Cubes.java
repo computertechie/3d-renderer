@@ -18,10 +18,13 @@ import tk.snowmew.cubes.render.*;
  */
 
 public class Cubes {
-    final int TIME_CONVERSION = 100000000;
+    final int TIME_CONVERSION = 10000000;
     public static Renderer renderInstance = Renderer.getInstance();
     public static TextureManager textureManagerInstance = TextureManager.getInstance();
     public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
+    public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
+    private String[] vertAttribs = {"position","in_tex","normal"};
+    private String[] uniformAttribs= {"texture","diffuseColor"};
     Camera camera = new Camera(0,0);
     Model box, ground;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
@@ -40,11 +43,13 @@ public class Cubes {
         createDisplay();
         renderInstance.setCamera(camera);
         renderInstance.setTextureManager(textureManagerInstance);
+        renderInstance.setShaderProgramManager(shaderProgramManager);
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
+        shaderProgramManager.registerProgram("standard",new ShaderProgram("assets/shaders/standard/standard_vert.glsl","assets/shaders/standard/standard_frag.glsl",vertAttribs,uniformAttribs));
         camera.setPosition(new Vector3f(0, 1, 0));
         box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
-        ground = new Model("assets/models/doberman.obj");
+        ground = new Model("assets/models/101 - Electrode.brres/Marumine.obj");
         ground.translate(0,0,10);
 //        ground.scale(0.01f, 0.01f, 0.01f);
     }
@@ -122,7 +127,7 @@ public class Cubes {
             renderInstance.render(box);
             renderInstance.render(ground);
             Display.update();
-            Display.sync(60);
+//            Display.sync(60);
         }
     }
 

@@ -13,10 +13,10 @@ public class Renderer{
     Matrix4f projectionMatrix = new Matrix4f();
     Camera camera;
     TextureManager textureManager;
+    ShaderProgramManager shaderProgramManager;
     Cubes cubeInstance;
 
     private Renderer(){
-//        createProjectionMatrix();
     }
 
     public void setCubeInstance(Cubes cube){
@@ -25,6 +25,10 @@ public class Renderer{
 
     public void setTextureManager(TextureManager manager){
         textureManager = manager;
+    }
+
+    public void setShaderProgramManager(ShaderProgramManager manager){
+        shaderProgramManager = manager;
     }
 
     public void setCamera(Camera cam) {
@@ -55,13 +59,12 @@ public class Renderer{
     }
 
     public void render(Model model) {
-        if (currentProgram != model.getShaderProgram().getProgramID())
-            useProgram(model.getShaderProgram().getProgramID());
-        projUniformLoc = model.getShaderProgram().getProjectionMatrixLocation();
+        shaderProgramManager.bindProgram(model.getProgramName());
+        projUniformLoc = shaderProgramManager.getShaderProgram(model.getProgramName()).getProjectionMatrixLocation();
         model.bufferUniforms();
         bufferUniforms();
         bufferDirLight(model);
-        camera.bufferUniforms(model.getShaderProgram().getViewMatrixLocation());
+        camera.bufferUniforms(shaderProgramManager.getShaderProgram(model.getProgramName()).getViewMatrixLocation());
         model.render();
     }
 
@@ -78,14 +81,9 @@ public class Renderer{
 
     public void bufferDirLight(Model model){
 
-        GL20.glUniform3(model.getShaderProgram().getDirectionalLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
-        GL20.glUniform3(model.getShaderProgram().getDirectionalLightPositionLocation(), cubeInstance.sun.getPositionAsFBuffer());
-        GL20.glUniform1f(model.getShaderProgram().getDirectionalLightIntensityLocation(), cubeInstance.sun.getIntensity());
-    }
-
-    public void useProgram(int programID) {
-        currentProgram = programID;
-        GL20.glUseProgram(currentProgram);
+        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getDirectionalLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
+        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getDirectionalLightPositionLocation(), cubeInstance.sun.getPositionAsFBuffer());
+        GL20.glUniform1f(shaderProgramManager.getShaderProgram(model.getProgramName()).getDirectionalLightIntensityLocation(), cubeInstance.sun.getIntensity());
     }
 
     public static float degreesToRadians(float degrees) {
