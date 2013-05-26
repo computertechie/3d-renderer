@@ -3,7 +3,6 @@ package tk.snowmew.cubes.render;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
-import tk.snowmew.cubes.Camera;
 import tk.snowmew.cubes.Cubes;
 
 import java.nio.FloatBuffer;

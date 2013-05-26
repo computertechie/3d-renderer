@@ -8,10 +8,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import tk.snowmew.cubes.lights.DirectionalLight;
-import tk.snowmew.cubes.render.MaterialManager;
-import tk.snowmew.cubes.render.Model;
-import tk.snowmew.cubes.render.Renderer;
-import tk.snowmew.cubes.render.TextureManager;
+import tk.snowmew.cubes.render.*;
 
 /**
  * User: Pepper

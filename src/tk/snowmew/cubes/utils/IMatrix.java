@@ -1,4 +1,4 @@
-package tk.snowmew.cubes;
+package tk.snowmew.cubes.utils;
 
 public abstract interface IMatrix
 {

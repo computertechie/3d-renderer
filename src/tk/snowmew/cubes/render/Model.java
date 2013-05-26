@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import tk.snowmew.cubes.Cubes;
-import tk.snowmew.cubes.IMatrix;
+import tk.snowmew.cubes.utils.IMatrix;
 
 import java.io.File;
 import java.nio.FloatBuffer;
