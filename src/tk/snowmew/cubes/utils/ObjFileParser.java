@@ -1,4 +1,8 @@
-package tk.snowmew.cubes.render;
+package tk.snowmew.cubes.utils;
+
+import tk.snowmew.cubes.render.MaterialManager;
+import tk.snowmew.cubes.render.Mesh;
+import tk.snowmew.cubes.render.Vertex;
 
 import java.io.*;
 import java.util.ArrayList;

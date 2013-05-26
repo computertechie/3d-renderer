@@ -1,6 +1,8 @@
-package tk.snowmew.cubes.render;
+package tk.snowmew.cubes.utils;
 
 import tk.snowmew.cubes.Cubes;
+import tk.snowmew.cubes.render.Material;
+import tk.snowmew.cubes.render.MaterialManager;
 
 import java.io.*;
 

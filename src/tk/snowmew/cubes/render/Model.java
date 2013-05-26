@@ -9,11 +9,11 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import tk.snowmew.cubes.Cubes;
 import tk.snowmew.cubes.utils.IMatrix;
+import tk.snowmew.cubes.utils.ObjFileParser;
 
 import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.channels.FileLockInterruptionException;
 import java.util.List;
 
 public class Model implements IMatrix
