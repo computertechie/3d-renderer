@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import tk.snowmew.cubes.lights.DirectionalLight;
 import tk.snowmew.cubes.render.*;
+import tk.snowmew.cubes.utils.SMMFileParser;
 
 /**
  * User: Pepper
@@ -36,22 +37,23 @@ public class Cubes {
 
     public static void main(String[] args){
         Cubes cube = new Cubes();
-        cube.tick();
+//        cube.tick();
     }
 
     public Cubes(){
-        createDisplay();
-        renderInstance.setCamera(camera);
-        renderInstance.setTextureManager(textureManagerInstance);
-        renderInstance.setShaderProgramManager(shaderProgramManager);
-        renderInstance.setCubeInstance(this);
-        renderInstance.createProjectionMatrix();
-        shaderProgramManager.registerProgram("standard",new ShaderProgram("assets/shaders/standard/standard_vert.glsl","assets/shaders/standard/standard_frag.glsl",vertAttribs,uniformAttribs));
-        camera.setPosition(new Vector3f(0, 1, 0));
-        box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
-        ground = new Model("assets/models/101 - Electrode.brres/Marumine.obj");
-        ground.translate(0,0,10);
+//        createDisplay();
+//        renderInstance.setCamera(camera);
+//        renderInstance.setTextureManager(textureManagerInstance);
+//        renderInstance.setShaderProgramManager(shaderProgramManager);
+//        renderInstance.setCubeInstance(this);
+//        renderInstance.createProjectionMatrix();
+//        shaderProgramManager.registerProgram("standard",new ShaderProgram("assets/shaders/standard/standard_vert.glsl","assets/shaders/standard/standard_frag.glsl",vertAttribs,uniformAttribs));
+//        camera.setPosition(new Vector3f(0, 1, 0));
+//        box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
+//        ground = new Model("assets/models/101 - Electrode.brres/Marumine.obj");
+//        ground.translate(0,0,10);
 //        ground.scale(0.01f, 0.01f, 0.01f);
+        new SMMFileParser("../SMM_Export/design.xml");
     }
 
     public void createDisplay(){
