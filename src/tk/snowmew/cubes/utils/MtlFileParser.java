@@ -5,6 +5,7 @@ import tk.snowmew.cubes.render.Material;
 import tk.snowmew.cubes.render.MaterialManager;
 
 import java.io.*;
+import java.net.URL;
 
 /**
  * User: Pepper
@@ -21,7 +22,9 @@ public class MtlFileParser {
 
     public MtlFileParser(String base, String lib){
         try {
-            bufferedReader = new BufferedReader(new FileReader(base+ File.separator+lib));
+            System.out.println(base+" "+lib);
+            URL res = new URL(base+File.separator+lib);
+            bufferedReader = new BufferedReader(new InputStreamReader(res.openStream()));
             fileBase = base;
             parseFile();
         } catch (FileNotFoundException e) {

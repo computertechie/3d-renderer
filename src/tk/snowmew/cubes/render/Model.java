@@ -12,6 +12,7 @@ import tk.snowmew.cubes.utils.IMatrix;
 import tk.snowmew.cubes.utils.ObjFileParser;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
@@ -22,24 +23,35 @@ public class Model implements IMatrix
     private IntBuffer meshVBOs, meshVAOs;
     private Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
     private List<Mesh> meshes;
-    private ObjFileParser parser;
     private String[] vertAttribs = {"position","in_tex","normal"};
     private String[] uniformAttribs= {"texture","diffuseColor"};
     private int numVerts, numTexes, numNormals;
     private String programName="standard";
 
-    public Model(String filePath){
-        this(new File(filePath));
-    }
+//    public Model(String filePath){
+//        this(new File(filePath));
+//    }
 
-    public Model(File file){
-        parser = new ObjFileParser(file);
+    public Model(String file){
+        ObjFileParser parser = new ObjFileParser(new File(file));
         meshes = parser.getMeshes();
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());
         meshVAOs = BufferUtils.createIntBuffer(meshes.size());
-        System.out.println(meshes.size());
         numVerts = getSizeOfModelVertexCoords();
-        System.out.println(numVerts);
+        numTexes = getSizeOfModelTextureCoords();
+        numNormals = getSizeOfModelNormals();
+        genIDs();
+        buffer();
+        update();
+    }
+
+    public Model(URL resource){
+        System.out.println(resource.getFile());
+        ObjFileParser parser = new ObjFileParser(resource);
+        meshes = parser.getMeshes();
+        meshVBOs = BufferUtils.createIntBuffer(meshes.size());
+        meshVAOs = BufferUtils.createIntBuffer(meshes.size());
+        numVerts = getSizeOfModelVertexCoords();
         numTexes = getSizeOfModelTextureCoords();
         numNormals = getSizeOfModelNormals();
         genIDs();

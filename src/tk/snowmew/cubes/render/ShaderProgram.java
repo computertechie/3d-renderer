@@ -6,6 +6,8 @@ import org.lwjgl.opengl.GL20;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,18 @@ public class ShaderProgram {
         getDirLightLocs();
     }
 
+    public ShaderProgram(URL vertFile, URL fragFile, String[] vertAtts, String[] uniforms){
+        System.out.println(vertFile.getFile());
+        vertexShaderID = loadShader(vertFile, GL20.GL_VERTEX_SHADER);
+        fragmentShaderID = loadShader(fragFile, GL20.GL_FRAGMENT_SHADER);
+        programID = GL20.glCreateProgram();
+        createProgram(programID, vertexShaderID, fragmentShaderID);
+        getUniformLocs(uniforms);
+        getVertAttLocs(vertAtts);
+        getMatrixLocs();
+        getDirLightLocs();
+    }
+
     public ShaderProgram(String vertFile, String fragFile, String...vertAtts){
         vertexShaderID = loadShader(vertFile, GL20.GL_VERTEX_SHADER);
         fragmentShaderID = loadShader(fragFile, GL20.GL_FRAGMENT_SHADER);
@@ -42,6 +56,10 @@ public class ShaderProgram {
         getVertAttLocs(vertAtts);
         getMatrixLocs();
         getDirLightLocs();
+    }
+
+    public ShaderProgram(URL vertURL, String fragURL, String... vertAtts){
+
     }
 
     private void getDirLightLocs(){
@@ -103,6 +121,42 @@ public class ShaderProgram {
         {
             BufferedReader reader;
             reader = new BufferedReader(new FileReader(filename));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                shaderSource.append(line).append("\n");
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.err.println("Could not read file.");
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+        shaderID = GL20.glCreateShader(type);
+        GL20.glShaderSource(shaderID, shaderSource);
+        GL20.glCompileShader(shaderID);
+
+        int error = GL11.glGetError();
+
+        if(error != 0){
+            System.err.println("some gl error " + error);
+        }
+
+        if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE)
+            System.err.println(GL20.glGetShaderInfoLog(shaderID, 1024));
+        if (GL11.glGetError() != 0) {
+            System.err.println("shader error");
+        }
+        return shaderID;
+    }
+
+    public static int loadShader(URL filename, int type) {
+        StringBuilder shaderSource = new StringBuilder();
+        int shaderID = 0;
+        try
+        {
+            BufferedReader reader;
+            reader = new BufferedReader(new InputStreamReader(filename.openStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 shaderSource.append(line).append("\n");

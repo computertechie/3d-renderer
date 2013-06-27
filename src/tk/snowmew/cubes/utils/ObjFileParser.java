@@ -5,6 +5,7 @@ import tk.snowmew.cubes.render.Mesh;
 import tk.snowmew.cubes.render.Vertex;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +35,14 @@ public class ObjFileParser {
     private int totalVertexCount=0, tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
     private String fileBase;
 
-    public ObjFileParser(String fileName){
-        this(new File(fileName));
+    public ObjFileParser(URL resource){
+        try{
+            bufferedFileReader = new BufferedReader(new InputStreamReader(resource.openStream()));
+            fileBase = resource.getFile().substring(0, resource.getFile().lastIndexOf('/'));
+            parseFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ObjFileParser(File file){

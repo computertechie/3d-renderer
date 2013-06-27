@@ -9,7 +9,10 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import tk.snowmew.cubes.lights.DirectionalLight;
 import tk.snowmew.cubes.render.*;
-import tk.snowmew.cubes.utils.SMMFileParser;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * User: Pepper
@@ -19,11 +22,12 @@ import tk.snowmew.cubes.utils.SMMFileParser;
  */
 
 public class Cubes {
-    final int TIME_CONVERSION = 10000000;
+    final int TIME_CONVERSION = 100000000;
     public static Renderer renderInstance = Renderer.getInstance();
     public static TextureManager textureManagerInstance = TextureManager.getInstance();
     public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
+    public boolean isJar = checkIfJar();
     private String[] vertAttribs = {"position","in_tex","normal"};
     private String[] uniformAttribs= {"texture","diffuseColor"};
     Camera camera = new Camera(0,0);
@@ -36,24 +40,50 @@ public class Cubes {
     double t = 0, dt = 0.01, currentTime = System.nanoTime()/TIME_CONVERSION, accumulator=0,frameTime =0;
 
     public static void main(String[] args){
+        System.out.println("main "+System.nanoTime());
         Cubes cube = new Cubes();
 //        cube.tick();
     }
 
     public Cubes(){
-//        createDisplay();
-//        renderInstance.setCamera(camera);
-//        renderInstance.setTextureManager(textureManagerInstance);
-//        renderInstance.setShaderProgramManager(shaderProgramManager);
-//        renderInstance.setCubeInstance(this);
-//        renderInstance.createProjectionMatrix();
-//        shaderProgramManager.registerProgram("standard",new ShaderProgram("assets/shaders/standard/standard_vert.glsl","assets/shaders/standard/standard_frag.glsl",vertAttribs,uniformAttribs));
-//        camera.setPosition(new Vector3f(0, 1, 0));
-//        box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
-//        ground = new Model("assets/models/101 - Electrode.brres/Marumine.obj");
+        createDisplay();
+        renderInstance.setCamera(camera);
+        renderInstance.setTextureManager(textureManagerInstance);
+        renderInstance.setShaderProgramManager(shaderProgramManager);
+        renderInstance.setCubeInstance(this);
+        renderInstance.createProjectionMatrix();
+        camera.setPosition(new Vector3f(0, 1, 0));
+        File file = new File("assets/shaders/standard/standard_vert.glsl");
+        try {
+            URL url = file.toURI().toURL();
+            System.out.println(url.getFile());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+//        if(!isJar){
+//            shaderProgramManager.registerProgram("standard",new ShaderProgram("assets/shaders/standard/standard_vert.glsl","assets/shaders/standard/standard_frag.glsl",vertAttribs,uniformAttribs));
+//            box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
+//            ground = new Model("assets/models/101 - Electrode.brres/Marumine.obj");
+//        }
+//        else{
+//            System.out.println("jar");
+        System.out.println(this.getClass().getResource("assets/shaders/standard/standard_vert.glsl"));
+//            shaderProgramManager.registerProgram("standard",new ShaderProgram(this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"),this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"),vertAttribs,uniformAttribs));
+//            box = new Model(this.getClass().getResource("/assets/models/026 - Raichu.brres/Raichu.obj"));
+//            ground = new Model(this.getClass().getResource("/assets/models/101 - Electrode.brres/Marumine.obj"));
+//        }
 //        ground.translate(0,0,10);
 //        ground.scale(0.01f, 0.01f, 0.01f);
-        new SMMFileParser("../SMM_Export/design.xml");
+    }
+
+    private boolean checkIfJar(){
+        String className = this.getClass().getName().replace('.', '/');
+        String classJar =
+                this.getClass().getResource("/" + className + ".class").toString();
+        if (classJar.startsWith("jar:")) {
+            return true;
+        }
+        return false;
     }
 
     public void createDisplay(){
@@ -94,9 +124,11 @@ public class Cubes {
     public void tick(){
         double newTime = 0;
         while(!Display.isCloseRequested()){
-            newTime = System.nanoTime()/TIME_CONVERSION;
+            newTime = System.nanoTime();///TIME_CONVERSION;
             frameTime = newTime - currentTime;
 
+//            System.out.println(newTime+" "+currentTime+" "+frameTime+" "+(frameTime/TIME_CONVERSION));
+            frameTime /= TIME_CONVERSION;
             if(frameTime > 0.25)
                 frameTime = 0.25;
 
@@ -129,29 +161,29 @@ public class Cubes {
             renderInstance.render(box);
             renderInstance.render(ground);
             Display.update();
-//            Display.sync(60);
+            Display.sync(60);
         }
     }
 
 
     public void getInput(){
-        float speedModifier = 1;
+        float speedModifier = 0.1f;
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
             System.exit(0);
         if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
             speedModifier = 0.1f;
         if(Keyboard.isKeyDown(Keyboard.KEY_W))
-            camera.move((float)(0.1f*frameTime*speedModifier));
+            camera.move((float)(0.1f*speedModifier));
         if(Keyboard.isKeyDown(Keyboard.KEY_S))
-            camera.move((float)(-0.1f*frameTime*speedModifier));
+            camera.move((float)(-0.1f*speedModifier));
         if(Keyboard.isKeyDown(Keyboard.KEY_A))
-            camera.strafe((float)(-0.1f*frameTime*speedModifier));
+            camera.strafe((float)(-0.1f*speedModifier));
         if(Keyboard.isKeyDown(Keyboard.KEY_D))
-            camera.strafe((float)(0.1f*frameTime*speedModifier));
+            camera.strafe((float)(0.1f*speedModifier));
         if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-            camera.moveVertical((float)(0.1f*frameTime*speedModifier));
+            camera.moveVertical((float)(0.1f*speedModifier));
         if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-            camera.moveVertical((float)(-0.1f*frameTime*speedModifier));
+            camera.moveVertical((float)(-0.1f*speedModifier));
         if(Keyboard.isKeyDown(Keyboard.KEY_T))
             Mouse.setGrabbed(!Mouse.isGrabbed());
         if(Keyboard.isKeyDown(Keyboard.KEY_F4)){

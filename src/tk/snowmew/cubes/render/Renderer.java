@@ -14,7 +14,7 @@ public class Renderer{
     Camera camera;
     TextureManager textureManager;
     ShaderProgramManager shaderProgramManager;
-    Cubes cubeInstance;
+    public Cubes cubeInstance;
 
     private Renderer(){
     }
