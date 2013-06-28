@@ -37,7 +37,6 @@ public class ShaderProgram {
     }
 
     public ShaderProgram(URL vertFile, URL fragFile, String[] vertAtts, String[] uniforms){
-        System.out.println(vertFile.getFile());
         vertexShaderID = loadShader(vertFile, GL20.GL_VERTEX_SHADER);
         fragmentShaderID = loadShader(fragFile, GL20.GL_FRAGMENT_SHADER);
         programID = GL20.glCreateProgram();

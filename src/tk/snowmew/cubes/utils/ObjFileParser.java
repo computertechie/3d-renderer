@@ -38,20 +38,8 @@ public class ObjFileParser {
     public ObjFileParser(URL resource){
         try{
             bufferedFileReader = new BufferedReader(new InputStreamReader(resource.openStream()));
-            fileBase = resource.getFile().substring(0, resource.getFile().lastIndexOf('/'));
+            fileBase = resource.toString().substring(0, resource.toString().lastIndexOf('/'));
             parseFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public ObjFileParser(File file){
-        try {
-            bufferedFileReader = new BufferedReader(new FileReader(file));
-            fileBase = file.getParent();
-            parseFile();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

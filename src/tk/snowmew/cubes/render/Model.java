@@ -11,7 +11,6 @@ import tk.snowmew.cubes.Cubes;
 import tk.snowmew.cubes.utils.IMatrix;
 import tk.snowmew.cubes.utils.ObjFileParser;
 
-import java.io.File;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -28,25 +27,7 @@ public class Model implements IMatrix
     private int numVerts, numTexes, numNormals;
     private String programName="standard";
 
-//    public Model(String filePath){
-//        this(new File(filePath));
-//    }
-
-    public Model(String file){
-        ObjFileParser parser = new ObjFileParser(new File(file));
-        meshes = parser.getMeshes();
-        meshVBOs = BufferUtils.createIntBuffer(meshes.size());
-        meshVAOs = BufferUtils.createIntBuffer(meshes.size());
-        numVerts = getSizeOfModelVertexCoords();
-        numTexes = getSizeOfModelTextureCoords();
-        numNormals = getSizeOfModelNormals();
-        genIDs();
-        buffer();
-        update();
-    }
-
     public Model(URL resource){
-        System.out.println(resource.getFile());
         ObjFileParser parser = new ObjFileParser(resource);
         meshes = parser.getMeshes();
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());

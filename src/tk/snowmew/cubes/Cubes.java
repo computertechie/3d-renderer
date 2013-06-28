@@ -10,10 +10,6 @@ import org.lwjgl.util.vector.Vector3f;
 import tk.snowmew.cubes.lights.DirectionalLight;
 import tk.snowmew.cubes.render.*;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * User: Pepper
  * Date: 4/6/13
@@ -27,7 +23,6 @@ public class Cubes {
     public static TextureManager textureManagerInstance = TextureManager.getInstance();
     public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
-    public boolean isJar = checkIfJar();
     private String[] vertAttribs = {"position","in_tex","normal"};
     private String[] uniformAttribs= {"texture","diffuseColor"};
     Camera camera = new Camera(0,0);
@@ -40,9 +35,8 @@ public class Cubes {
     double t = 0, dt = 0.01, currentTime = System.nanoTime()/TIME_CONVERSION, accumulator=0,frameTime =0;
 
     public static void main(String[] args){
-        System.out.println("main "+System.nanoTime());
         Cubes cube = new Cubes();
-//        cube.tick();
+        cube.tick();
     }
 
     public Cubes(){
@@ -53,37 +47,13 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
-        File file = new File("assets/shaders/standard/standard_vert.glsl");
-        try {
-            URL url = file.toURI().toURL();
-            System.out.println(url.getFile());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-//        if(!isJar){
-//            shaderProgramManager.registerProgram("standard",new ShaderProgram("assets/shaders/standard/standard_vert.glsl","assets/shaders/standard/standard_frag.glsl",vertAttribs,uniformAttribs));
-//            box = new Model("assets/models/026 - Raichu.brres/Raichu.obj");
-//            ground = new Model("assets/models/101 - Electrode.brres/Marumine.obj");
-//        }
-//        else{
-//            System.out.println("jar");
-        System.out.println(this.getClass().getResource("assets/shaders/standard/standard_vert.glsl"));
-//            shaderProgramManager.registerProgram("standard",new ShaderProgram(this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"),this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"),vertAttribs,uniformAttribs));
-//            box = new Model(this.getClass().getResource("/assets/models/026 - Raichu.brres/Raichu.obj"));
-//            ground = new Model(this.getClass().getResource("/assets/models/101 - Electrode.brres/Marumine.obj"));
-//        }
-//        ground.translate(0,0,10);
-//        ground.scale(0.01f, 0.01f, 0.01f);
-    }
 
-    private boolean checkIfJar(){
-        String className = this.getClass().getName().replace('.', '/');
-        String classJar =
-                this.getClass().getResource("/" + className + ".class").toString();
-        if (classJar.startsWith("jar:")) {
-            return true;
-        }
-        return false;
+        shaderProgramManager.registerProgram("standard",new ShaderProgram(this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"),this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"),vertAttribs,uniformAttribs));
+        box = new Model(this.getClass().getResource("/assets/models/026 - Raichu.brres/Raichu.obj"));
+        ground = new Model(this.getClass().getResource("/assets/models/101 - Electrode.brres/Marumine.obj"));
+
+        ground.translate(0,0,10);
+//        ground.scale(0.01f, 0.01f, 0.01f);
     }
 
     public void createDisplay(){
@@ -127,7 +97,6 @@ public class Cubes {
             newTime = System.nanoTime();///TIME_CONVERSION;
             frameTime = newTime - currentTime;
 
-//            System.out.println(newTime+" "+currentTime+" "+frameTime+" "+(frameTime/TIME_CONVERSION));
             frameTime /= TIME_CONVERSION;
             if(frameTime > 0.25)
                 frameTime = 0.25;

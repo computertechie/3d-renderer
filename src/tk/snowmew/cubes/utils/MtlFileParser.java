@@ -22,8 +22,7 @@ public class MtlFileParser {
 
     public MtlFileParser(String base, String lib){
         try {
-            System.out.println(base+" "+lib);
-            URL res = new URL(base+File.separator+lib);
+            URL res = new URL(base+"/"+lib);
             bufferedReader = new BufferedReader(new InputStreamReader(res.openStream()));
             fileBase = base;
             parseFile();
@@ -83,30 +82,30 @@ public class MtlFileParser {
                         case 'K':
                             switch(line.charAt(5)){
                                 case 'a':
-                                    Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                                    Cubes.textureManagerInstance.createTexture(new URL(fileBase+"/"+lineComponents[1]));
                                     currentMaterial.setAmbientMap(name);
                                     break;
                                 case 'd':
-                                    Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                                    Cubes.textureManagerInstance.createTexture(new URL(fileBase+"/"+lineComponents[1]));
                                     currentMaterial.setDiffuseMap(name);
                                     currentMaterial.setDiffuseMapped(true);
                                     break;
                                 case 's':
-                                    Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                                    Cubes.textureManagerInstance.createTexture(new URL(fileBase+"/"+lineComponents[1]));
                                     currentMaterial.setSpecColourMap(name);
                                     break;
                             }
                             break;
                         case 'N':
-                            Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                            Cubes.textureManagerInstance.createTexture(new URL(fileBase+"/"+lineComponents[1]));
                             currentMaterial.setSpecHighlightMap(name);
                             break;
                         case 'd':
-                            Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                            Cubes.textureManagerInstance.createTexture(new URL(fileBase+"/"+lineComponents[1]));
                             currentMaterial.setAlphaMap(name);
                             break;
                         case 'b':
-                            Cubes.textureManagerInstance.createTexture(fileBase+File.separator+lineComponents[1]);
+                            Cubes.textureManagerInstance.createTexture(new URL(fileBase+"/"+lineComponents[1]));
                             currentMaterial.setBumpMap(name);
                             break;
                     }
