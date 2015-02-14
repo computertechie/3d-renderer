@@ -1,1 +1,1 @@
-A simple cubes game, along the lines of Minecraft.
+A simple 3D renderer. It'll do things.
