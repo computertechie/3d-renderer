@@ -1,0 +1,24 @@
+newmtl Back
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0.4 0.4 0.4
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+map_Kd Small_Disc_Back.png
+map_bump Small_Disc_Alpha.png
+bump Small_Disc_Alpha.png
+
+newmtl Front
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0.4 0.4 0.4
+Ni 1
+Ns 400
+Tf 1 1 1
+d 1
+map_Kd Small_Disc_Front.png
+map_bump Small_Disc_Alpha.png
+bump Small_Disc_Alpha.png
+

@@ -34,7 +34,7 @@ void main(void) {
     vec4 diffuse;
 
     if(diffuseFactor > 0){
-        diffuse = vec4(dirLight.color, 0f) * dirLight.intensity * diffuseFactor;
+        diffuse = vec4(dirLight.color, 0) * dirLight.intensity * diffuseFactor;
     }
     else{
         diffuse = vec4(0,0,0,0);
