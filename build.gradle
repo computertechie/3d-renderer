@@ -1,0 +1,87 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+group = 'link.snowcat'
+version = '0.1'
+archivesBaseName = 'cubes'
+mainClassName = 'link.snowcat.cubes.Cubes'
+
+compileJava {
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.l33tlabs.twl:pngdecoder:1.0"
+    compile "org.lwjgl.lwjgl:lwjgl:${version_lwjgl}"
+    compile "org.lwjgl.lwjgl:lwjgl_util:${version_lwjgl}"
+}
+
+def platforms = ['windows', 'linux', 'osx']
+platforms.each { platform ->
+    task "${platform}Natives" {
+        def outputDir = "$buildDir/natives/$platform"
+        inputs.files(configurations.compile)
+        outputs.dir(outputDir)
+        doLast {
+            copy {
+                def artifacts = configurations.compile.resolvedConfiguration.resolvedArtifacts
+                    .findAll { it.classifier == "natives-$platform" }
+                artifacts.each {
+                    from zipTree(it.file)
+                }
+                into outputDir
+            }
+        }
+    }
+}
+
+task natives {
+    description 'Copies native libraries to an appropriate directory.'
+    dependsOn platforms.collect { "${it}Natives" }.findAll { tasks[it] }
+}
+
+run {
+    dependsOn natives
+    def runPlatform = ''
+
+    if(Os.isFamily(Os.FAMILY_WINDOWS)){
+        runPlatform = "windows"
+    }
+    else if(Os.isFamily(Os.FAMILY_MAC)){
+        runPlatform = "osx"
+    }
+    else{
+        runPlatform = "linux"
+    }
+
+    jvmArgs = ["-Djava.library.path=build/natives/${runPlatform}"]
+}
+
+jar {
+    classifier = 'bin'
+    manifest {
+        attributes 'Main-Class': 'link.snowcat.cubes.Cubes'
+    }
+}
