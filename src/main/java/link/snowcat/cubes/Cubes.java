@@ -10,6 +10,13 @@ import org.lwjgl.util.vector.Vector3f;
 import link.snowcat.cubes.lights.DirectionalLight;
 import link.snowcat.cubes.render.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.*;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * User: Pepper
  * Date: 4/6/13
@@ -122,7 +129,6 @@ public class Cubes {
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
             GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
             renderInstance.render(box);
-//            renderInstance.render(ground);
             Display.update();
             Display.sync(60);
         }
@@ -168,5 +174,43 @@ public class Cubes {
         dx *= temp1;
         camera.pitch(dy);
         camera.bearing(dx);
+    }
+
+    static{
+        Map<String, String> envMap = new HashMap<String, String>();
+        envMap.put("create", "true");
+
+        try (FileSystem fileSystem = FileSystems.newFileSystem(Cubes.class.getResource("/natives").toURI(), envMap)){
+            Path tempDir = Files.createTempDirectory("3d_renderer");
+            Path nativesPath = fileSystem.getPath("/natives");
+            Path destination;
+            File tempFile = new File(tempDir.toUri());
+                tempFile.deleteOnExit();
+            String filePath;
+
+            try(DirectoryStream<Path> stream = Files.newDirectoryStream(nativesPath)){
+                for(Path file : stream){
+                    filePath = file.toString();
+                    if(filePath.contains("META"))
+                        continue;
+
+                    filePath = filePath.substring(filePath.lastIndexOf('/'));
+
+                    destination = FileSystems.getDefault().getPath(tempDir.toString(), filePath);
+                    Files.copy(file, destination);
+
+                    tempFile = new File(destination.toUri());
+                    System.out.println(tempFile.toString());
+                    tempFile.deleteOnExit();
+                }
+            }
+            System.setProperty("org.lwjgl.librarypath", tempDir.toString());
+        }
+        catch(URISyntaxException uriSyntaxException){
+            uriSyntaxException.printStackTrace();
+        }
+        catch(IOException ioException){
+            ioException.printStackTrace();
+        }
     }
 }
