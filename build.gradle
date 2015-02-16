@@ -19,12 +19,12 @@ idea {
 
 group = 'link.snowcat'
 version = '0.1'
-archivesBaseName = 'cubes'
+archivesBaseName = '3d_renderer'
 mainClassName = 'link.snowcat.cubes.Cubes'
 
 compileJava {
-    sourceCompatibility = '1.6'
-    targetCompatibility = '1.6'
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
 }
 
 repositories {
