@@ -1,4 +1,3 @@
-import org.apache.tools.ant.taskdefs.condition.Os
 buildscript {
     repositories {
         mavenCentral()
@@ -38,7 +37,11 @@ dependencies {
     compile "org.lwjgl.lwjgl:lwjgl_util:${version_lwjgl}"
 }
 
+def commonManifest = {
+    attributes 'Main-Class': 'link.snowcat.cubes.Cubes', 'Class-Path': 'natives'
+}
 def platforms = ['windows', 'linux', 'osx']
+
 platforms.each { platform ->
     task "${platform}Natives" {
         def outputDir = "$buildDir/natives/$platform"
@@ -47,7 +50,7 @@ platforms.each { platform ->
         doLast {
             copy {
                 def artifacts = configurations.compile.resolvedConfiguration.resolvedArtifacts
-                    .findAll { it.classifier == "natives-$platform" }
+                        .findAll { it.classifier == "natives-$platform" }
                 artifacts.each {
                     from zipTree(it.file)
                 }
@@ -55,33 +58,36 @@ platforms.each { platform ->
             }
         }
     }
+
+    task "${platform}FatJar"(type: Jar) {
+        classifier = "${platform}-fat"
+        manifest commonManifest
+
+        into('natives'){
+            from("${buildDir}/natives/${platform}")
+        }
+        from {
+            configurations.compile.filter({ !(it.name =~ /.*-natives-.*\.jar/) }).collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+
+        with jar
+    }
 }
 
 task natives {
-    description 'Copies native libraries to an appropriate directory.'
     dependsOn platforms.collect { "${it}Natives" }.findAll { tasks[it] }
 }
 
-run {
-    dependsOn natives
-    def runPlatform = ''
-
-    if(Os.isFamily(Os.FAMILY_WINDOWS)){
-        runPlatform = "windows"
-    }
-    else if(Os.isFamily(Os.FAMILY_MAC)){
-        runPlatform = "osx"
-    }
-    else{
-        runPlatform = "linux"
-    }
-
-    jvmArgs = ["-Djava.library.path=build/natives/${runPlatform}"]
-}
-
 jar {
+    dependsOn natives
     classifier = 'bin'
-    manifest {
-        attributes 'Main-Class': 'link.snowcat.cubes.Cubes'
-    }
+    manifest commonManifest
 }
+
+build.dependsOn platforms.collect { "${it}FatJar" }.findAll { tasks[it] }
+
+
+
+
