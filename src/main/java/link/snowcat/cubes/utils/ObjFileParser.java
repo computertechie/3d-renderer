@@ -146,8 +146,10 @@ public class ObjFileParser {
     public void parseLine(String line, int lineType){
         String[] coords = line.trim().split(" ");
         ArrayList<Float> coordList = new ArrayList<Float>();
-        for(int i = 1; i<coords.length; i++)
+        for(int i = 1; i<coords.length; i++) {
             coordList.add(Float.parseFloat(coords[i]));
+        }
+
         switch(lineType){
             case VERT_LINE:
                 vertCoords.add(coordList);

@@ -1,4 +1,4 @@
-#version 140
+#version 130
 
 uniform sampler2D texture;
 uniform vec3 diffuseColor = vec3(-1,-1,-1);

@@ -3,9 +3,7 @@ package link.snowcat.cubes;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 import link.snowcat.cubes.lights.DirectionalLight;
 import link.snowcat.cubes.render.*;
@@ -32,6 +30,7 @@ public class Cubes {
     public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
     private String[] vertAttribs = {"position","in_tex","normal"};
     private String[] uniformAttribs= {"texture","diffuseColor"};
+    private boolean quit = false;
     Camera camera = new Camera(0,0);
     Model box;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
@@ -44,6 +43,7 @@ public class Cubes {
     public static void main(String[] args){
         Cubes cube = new Cubes();
         cube.tick();
+        System.out.println("Quitting");
     }
 
     public Cubes(){
@@ -61,7 +61,7 @@ public class Cubes {
     public void createDisplay(){
         try {
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create();
+            Display.create(new PixelFormat(), new ContextAttribs(3,0));
             Display.setResizable(true);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -107,8 +107,13 @@ public class Cubes {
             accumulator += frameTime;
 
             while(accumulator >= dt){
-                tick++;
                 getInput();
+                if(quit) {
+                    Display.destroy();
+                    return;
+                }
+
+                tick++;
                 camera.reorient();
                 if(tick%10== 0 && tick <=100){
                     float newX=0, newY=0;
@@ -138,7 +143,7 @@ public class Cubes {
     public void getInput(){
         float speedModifier = 0.1f;
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
-            System.exit(0);
+            quit=true;
         if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
             speedModifier = 0.1f;
         if(Keyboard.isKeyDown(Keyboard.KEY_W))

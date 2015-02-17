@@ -90,7 +90,7 @@ public class Model implements IMatrix
                 GL20.glUniform3(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformLocation("diffuseColor"),Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
             }
             GL30.glBindVertexArray(meshVAOs.get(i));
-            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, numVerts);
+            GL11.glDrawArrays(GL11.GL_QUADS, 0, numVerts);
             Cubes.textureManagerInstance.unbindTexture();
         }
         GL30.glBindVertexArray(0);
