@@ -37,20 +37,21 @@ public class Renderer{
 
     public  void createProjectionMatrix(){
         projectionMatrix = new Matrix4f();
-        float fieldOfView = 60.0F;
-        float aspectRatio = cubeInstance.getWidth()/cubeInstance.getHeight();
+        projectionMatrix.setIdentity();
+        float fieldOfView = 90.0F;
+        float aspectRatio = (float)cubeInstance.getWidth()/(float)cubeInstance.getHeight();
         float near_plane = 0.1F;
-        float far_plane = 1000.0F;
+        float far_plane = 500;
 
-        float y_scale = coTangent(degreesToRadians(fieldOfView / 2.0F));
+        float y_scale = coTangent(degreesToRadians(fieldOfView * 0.5f));
         float x_scale = y_scale / aspectRatio;
         float frustum_length = far_plane - near_plane;
 
         projectionMatrix.m00 = x_scale;
         projectionMatrix.m11 = y_scale;
-        projectionMatrix.m22 = -((far_plane + near_plane) / frustum_length);
+        projectionMatrix.m22 = -((far_plane) / frustum_length);
         projectionMatrix.m23 = -1;
-        projectionMatrix.m32 = -((2.0F * near_plane * far_plane )/ frustum_length);
+        projectionMatrix.m32 = -((far_plane * near_plane)/ frustum_length);
         projectionMatrix.m33 = 0;
     }
 
