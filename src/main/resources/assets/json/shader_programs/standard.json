@@ -1,0 +1,12 @@
+{
+  "vertex_shader":"standard/vertex.glsl",
+  "fragment_shader":"standard/fragment.glsl",
+  "attributes":[
+    "position",
+    "UV",
+    "normal"
+  ],
+  "uniforms":[
+    "diffuseColor"
+  ]
+}

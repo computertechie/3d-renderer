@@ -1,0 +1,43 @@
+{
+  "description" : "A fully compiled and linked shader program (a rendering process).",
+  "id" : "ShaderProgram",
+  "type" : "object",
+  "properties" : {
+    "renderProcessName": {
+      "type": "string"
+    },
+    "vertexShaderID": {
+      "type": "integer"
+    },
+    "fragmentShaderID": {
+      "type": "integer"
+    },
+    "programID": {
+      "type": "integer"
+    },
+    "projectionMatrixLocation": {
+      "type": "integer"
+    },
+    "viewMatrixLocation": {
+      "type": "integer"
+    },
+    "modelMatrixLocation": {
+      "type": "integer"
+    },
+    "directionalLightPositionLocation": {
+      "type": "integer"
+    },
+    "directionalLightColorLocation": {
+      "type": "integer"
+    },
+    "directionalLightIntensityLocation": {
+      "type": "integer"
+    },
+    "vertexAttributes" : {
+      "$ref" : "map_string_integer.json"
+    },
+    "uniformAttributes" : {
+      "$ref" : "map_string_integer.json"
+    }
+  }
+}

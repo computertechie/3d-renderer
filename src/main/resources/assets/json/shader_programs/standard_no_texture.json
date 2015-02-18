@@ -1,0 +1,12 @@
+{
+  "render_process":"standard_no_texture",
+  "vertex_shader":"standard/no_texture/vertex.glsl",
+  "fragment_shader":"standard/no_texture/fragment.glsl",
+  "attributes":[
+    "position",
+    "normal"
+  ],
+  "uniforms":[
+    "diffuseColor"
+  ]
+}
