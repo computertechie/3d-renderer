@@ -24,15 +24,6 @@
     "modelMatrixLocation": {
       "type": "integer"
     },
-    "directionalLightPositionLocation": {
-      "type": "integer"
-    },
-    "directionalLightColorLocation": {
-      "type": "integer"
-    },
-    "directionalLightIntensityLocation": {
-      "type": "integer"
-    },
     "vertexAttributes" : {
       "$ref" : "map_string_integer.json"
     },

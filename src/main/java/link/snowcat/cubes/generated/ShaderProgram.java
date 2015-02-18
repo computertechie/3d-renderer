@@ -28,12 +28,6 @@ public class ShaderProgram {
     @Expose
     private int modelMatrixLocation;
     @Expose
-    private int directionalLightPositionLocation;
-    @Expose
-    private int directionalLightColorLocation;
-    @Expose
-    private int directionalLightIntensityLocation;
-    @Expose
     private Map<String,  Integer> vertexAttributes;
     @Expose
     private Map<String,  Integer> uniformAttributes;
@@ -162,60 +156,6 @@ public class ShaderProgram {
      */
     public void setModelMatrixLocation(int modelMatrixLocation) {
         this.modelMatrixLocation = modelMatrixLocation;
-    }
-
-    /**
-     * 
-     * @return
-     *     The directionalLightPositionLocation
-     */
-    public int getDirectionalLightPositionLocation() {
-        return directionalLightPositionLocation;
-    }
-
-    /**
-     * 
-     * @param directionalLightPositionLocation
-     *     The directionalLightPositionLocation
-     */
-    public void setDirectionalLightPositionLocation(int directionalLightPositionLocation) {
-        this.directionalLightPositionLocation = directionalLightPositionLocation;
-    }
-
-    /**
-     * 
-     * @return
-     *     The directionalLightColorLocation
-     */
-    public int getDirectionalLightColorLocation() {
-        return directionalLightColorLocation;
-    }
-
-    /**
-     * 
-     * @param directionalLightColorLocation
-     *     The directionalLightColorLocation
-     */
-    public void setDirectionalLightColorLocation(int directionalLightColorLocation) {
-        this.directionalLightColorLocation = directionalLightColorLocation;
-    }
-
-    /**
-     * 
-     * @return
-     *     The directionalLightIntensityLocation
-     */
-    public int getDirectionalLightIntensityLocation() {
-        return directionalLightIntensityLocation;
-    }
-
-    /**
-     * 
-     * @param directionalLightIntensityLocation
-     *     The directionalLightIntensityLocation
-     */
-    public void setDirectionalLightIntensityLocation(int directionalLightIntensityLocation) {
-        this.directionalLightIntensityLocation = directionalLightIntensityLocation;
     }
 
     /**

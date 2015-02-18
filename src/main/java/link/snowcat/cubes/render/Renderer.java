@@ -81,9 +81,9 @@ public class Renderer{
     }
 
     public void bufferDirLight(Model model){
-        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getDirectionalLightColorLocation(), cubeInstance.sun.getColorAsFBuffer());
-        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getDirectionalLightPositionLocation(), cubeInstance.sun.getPositionAsFBuffer());
-        GL20.glUniform1f(shaderProgramManager.getShaderProgram(model.getProgramName()).getDirectionalLightIntensityLocation(), cubeInstance.sun.getIntensity());
+        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getUniformAttributes().get("dirLight.color"), cubeInstance.sun.getColorAsFBuffer());
+        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getUniformAttributes().get("dirLight.position"), cubeInstance.sun.getPositionAsFBuffer());
+        GL20.glUniform1f(shaderProgramManager.getShaderProgram(model.getProgramName()).getUniformAttributes().get("dirLight.intensity"), cubeInstance.sun.getIntensity());
     }
 
     public static float degreesToRadians(float degrees) {

@@ -63,17 +63,18 @@ public class Model implements IMatrix
             GL30.glBindVertexArray(meshVAOs.get(vao));
 
             for(int i = 0; i<vertAttribs.length; i++)
-                GL20.glEnableVertexAttribArray(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation(vertAttribs[i]));
+                GL20.glEnableVertexAttribArray(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get(vertAttribs[i]));
 
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, meshVBOs.get(vao));
             int stride = meshes.get(vao).getStride();
 
-            GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("position"), 3, GL11.GL_FLOAT, false, stride, 0);
+            //TODO Figure out some loop for this, possibly in the for loop above
+            GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get("position"), 3, GL11.GL_FLOAT, false, stride, 0);
             if( meshes.get(vao).hasNormals()) {
-                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, stride, meshes.get(vao).getNormalOffset());
+                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get("normal"), 3, GL11.GL_FLOAT, false, stride, meshes.get(vao).getNormalOffset());
             }
             if(meshes.get(vao).hasUVs()) {
-                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, stride, meshes.get(vao).getUVOffset());
+                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get("in_tex"), 2, GL11.GL_FLOAT, false, stride, meshes.get(vao).getUVOffset());
             }
 
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
@@ -91,10 +92,10 @@ public class Model implements IMatrix
                 map = Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseMap();
                 temp = Cubes.textureManagerInstance.getTexture(map);
                 Cubes.textureManagerInstance.bindTexture(map);
-                GL20.glUniform1i(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformLocation("texture"),temp.getTexUnit());
+                GL20.glUniform1i(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformAttributes().get("texMap"),temp.getTexUnit());
             }
             else{
-                GL20.glUniform3(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformLocation("diffuseColor"),Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
+                GL20.glUniform3(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformAttributes().get("diffuseColor"),Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
             }
             GL30.glBindVertexArray(meshVAOs.get(i));
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, meshes.get(i).getNumberOfVertexes());
@@ -113,7 +114,6 @@ public class Model implements IMatrix
         modelMatrix.store(buf);
         buf.flip();
         GL20.glUniformMatrix4(Cubes.shaderProgramManager.getShaderProgram(programName).getModelMatrixLocation(), false, buf);
-
     }
 
     public void translate(float x, float y, float z){
