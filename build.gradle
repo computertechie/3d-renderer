@@ -2,6 +2,10 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
+    dependencies{
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.7'
+    }
 }
 
 
@@ -9,6 +13,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'jsonschema2pojo'
 
 idea {
     module {
@@ -37,6 +42,18 @@ dependencies {
     compile "org.lwjgl.lwjgl:lwjgl_util:${version_lwjgl}"
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.1'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.1'
+    compile 'com.google.code.gson:gson:2.3.1'
+}
+
+jsonSchema2Pojo {
+    usePrimitives = true
+    source = files("${sourceSets.main.output.resourcesDir}/assets/json/schema")
+    targetDirectory = file("${projectDir}/src/main/java/")
+    targetPackage = 'link.snowcat.cubes.generated'
+    useDoubleNumbers = false
+    annotationStyle = 'gson'
+    includeHashcodeAndEquals = false
+    includeToString = false
 }
 
 def commonManifest = {
