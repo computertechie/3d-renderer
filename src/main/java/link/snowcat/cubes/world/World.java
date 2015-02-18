@@ -1,7 +1,5 @@
 package link.snowcat.cubes.world;
 
-import link.snowcat.cubes.entities.Entity;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +12,6 @@ import java.util.List;
 
 
 public class World {
-    private List<Entity> entityList;
 
-    public World(){
-        entityList = new ArrayList<Entity>();
-    }
 
 }
