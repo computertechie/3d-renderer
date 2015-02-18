@@ -1,5 +1,6 @@
 package link.snowcat.cubes;
 
+import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -23,14 +24,15 @@ import java.util.Map;
  */
 
 public class Cubes {
-    final int TIME_CONVERSION = 1_000_000, FRAMES = 60;
+    final int TIME_CONVERSION = 1_000_000;
+    static int FRAMES = 60;
     public static Renderer renderInstance = Renderer.getInstance();
     public static TextureManager textureManagerInstance = TextureManager.getInstance();
     public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
 
     private String[] vertAttribs = {"position","in_tex","normal"};
-    private String[] uniformAttribs= {"texture","diffuseColor"};
+    private String[] uniformAttribs= {"texMap","diffuseColor","dirLight.color", "dirLight.position", "dirLight.intensity"};
 
     private boolean quit = false;
     Camera camera = new Camera(0,0);
@@ -43,26 +45,31 @@ public class Cubes {
     double designatedTickTime = 15, currentTime = System.nanoTime()/TIME_CONVERSION, fpsTime = currentTime, availableTime = 0, frameTime = 0;
 
     public static void main(String[] args){
+        FRAMES = Integer.parseInt(args[0]);
         Cubes cube = new Cubes();
         cube.tick();
     }
 
     public Cubes(){
         createDisplay();
+        System.out.println("oGL Version: "+GL11.glGetString(GL11.GL_VERSION));
+        System.out.println("GLSL Version: "+GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
+        System.out.println("Vendor: "+GL11.glGetString(GL11.GL_VENDOR));
+        System.out.println("Renderer: "+GL11.glGetString(GL11.GL_RENDERER));
         renderInstance.setCamera(camera);
         renderInstance.setTextureManager(textureManagerInstance);
         renderInstance.setShaderProgramManager(shaderProgramManager);
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
-        shaderProgramManager.registerProgram("standard",new ShaderProgram(this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"),this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"),vertAttribs,uniformAttribs));
+        shaderProgramManager.registerProgram("standard", this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"), this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"), vertAttribs, uniformAttribs);
         box = new Model(this.getClass().getResource("/assets/models/OBJ/Small_Disc.obj"));
     }
 
     public void createDisplay(){
         try {
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create(new PixelFormat(), new ContextAttribs(3,0));
+            Display.create(new PixelFormat(), new ContextAttribs(3,2).withProfileCore(true).withForwardCompatible(true));
             Display.setResizable(true);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -138,6 +145,7 @@ public class Cubes {
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
             renderInstance.render(box);
             Display.update();
+            Display.sync(FRAMES);
         }
     }
 
