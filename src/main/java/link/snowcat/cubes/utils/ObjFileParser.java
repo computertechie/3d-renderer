@@ -109,11 +109,11 @@ public class ObjFileParser {
         for(List<Integer> list : indexes){
             vertex = new Vertex();
             if(list.get(0) != Integer.MAX_VALUE)
-                vertex.setVertexes(vertCoords.get(list.get(0)-totalVertexCount-1));
+                vertex.setPosition(vertCoords.get(list.get(0) - totalVertexCount - 1));
             if(list.get(1) != Integer.MAX_VALUE)
                 vertex.setTextures(textureCoords.get(list.get(1)-totalTextureCount-1));
             if(list.get(2) != Integer.MAX_VALUE)
-                vertex.setNormals(normals.get(list.get(2)-totalNormalCount-1));
+                vertex.setNormal(normals.get(list.get(2) - totalNormalCount - 1));
             tempVertList.add(vertex);
         }
         totalTextureCount += tempTextureCount;

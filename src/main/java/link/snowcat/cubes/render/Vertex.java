@@ -13,17 +13,17 @@ import java.util.List;
  * Project: Cubes
  */
 public class Vertex {
-    private List<Float> vertexes = new ArrayList<Float>();
-    private List<Float> normals = new ArrayList<Float>();
-    private List<Float> texCoords = new ArrayList<Float>();
+    private List<Float> position = new ArrayList<Float>();
+    private List<Float> normal = new ArrayList<Float>();
+    private List<Float> UV = new ArrayList<Float>();
     private int vertOffset = 0, texOffset = 0, normOffset = 0;
     static int stride = 24;
     private int sizeOfFloat = 4, vertElementCount = 4, texElementCount = 2, normalElementCount=0, totalElementCount;
 
     public Vertex(List<Float> verts, List<Float> texes, List<Float> norms){
-        vertexes = verts;
-        normals = norms;
-        texCoords = texes;
+        position = verts;
+        normal = norms;
+        UV = texes;
         texOffset = sizeOfFloat*vertElementCount;
         normOffset = sizeOfFloat*texElementCount + texOffset;
         normalElementCount = norms.size();
@@ -32,15 +32,15 @@ public class Vertex {
     }
 
     public Vertex(List<Float> verts, List<Float> texes){
-        vertexes = verts;
-        texCoords = texes;
+        position = verts;
+        UV = texes;
         texOffset = sizeOfFloat * vertElementCount;
         totalElementCount = texElementCount + vertElementCount;
         stride = sizeOfFloat * vertElementCount + sizeOfFloat * texElementCount;
     }
 
     public Vertex(List<Float> verts){
-        vertexes = verts;
+        position = verts;
         totalElementCount = vertElementCount;
     }
 
@@ -50,13 +50,13 @@ public class Vertex {
 
     public FloatBuffer getElementsAsBuffer(){
         FloatBuffer buffer = BufferUtils.createFloatBuffer(totalElementCount);
-        for(Float f : vertexes)
+        for(Float f : position)
             buffer.put(f);
-        if(texCoords.size()>0)
-            for(Float f : texCoords)
+        if(UV.size()>0)
+            for(Float f : UV)
                 buffer.put(f);
-        if(normals.size() > 0)
-            for(Float f : normals)
+        if(normal.size() > 0)
+            for(Float f : normal)
                 buffer.put(f);
         buffer.flip();
         return buffer;
@@ -65,17 +65,17 @@ public class Vertex {
     public float[] getElementsAsFloatArray(){
         float[] arr = new float[totalElementCount];
         int vC = 0, tC = 0, nC = 0;
-        for(Float f : vertexes){
+        for(Float f : position){
             arr[vC] = f;
             vC++;
         }
-        if(texCoords.size() > 0)
-            for(Float f : texCoords){
+        if(UV.size() > 0)
+            for(Float f : UV){
                 arr[tC] = f;
                 tC++;
             }
-        if(normals.size() > 0)
-            for(Float f : normals){
+        if(normal.size() > 0)
+            for(Float f : normal){
                 arr[nC] = f;
                 nC++;
             }
@@ -83,21 +83,21 @@ public class Vertex {
         return arr;
     }
 
-    public List<Float> getVertexes(){
-        return vertexes;
+    public List<Float> getPosition(){
+        return position;
     }
 
     public List<Float> getTexture(){
-        return texCoords;
+        return UV;
     }
 
-    public List<Float> getNormals(){
-        return normals;
+    public List<Float> getNormal(){
+        return normal;
     }
 
-    public FloatBuffer getVertexesAsBuffer(){
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNormalsSize());
-        for(Float f : vertexes){
+    public FloatBuffer getPositionAsBuffer(){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNumPositionElements());
+        for(Float f : position){
             buffer.put(f);
         }
         buffer.flip();
@@ -105,8 +105,8 @@ public class Vertex {
     }
 
     public FloatBuffer getTexturesAsBuffer(){
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNormalsSize());
-        for(Float f : texCoords){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNumTextureElements());
+        for(Float f : UV){
             buffer.put(f);
         }
         buffer.flip();
@@ -114,8 +114,8 @@ public class Vertex {
     }
 
     public FloatBuffer getNormalsAsBuffer(){
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNormalsSize());
-        for(Float f : normals){
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(getNumNormalElements());
+        for(Float f : normal){
             buffer.put(f);
         }
         buffer.flip();
@@ -123,22 +123,22 @@ public class Vertex {
     }
 
     public void setTextures(List<Float> list){
-        texCoords = list;
+        UV = list;
     }
 
-    public void setNormals(List<Float> list){
-        normals = list;
+    public void setNormal(List<Float> list){
+        normal = list;
     }
 
-    public void setVertexes(List<Float> list){
-        vertexes = list;
+    public void setPosition(List<Float> list){
+        position = list;
     }
 
-    public int getVertOffset() {
+    public int getPositionOffset() {
         return vertOffset;
     }
 
-    public int getTexOffset() {
+    public int getUVOffset() {
         return texOffset;
     }
 
@@ -150,15 +150,15 @@ public class Vertex {
         return stride;
     }
 
-    public int getVertexCoordSize(){
-        return vertexes.size();
+    public int getNumPositionElements(){
+        return position.size();
     }
 
-    public int getTextureCoordSize(){
-        return texCoords.size();
+    public int getNumTextureElements(){
+        return UV.size();
     }
 
-    public int getNormalsSize(){
-        return normals.size();
+    public int getNumNormalElements(){
+        return normal.size();
     }
 }

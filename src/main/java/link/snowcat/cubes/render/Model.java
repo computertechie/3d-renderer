@@ -66,12 +66,19 @@ public class Model implements IMatrix
                 GL20.glEnableVertexAttribArray(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation(vertAttribs[i]));
 
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, meshVBOs.get(vao));
-            GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("position"), 3, GL11.GL_FLOAT, false, 32, 0);
-            GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, 32, 12);
-            GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, 32, 24);
-            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
+            int stride = meshes.get(vao).getStride();
 
+            GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("position"), 3, GL11.GL_FLOAT, false, stride, 0);
+            if( meshes.get(vao).hasNormals()) {
+                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("normal"), 3, GL11.GL_FLOAT, false, stride, meshes.get(vao).getNormalOffset());
+            }
+            if(meshes.get(vao).hasUVs()) {
+                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getAttribLocation("in_tex"), 2, GL11.GL_FLOAT, false, stride, meshes.get(vao).getUVOffset());
+            }
+
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
         }
+
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL30.glBindVertexArray(0);
     }
@@ -90,7 +97,7 @@ public class Model implements IMatrix
                 GL20.glUniform3(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformLocation("diffuseColor"),Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
             }
             GL30.glBindVertexArray(meshVAOs.get(i));
-            GL11.glDrawArrays(GL11.GL_QUADS, 0, numVerts);
+            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, meshes.get(i).getNumberOfVertexes());
             Cubes.textureManagerInstance.unbindTexture();
         }
         GL30.glBindVertexArray(0);

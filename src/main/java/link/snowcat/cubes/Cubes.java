@@ -56,7 +56,7 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
         shaderProgramManager.registerProgram("standard",new ShaderProgram(this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"),this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"),vertAttribs,uniformAttribs));
-        box = new Model(this.getClass().getResource("/assets/models/fighter/eurofighter_obj.obj"));
+        box = new Model(this.getClass().getResource("/assets/models/OBJ/Small_Disc.obj"));
     }
 
     public void createDisplay(){
@@ -117,7 +117,7 @@ public class Cubes {
                 physicsTick++;
 
                 getInput();
-                if(physicsTick %10== 0 && physicsTick <=100){
+                if(physicsTick % 100 == 0){
                     float newX=0, newY=0;
                     if(sun.getDirection().x == 10)
                         newX = -9.9f;
@@ -127,6 +127,7 @@ public class Cubes {
                     newY = (float)Math.sqrt(100-(Math.pow(newX,2)));
                     sun.setDirection(new Vector3f(newX, -newY, 0));
                 }
+
                 box.update();
                 availableTime -= designatedTickTime;
             }
