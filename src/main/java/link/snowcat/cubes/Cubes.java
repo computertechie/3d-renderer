@@ -45,14 +45,16 @@ public class Cubes {
     double designatedTickTime = 15, currentTime = System.nanoTime()/TIME_CONVERSION, fpsTime = currentTime, availableTime = 0, frameTime = 0;
 
     public static void main(String[] args){
-        FRAMES = Integer.parseInt(args[0]);
+        if(args.length > 0) {
+            FRAMES = Integer.parseInt(args[0]);
+        }
         Cubes cube = new Cubes();
         cube.tick();
     }
 
     public Cubes(){
         createDisplay();
-        System.out.println("oGL Version: "+GL11.glGetString(GL11.GL_VERSION));
+        System.out.println("oGL Version: " + GL11.glGetString(GL11.GL_VERSION));
         System.out.println("GLSL Version: "+GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
         System.out.println("Vendor: "+GL11.glGetString(GL11.GL_VENDOR));
         System.out.println("Renderer: "+GL11.glGetString(GL11.GL_RENDERER));
@@ -194,9 +196,25 @@ public class Cubes {
         Map<String, String> envMap = new HashMap<String, String>();
         envMap.put("create", "true");
 
+        StringBuilder nativePath = new StringBuilder("/natives");
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        if(osName.contains("windows")){
+            nativePath.append("/windows");
+        }
+        else if(osName.contains("mac")){
+            nativePath.append("/osx");
+        }
+        else if(osName.contains("nux")){
+            nativePath.append("/linux");
+        }
+        else{
+            throw new RuntimeException("The hell OS are you using?");
+        }
+
         try (FileSystem fileSystem = FileSystems.newFileSystem(Cubes.class.getResource("/natives").toURI(), envMap)){
             Path tempDir = Files.createTempDirectory("3d_renderer");
-            Path nativesPath = fileSystem.getPath("/natives");
+            Path nativesPath = fileSystem.getPath(nativePath.toString());
             Path destination;
             File tempFile = new File(tempDir.toUri());
                 tempFile.deleteOnExit();
