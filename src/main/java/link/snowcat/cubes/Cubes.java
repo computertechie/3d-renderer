@@ -1,5 +1,7 @@
 package link.snowcat.cubes;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -9,8 +11,10 @@ import org.lwjgl.util.vector.Vector3f;
 import link.snowcat.cubes.lights.DirectionalLight;
 import link.snowcat.cubes.render.*;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.HashMap;
@@ -64,7 +68,9 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
-        shaderProgramManager.registerProgram("standard", this.getClass().getResource("/assets/shaders/standard/standard_vert.glsl"), this.getClass().getResource("/assets/shaders/standard/standard_frag.glsl"), vertAttribs, uniformAttribs);
+
+        ShaderProgram program = new Gson().fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard.json"))),ShaderProgram.class);
+        shaderProgramManager.registerProgram(program);
         box = new Model(this.getClass().getResource("/assets/models/OBJ/Small_Disc.obj"));
     }
 

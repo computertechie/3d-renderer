@@ -16,6 +16,10 @@ public class ShaderProgram {
     @Expose
     private java.lang.String renderProcessName;
     @Expose
+    private java.lang.String vertexShaderFile;
+    @Expose
+    private java.lang.String fragmentShaderFile;
+    @Expose
     private int vertexShaderID;
     @Expose
     private int fragmentShaderID;
@@ -48,6 +52,42 @@ public class ShaderProgram {
      */
     public void setRenderProcessName(java.lang.String renderProcessName) {
         this.renderProcessName = renderProcessName;
+    }
+
+    /**
+     * 
+     * @return
+     *     The vertexShaderFile
+     */
+    public java.lang.String getVertexShaderFile() {
+        return vertexShaderFile;
+    }
+
+    /**
+     * 
+     * @param vertexShaderFile
+     *     The vertexShaderFile
+     */
+    public void setVertexShaderFile(java.lang.String vertexShaderFile) {
+        this.vertexShaderFile = vertexShaderFile;
+    }
+
+    /**
+     * 
+     * @return
+     *     The fragmentShaderFile
+     */
+    public java.lang.String getFragmentShaderFile() {
+        return fragmentShaderFile;
+    }
+
+    /**
+     * 
+     * @param fragmentShaderFile
+     *     The fragmentShaderFile
+     */
+    public void setFragmentShaderFile(java.lang.String fragmentShaderFile) {
+        this.fragmentShaderFile = fragmentShaderFile;
     }
 
     /**

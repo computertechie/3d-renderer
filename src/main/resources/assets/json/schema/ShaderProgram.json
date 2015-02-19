@@ -6,6 +6,12 @@
     "renderProcessName": {
       "type": "string"
     },
+    "vertexShaderFile" : {
+      "type" : "string"
+    },
+    "fragmentShaderFile" : {
+      "type" : "string"
+    },
     "vertexShaderID": {
       "type": "integer"
     },

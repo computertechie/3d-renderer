@@ -9,15 +9,14 @@ import java.nio.FloatBuffer;
 
 public class Renderer{
     private static Renderer instance = new Renderer();
-    private int currentProgram = -1, projUniformLoc = -1;
+    private int projUniformLoc = -1;
     Matrix4f projectionMatrix = new Matrix4f();
     Camera camera;
     TextureManager textureManager;
     ShaderProgramManager shaderProgramManager;
     public Cubes cubeInstance;
 
-    private Renderer(){
-    }
+    private Renderer(){ }
 
     public void setCubeInstance(Cubes cube){
         cubeInstance = cube;

@@ -22,8 +22,6 @@ public class Model implements IMatrix
     private IntBuffer meshVBOs, meshVAOs;
     private Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
     private List<Mesh> meshes;
-    private String[] vertAttribs = {"position","in_tex","normal"};
-    private String[] uniformAttribs= {"texture","diffuseColor"};
     private int numVerts, numTexes, numNormals;
     private String programName="standard";
 
@@ -62,8 +60,8 @@ public class Model implements IMatrix
 
             GL30.glBindVertexArray(meshVAOs.get(vao));
 
-            for(int i = 0; i<vertAttribs.length; i++)
-                GL20.glEnableVertexAttribArray(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get(vertAttribs[i]));
+            for(String attribute : ShaderProgramManager.getInstance().getShaderProgram(programName).getVertexAttributes().keySet())
+                GL20.glEnableVertexAttribArray(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get(attribute));
 
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, meshVBOs.get(vao));
             int stride = meshes.get(vao).getStride();
@@ -74,7 +72,7 @@ public class Model implements IMatrix
                 GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get("normal"), 3, GL11.GL_FLOAT, false, stride, meshes.get(vao).getNormalOffset());
             }
             if(meshes.get(vao).hasUVs()) {
-                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get("in_tex"), 2, GL11.GL_FLOAT, false, stride, meshes.get(vao).getUVOffset());
+                GL20.glVertexAttribPointer(Cubes.shaderProgramManager.getShaderProgram(programName).getVertexAttributes().get("UV"), 2, GL11.GL_FLOAT, false, stride, meshes.get(vao).getUVOffset());
             }
 
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);

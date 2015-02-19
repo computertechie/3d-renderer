@@ -1,12 +1,15 @@
 {
-  "render_process":"standard_no_texture",
-  "vertex_shader":"standard/no_texture/vertex.glsl",
-  "fragment_shader":"standard/no_texture/fragment.glsl",
-  "attributes":[
-    "position",
-    "normal"
+  "renderProcessName" : "standard_no_texture",
+  "vertexShaderFile":"/assets/shaders/standard/no_texture/vertex.glsl",
+  "fragmentShaderFile":"/assets/shaders/standard/no_texture/fragment.glsl",
+  "vertexAttributes" : [
+    ["position",-1],
+    ["normal", -1]
   ],
-  "uniforms":[
-    "diffuseColor"
+  "uniformAttributes" : [
+    ["diffuseColor",-1],
+    ["dirLight.color",-1],
+    ["dirLight.position",-1],
+    ["dirLight.intensity",-1]
   ]
 }

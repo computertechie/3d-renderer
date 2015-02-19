@@ -1,15 +1,17 @@
 {
-  "vertex_shader":"standard/vertex.glsl",
-  "fragment_shader":"standard/fragment.glsl",
-  "attributes":[
-    "position",
-    "UV",
-    "normal"
+  "renderProcessName" : "standard",
+  "vertexShaderFile":"/assets/shaders/standard/vertex.glsl",
+  "fragmentShaderFile":"/assets/shaders/standard/fragment.glsl",
+  "vertexAttributes" : [
+    ["position",-1],
+    ["UV", -1],
+    ["normal", -1]
   ],
-  "uniforms":[
-    "diffuseColor",
-    "dirLight.color",
-    "dirLight.position",
-    "dirLight.intensity"
+  "uniformAttributes" : [
+    ["diffuseColor",-1],
+    ["dirLight.color",-1],
+    ["dirLight.position",-1],
+    ["dirLight.intensity",-1],
+    ["texMap",-1]
   ]
 }

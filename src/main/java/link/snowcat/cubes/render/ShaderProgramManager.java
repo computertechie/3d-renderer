@@ -1,5 +1,6 @@
 package link.snowcat.cubes.render;
 
+import link.snowcat.cubes.Cubes;
 import link.snowcat.cubes.generated.*;
 
 import org.lwjgl.opengl.GL11;
@@ -12,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: Pepper
@@ -34,30 +36,28 @@ public class ShaderProgramManager {
         return instance;
     }
 
-    public void registerProgram(String name, URL vertexFileLocation, URL fragmentFileLocation, String[] vertexAttributes, String[] uniformAttributes){
-        if(nameProgramMap.containsKey(name))
+    public void registerProgram(ShaderProgram program){
+        if(nameProgramMap.containsKey(program.getRenderProcessName()))
             return;
 
-        ShaderProgram program = new ShaderProgram();
-
-        int vertexShaderID = loadShader(vertexFileLocation, GL20.GL_VERTEX_SHADER);
-        int fragmentShaderID = loadShader(fragmentFileLocation, GL20.GL_FRAGMENT_SHADER);
+        int vertexShaderID = loadShader(program.getVertexShaderFile(), GL20.GL_VERTEX_SHADER);
+        int fragmentShaderID = loadShader(program.getFragmentShaderFile(), GL20.GL_FRAGMENT_SHADER);
         int programID = GL20.glCreateProgram();
 
         if(fragmentShaderID > -1 && vertexShaderID > -1 && createProgram(programID, vertexShaderID, fragmentShaderID)){
             program.setProgramID(programID);
-            if(vertexAttributes != null) {
-                program.setVertexAttributes(getVertexAttributeLocations(vertexAttributes, programID));
+            if(!program.getVertexAttributes().keySet().isEmpty()) {
+                program.setVertexAttributes(getVertexAttributeLocations(program.getVertexAttributes().keySet(), programID));
             }
 
-            if(uniformAttributes != null) {
-                program.setUniformAttributes(getUniformAttributeLocations(uniformAttributes, programID));
+            if(!program.getUniformAttributes().keySet().isEmpty()) {
+                program.setUniformAttributes(getUniformAttributeLocations(program.getUniformAttributes().keySet(), programID));
             }
 
             program.setProjectionMatrixLocation(GL20.glGetUniformLocation(programID, "projectionMatrix"));
             program.setViewMatrixLocation(GL20.glGetUniformLocation(programID, "viewMatrix"));
             program.setModelMatrixLocation(GL20.glGetUniformLocation(programID, "modelMatrix"));
-            nameProgramMap.put(name, program);
+            nameProgramMap.put(program.getRenderProcessName(), program);
         }
     }
 
@@ -75,58 +75,26 @@ public class ShaderProgramManager {
         return nameProgramMap.get(name);
     }
 
-    private Map getVertexAttributeLocations(String[] attributes, int programID){
+    private Map getVertexAttributeLocations(Set<String> attributes, int programID){
         Map<String, Integer> vertexAttribLocations = new HashMap<>();
-        for (int i = 0; i<attributes.length;i++){
-            vertexAttribLocations.put(attributes[i],GL20.glGetAttribLocation(programID, attributes[i]));
+        for (String attribute : attributes){
+            vertexAttribLocations.put(attribute,GL20.glGetAttribLocation(programID, attribute));
         }
 
         return vertexAttribLocations;
     }
 
-    private Map getUniformAttributeLocations(String[] attributes, int programID){
+    private Map getUniformAttributeLocations(Set<String> attributes, int programID){
         Map<String, Integer> uniformAttribLocations = new HashMap<>();
-        for(int i = 0; i<attributes.length; i++){
-            uniformAttribLocations.put(attributes[i], GL20.glGetUniformLocation(programID, attributes[i]));
+        for(String attribute : attributes){
+            uniformAttribLocations.put(attribute, GL20.glGetUniformLocation(programID, attribute));
         }
 
         return uniformAttribLocations;
     }
 
     public static int loadShader(String filename, int type) {
-        StringBuilder shaderSource = new StringBuilder();
-        int shaderID = -1;
-        try
-        {
-            BufferedReader reader;
-            reader = new BufferedReader(new FileReader(filename));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                shaderSource.append(line).append("\n");
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.err.println("Could not read file.");
-            e.printStackTrace();
-            System.exit(-1);
-        }
-
-        shaderID = GL20.glCreateShader(type);
-        GL20.glShaderSource(shaderID, shaderSource);
-        GL20.glCompileShader(shaderID);
-
-        int error = GL11.glGetError();
-
-        if(error != 0){
-            System.err.println("some gl error " + error);
-        }
-
-        if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE)
-            System.err.println(GL20.glGetShaderInfoLog(shaderID, 1024));
-        if (GL11.glGetError() != 0) {
-            System.err.println("shader error");
-        }
-        return shaderID;
+        return loadShader(ShaderProgramManager.class.getResource(filename), type);
     }
 
     public static int loadShader(URL filename, int type) {
