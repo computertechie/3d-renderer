@@ -65,7 +65,11 @@ public class Cubes {
 
         ShaderProgram program = new Gson().fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard.json"))),ShaderProgram.class);
         shaderProgramManager.registerProgram(program);
-        box = new Model(this.getClass().getResource("/assets/models/OBJ/Small_Disc.obj"));
+        program = new Gson().fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard_no_texture.json"))),ShaderProgram.class);
+        shaderProgramManager.registerProgram(program);
+        ring = new Model(this.getClass().getResource("/assets/models/OBJ/Small_Disc.obj"), VertexFormat.POSITION_UV_NORMAL, "standard", "ring");
+        plane = new Model(this.getClass().getResource("/assets/models/fighter/jet.obj"), VertexFormat.POSITION_NORMAL, "standard_no_texture", "jet");
+//        plane.translate(-10,-10,-10);
     }
 
     public void createDisplay(){
@@ -144,7 +148,8 @@ public class Cubes {
             renderTick++;
             checkForResize();
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
-            renderInstance.render(box);
+            renderInstance.render(ring);
+            renderInstance.render(plane);
             Display.update();
             Display.sync(FRAMES);
         }

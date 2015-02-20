@@ -2,10 +2,20 @@
   "renderProcessName" : "standard",
   "vertexShaderFile":"/assets/shaders/standard/vertex.glsl",
   "fragmentShaderFile":"/assets/shaders/standard/fragment.glsl",
+  "stride" : 32,
   "vertexAttributes" : [
-    ["position",-1],
-    ["UV", -1],
-    ["normal", -1]
+    {
+      "attributeName" : "position",
+      "attributeLocation" : -1
+    },
+    {
+      "attributeName" : "UV",
+      "attributeLocation" : -1
+    },
+    {
+      "attributeName" : "normal",
+      "attributeLocation" : -1
+    }
   ],
   "uniformAttributes" : [
     ["diffuseColor",-1],

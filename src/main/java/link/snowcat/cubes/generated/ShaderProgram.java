@@ -1,6 +1,8 @@
 
 package link.snowcat.cubes.generated;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
@@ -32,7 +34,9 @@ public class ShaderProgram {
     @Expose
     private int modelMatrixLocation;
     @Expose
-    private Map<String,  Integer> vertexAttributes;
+    private int stride;
+    @Expose
+    private List<Attribute> vertexAttributes = new ArrayList<Attribute>();
     @Expose
     private Map<String,  Integer> uniformAttributes;
 
@@ -201,9 +205,27 @@ public class ShaderProgram {
     /**
      * 
      * @return
+     *     The stride
+     */
+    public int getStride() {
+        return stride;
+    }
+
+    /**
+     * 
+     * @param stride
+     *     The stride
+     */
+    public void setStride(int stride) {
+        this.stride = stride;
+    }
+
+    /**
+     * 
+     * @return
      *     The vertexAttributes
      */
-    public Map<String,  Integer> getVertexAttributes() {
+    public List<Attribute> getVertexAttributes() {
         return vertexAttributes;
     }
 
@@ -212,7 +234,7 @@ public class ShaderProgram {
      * @param vertexAttributes
      *     The vertexAttributes
      */
-    public void setVertexAttributes(Map<String,  Integer> vertexAttributes) {
+    public void setVertexAttributes(List<Attribute> vertexAttributes) {
         this.vertexAttributes = vertexAttributes;
     }
 

@@ -42,7 +42,7 @@ public class Mesh {
     }
 
     public int getNumberOfVertexes(){
-        return sizeOfVertCoords;
+        return sizeOfVertCoords/vertexes.get(0).getNumPositionElements();
     }
 
     private int sizeOfTexCoords(){
@@ -59,7 +59,7 @@ public class Mesh {
     }
 
     public int getNumberOfTextureCoords(){
-        return sizeOfTexCoords;
+        return sizeOfTexCoords/vertexes.get(0).getNumTextureElements();
     }
 
     private int sizeOfNormals(){
@@ -76,7 +76,7 @@ public class Mesh {
     }
 
     public int getNumberOfNormals(){
-        return sizeOfNormals;
+        return sizeOfNormals/vertexes.get(0).getNumNormalElements();
     }
 
     public int sizeOfMesh(){
@@ -119,8 +119,8 @@ public class Mesh {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(sizeOfMesh());
         for(Vertex vert : vertexes){
             buffer.put(vert.getPositionAsBuffer());
-            buffer.put(vert.getNormalsAsBuffer());
             buffer.put(vert.getTexturesAsBuffer());
+            buffer.put(vert.getNormalsAsBuffer());
         }
         buffer.flip();
         return buffer;

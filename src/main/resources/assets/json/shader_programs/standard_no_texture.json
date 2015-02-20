@@ -1,10 +1,17 @@
 {
   "renderProcessName" : "standard_no_texture",
-  "vertexShaderFile":"/assets/shaders/standard/no_texture/vertex.glsl",
-  "fragmentShaderFile":"/assets/shaders/standard/no_texture/fragment.glsl",
+  "vertexShaderFile":"/assets/shaders/standard_no_texture/vertex.glsl",
+  "fragmentShaderFile":"/assets/shaders/standard_no_texture/fragment.glsl",
+  "stride" : 24,
   "vertexAttributes" : [
-    ["position",-1],
-    ["normal", -1]
+    {
+      "attributeName" : "position",
+      "attributeLocation" : -1
+    },
+    {
+      "attributeName" : "normal",
+      "attributeLocation" : -1
+    }
   ],
   "uniformAttributes" : [
     ["diffuseColor",-1],

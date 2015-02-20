@@ -12,7 +12,6 @@ public class Renderer{
     private int projUniformLoc = -1;
     Matrix4f projectionMatrix = new Matrix4f();
     Camera camera;
-    TextureManager textureManager;
     ShaderProgramManager shaderProgramManager;
     public Cubes cubeInstance;
 
@@ -20,10 +19,6 @@ public class Renderer{
 
     public void setCubeInstance(Cubes cube){
         cubeInstance = cube;
-    }
-
-    public void setTextureManager(TextureManager manager){
-        textureManager = manager;
     }
 
     public void setShaderProgramManager(ShaderProgramManager manager){
@@ -63,13 +58,9 @@ public class Renderer{
         projUniformLoc = shaderProgramManager.getShaderProgram(model.getProgramName()).getProjectionMatrixLocation();
         model.bufferUniforms();
         bufferUniforms();
-        bufferDirLight(model);
+        cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(model.getProgramName()));
         camera.bufferUniforms(shaderProgramManager.getShaderProgram(model.getProgramName()).getViewMatrixLocation());
         model.render();
-    }
-
-    public float coTangent(float tan){
-        return (float)(1.0D / Math.tan(tan));
     }
 
     public void bufferUniforms() {
@@ -79,13 +70,11 @@ public class Renderer{
         GL20.glUniformMatrix4(projUniformLoc, false, buffer);
     }
 
-    public void bufferDirLight(Model model){
-        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getUniformAttributes().get("dirLight.color"), cubeInstance.sun.getColorAsFBuffer());
-        GL20.glUniform3(shaderProgramManager.getShaderProgram(model.getProgramName()).getUniformAttributes().get("dirLight.position"), cubeInstance.sun.getPositionAsFBuffer());
-        GL20.glUniform1f(shaderProgramManager.getShaderProgram(model.getProgramName()).getUniformAttributes().get("dirLight.intensity"), cubeInstance.sun.getIntensity());
-    }
-
     public static float degreesToRadians(float degrees) {
         return (float)(Math.PI/180) * degrees;
+    }
+
+    public static float coTangent(float tan){
+        return (float)(1.0D / Math.tan(tan));
     }
 }

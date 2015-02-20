@@ -1,0 +1,19 @@
+{
+  "description" : "A shader attribute.",
+  "id" : "Attribute",
+  "type" : "object",
+  "properties" : {
+    "attributeName" : {
+      "type" : "string"
+    },
+    "attributeLocation" : {
+      "type" : "integer"
+    },
+    "attributeSize" : {
+      "type" : "integer"
+    },
+    "attributeOffset" : {
+      "type" : "integer"
+    }
+  }
+}

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,11 +47,11 @@ public class ShaderProgramManager {
 
         if(fragmentShaderID > -1 && vertexShaderID > -1 && createProgram(programID, vertexShaderID, fragmentShaderID)){
             program.setProgramID(programID);
-            if(!program.getVertexAttributes().keySet().isEmpty()) {
-                program.setVertexAttributes(getVertexAttributeLocations(program.getVertexAttributes().keySet(), programID));
+            if(!program.getVertexAttributes().isEmpty()) {
+                program.setVertexAttributes(getVertexAttributeLocations(program.getVertexAttributes(), programID));
             }
 
-            if(!program.getUniformAttributes().keySet().isEmpty()) {
+            if(!program.getUniformAttributes().isEmpty()) {
                 program.setUniformAttributes(getUniformAttributeLocations(program.getUniformAttributes().keySet(), programID));
             }
 
@@ -75,22 +76,21 @@ public class ShaderProgramManager {
         return nameProgramMap.get(name);
     }
 
-    private Map getVertexAttributeLocations(Set<String> attributes, int programID){
-        Map<String, Integer> vertexAttribLocations = new HashMap<>();
-        for (String attribute : attributes){
-            vertexAttribLocations.put(attribute,GL20.glGetAttribLocation(programID, attribute));
+    private List getVertexAttributeLocations(List<Attribute> attributes, int programID){
+        for (Attribute attribute : attributes){
+            attribute.setAttributeLocation(GL20.glGetAttribLocation(programID, attribute.getAttributeName()));
         }
 
-        return vertexAttribLocations;
+        return attributes;
     }
 
     private Map getUniformAttributeLocations(Set<String> attributes, int programID){
-        Map<String, Integer> uniformAttribLocations = new HashMap<>();
+        Map<String, Integer> attributeLocations = new HashMap<String, Integer>();
         for(String attribute : attributes){
-            uniformAttribLocations.put(attribute, GL20.glGetUniformLocation(programID, attribute));
+            attributeLocations.put(attribute, GL20.glGetUniformLocation(programID, attribute));
         }
 
-        return uniformAttribLocations;
+        return attributeLocations;
     }
 
     public static int loadShader(String filename, int type) {
