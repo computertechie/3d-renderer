@@ -1,0 +1,6 @@
+{
+  "modelName" : "jet",
+  "programName" : "standard_no_texture",
+  "modelFile" : "/assets/models/fighter/jet.obj",
+  "vertexFormat" : "POSITION_NORMAL"
+}

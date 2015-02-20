@@ -38,7 +38,7 @@ public class Cubes {
     Model ring, plane;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480, fps = 0;
-    float mouseSensitivity = 0.1f;
+    float mouseSensitivity = 0.5f;
     long physicsTick = 0, renderTick = 0;
 
     double designatedTickTime = 15, currentTime = System.nanoTime()/TIME_CONVERSION, fpsTime = currentTime, availableTime = 0, frameTime = 0;
@@ -62,14 +62,17 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
+        Gson gson = new Gson();
 
-        ShaderProgram program = new Gson().fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard.json"))),ShaderProgram.class);
+        ShaderProgram program = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard.json"))),ShaderProgram.class);
         shaderProgramManager.registerProgram(program);
-        program = new Gson().fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard_no_texture.json"))),ShaderProgram.class);
+        program = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard_no_texture.json"))),ShaderProgram.class);
         shaderProgramManager.registerProgram(program);
-        ring = new Model(this.getClass().getResource("/assets/models/OBJ/Small_Disc.obj"), VertexFormat.POSITION_UV_NORMAL, "standard", "ring");
-        plane = new Model(this.getClass().getResource("/assets/models/fighter/jet.obj"), VertexFormat.POSITION_NORMAL, "standard_no_texture", "jet");
-//        plane.translate(-10,-10,-10);
+
+        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/jet.json"))), Model.class);
+        plane.initialize();
+        ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Model.class);
+        ring.initialize();
     }
 
     public void createDisplay(){
@@ -208,9 +211,11 @@ public class Cubes {
             camera.zeroPitch();
         }
 
-        int dx = Mouse.getDX(), dy = Mouse.getDY();
-        camera.changePitch(dy);
-        camera.changeBearing(dx);
+        if(Mouse.isGrabbed()) {
+            int dx = (int)(Mouse.getDX()*mouseSensitivity), dy = (int)(Mouse.getDY()*mouseSensitivity);
+            camera.changePitch(dy);
+            camera.changeBearing(dx);
+        }
         camera.update(movement);
     }
 

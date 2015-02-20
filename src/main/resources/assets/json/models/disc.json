@@ -1,0 +1,6 @@
+{
+  "modelName" : "disc",
+  "programName" : "standard",
+  "modelFile" : "/assets/models/OBJ/Small_Disc.obj",
+  "vertexFormat" : "POSITION_UV_NORMAL"
+}

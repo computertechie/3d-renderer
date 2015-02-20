@@ -2,9 +2,11 @@
 package link.snowcat.cubes.render;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 
 /**
@@ -12,17 +14,19 @@ import com.google.gson.annotations.Expose;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class VertexFormat {
-    public static final VertexFormat POSITION_UV_NORMAL = new VertexFormat().appendElement(new VertexElement(4, 3, 0)).appendElement(new VertexElement(4, 2, 0)).appendElement(new VertexElement(4, 3, 0));
-    public static final VertexFormat POSITION_NORMAL = new VertexFormat().appendElement(new VertexElement(4, 3, 0)).appendElement(new VertexElement(4, 3, 0));
+public enum VertexFormat {
+    @SerializedName("POSITION_UV_NORMAL")
+    POSITION_UV_NORMAL(Arrays.asList(new VertexElement[]{new VertexElement(4,3,0), new VertexElement(4,2,0), new VertexElement(4,3,0)})),
+    @SerializedName("POSITION_NORMAL")
+    POSITION_NORMAL(Arrays.asList(new VertexElement[]{new VertexElement(4, 3, 0), new VertexElement(4, 3, 0)}));
 
     @Expose
     private List<VertexElement> vertexElements = new ArrayList<VertexElement>();
     private int stride = 0;
 
-    public VertexFormat(){}
+    VertexFormat(){}
 
-    public VertexFormat(List<VertexElement> elements){
+    VertexFormat(List<VertexElement> elements){
         setVertexElements(elements);
     }
 

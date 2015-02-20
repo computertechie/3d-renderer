@@ -22,17 +22,21 @@ public class Model implements IMatrix
 {
     private Matrix4f modelMatrix = new Matrix4f();
     private IntBuffer meshVBOs, meshVAOs;
-    private Vector3f rotation = new Vector3f(); Vector3f translation = new Vector3f(); Vector3f scale = new Vector3f(1,1,1);
+    private Vector3f rotation, translation, scale;
     private List<Mesh> meshes;
-    private String programName, modelName;
+    private String programName, modelName, modelFile;
     private VertexFormat vertexFormat;
 
-    public Model(URL resource, VertexFormat format, String program, String name){
-        vertexFormat = format;
-        programName = program;
-        modelName = name;
-        ObjFileParser parser = new ObjFileParser(resource);
-        meshes = parser.getMeshes();
+    public String getProgramName(){
+        return programName;
+    }
+
+    public void initialize(){
+        rotation = new Vector3f();
+        translation = new Vector3f();
+        scale = new Vector3f(1,1,1);
+
+        loadGeometry(Cubes.class.getResource(modelFile));
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());
         meshVAOs = BufferUtils.createIntBuffer(meshes.size());
         genIDs();
@@ -40,8 +44,8 @@ public class Model implements IMatrix
         update();
     }
 
-    public String getProgramName(){
-        return programName;
+    public void loadGeometry(URL modelFile){
+        meshes = new ObjFileParser(modelFile).getMeshes();
     }
 
     public void update() {
@@ -64,10 +68,8 @@ public class Model implements IMatrix
 
             GL30.glBindVertexArray(meshVAOs.get(vao));
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, meshVBOs.get(vao));
-            System.out.println("vao");
             int i = 0, offset = 0;
             for(Attribute attribute : modelProgram.getVertexAttributes()){
-                System.out.println("attrib buffer");
                 GL20.glEnableVertexAttribArray(attribute.getAttributeLocation());
                 GL20.glVertexAttribPointer(attribute.getAttributeLocation(), vertexFormat.getVertexElements().get(i).getElementCount(), GL11.GL_FLOAT, false, modelProgram.getStride(), offset);
                 offset +=  vertexFormat.getVertexElements().get(i).getElementCount()*vertexFormat.getVertexElements().get(i).getElementSize();
@@ -75,7 +77,6 @@ public class Model implements IMatrix
             }
 
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, aBuf, GL15.GL_STATIC_DRAW);
-            System.out.println(meshes.get(vao).getNumberOfVertexes());
         }
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
@@ -104,15 +105,7 @@ public class Model implements IMatrix
 
     public void genIDs() {
         GL30.glGenVertexArrays(meshVAOs);
-        System.out.println("VAOs");
-        for(int i = 0; i<meshVAOs.limit(); i++){
-            System.out.println(meshVAOs.get(i));
-        }
-        System.out.println("VBOs");
         GL15.glGenBuffers(meshVBOs);
-        for(int i = 0; i<meshVBOs.limit(); i++){
-            System.out.println(meshVBOs.get(i));
-        }
     }
 
     public void bufferUniforms() {
@@ -173,5 +166,13 @@ public class Model implements IMatrix
         for(Mesh mesh : meshes)
             size += mesh.getNumberOfNormals();
         return size;
+    }
+
+    public String getModelName(){
+        return modelName;
+    }
+
+    public void setModelName(String name){
+        modelName = name;
     }
 }
