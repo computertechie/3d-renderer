@@ -1,7 +1,6 @@
 package link.snowcat.cubes;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -34,13 +33,9 @@ public class Cubes {
     public static TextureManager textureManagerInstance = TextureManager.getInstance();
     public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
-
-    private String[] vertAttribs = {"position","in_tex","normal"};
-    private String[] uniformAttribs= {"texMap","diffuseColor","dirLight.color", "dirLight.position", "dirLight.intensity"};
-
-    private boolean quit = false;
+    private boolean quit = false, wireframe = false;
     Camera camera = new Camera(0,0);
-    Model box;
+    Model ring, plane;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480, fps = 0;
     float mouseSensitivity = 0.1f;
@@ -61,9 +56,8 @@ public class Cubes {
         System.out.println("oGL Version: " + GL11.glGetString(GL11.GL_VERSION));
         System.out.println("GLSL Version: "+GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
         System.out.println("Vendor: "+GL11.glGetString(GL11.GL_VENDOR));
-        System.out.println("Renderer: "+GL11.glGetString(GL11.GL_RENDERER));
+        System.out.println("Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
         renderInstance.setCamera(camera);
-        renderInstance.setTextureManager(textureManagerInstance);
         renderInstance.setShaderProgramManager(shaderProgramManager);
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
@@ -143,7 +137,6 @@ public class Cubes {
                     sun.setDirection(new Vector3f(newX, -newY, 0));
                 }
 
-                box.update();
                 availableTime -= designatedTickTime;
             }
 
@@ -161,30 +154,48 @@ public class Cubes {
         Vector3f movement = new Vector3f();
 
         float speedModifier = 1f;
-        if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
-            quit=true;
-        if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
-            speedModifier = 0.001f;
-        if(Keyboard.isKeyDown(Keyboard.KEY_W))
-            movement.setZ(movement.getZ() + (0.1f*speedModifier));
-        if(Keyboard.isKeyDown(Keyboard.KEY_S))
+        if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+            quit = true;
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+            speedModifier = 2f;
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
+            movement.setZ(movement.getZ() + (0.1f * speedModifier));
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
             movement.setZ(movement.getZ() + (-0.1f * speedModifier));
-        if(Keyboard.isKeyDown(Keyboard.KEY_A))
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
             movement.setX(movement.getX() + (0.1f * speedModifier));
-        if(Keyboard.isKeyDown(Keyboard.KEY_D))
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_D)) {
             movement.setX(movement.getX() + (-0.1f * speedModifier));
-        if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             movement.setY(movement.getY() + (-0.1f * speedModifier));
-        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-            movement.setY(movement.getY() + (0.1f*speedModifier));
-        if(Keyboard.isKeyDown(Keyboard.KEY_T))
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            movement.setY(movement.getY() + (0.1f * speedModifier));
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_T)) {
             Mouse.setGrabbed(!Mouse.isGrabbed());
+        }
         if(Keyboard.isKeyDown(Keyboard.KEY_F4)){
             try {
                 Display.setFullscreen(!Display.isFullscreen());
             } catch (LWJGLException e) {
                 e.printStackTrace();
             }
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_1)){
+            if(wireframe){
+                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+            }
+            else{
+                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+            }
+            wireframe = !wireframe;
         }
 
         if(Keyboard.isKeyDown(Keyboard.KEY_0)){
