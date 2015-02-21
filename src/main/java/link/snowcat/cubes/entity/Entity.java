@@ -36,6 +36,10 @@ public class Entity {
         ModelManager.getInstance().loadModel(modelName);
     }
 
+    public void update(){
+
+    }
+
     /**
      * 
      * @return

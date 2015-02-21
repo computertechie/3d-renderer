@@ -40,6 +40,7 @@ public class ObjFileParser {
             bufferedFileReader = new BufferedReader(new InputStreamReader(resource.openStream()));
             fileBase = resource.toString().substring(0, resource.toString().lastIndexOf('/'));
             parseFile();
+            bufferedFileReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,7 +137,6 @@ public class ObjFileParser {
 
     public List<Mesh> getMeshes(){
         return new ArrayList<Mesh>(materialMeshMap.values());
-//        return meshes;
     }
 
     public void parseSmoothing(String line){

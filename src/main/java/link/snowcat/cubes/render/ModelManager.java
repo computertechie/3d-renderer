@@ -15,6 +15,7 @@ public class ModelManager {
     public static ModelManager instance = new ModelManager();
     private final String modelsAssetDir = "/assets/json/models/";
     private final Gson modelGson = new Gson();
+    private Model newModel;
     Map<String, Map<String, Model>> shaderNameToModelsMap;
     private ModelManager(){
         shaderNameToModelsMap = new HashMap<>();
@@ -31,7 +32,7 @@ public class ModelManager {
             }
         }
 
-        Model newModel = modelGson.fromJson(new InputStreamReader(Cubes.class.getResourceAsStream(modelsAssetDir + modelName + ".json")), Model.class);
+        newModel = modelGson.fromJson(new InputStreamReader(Cubes.class.getResourceAsStream(modelsAssetDir + modelName + ".json")), Model.class);
         newModel.initialize();
 
         if(!shaderNameToModelsMap.containsKey(newModel.getProgramName())){
