@@ -18,11 +18,10 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 
-public class Model implements IMatrix
+public class Model
 {
     private Matrix4f modelMatrix = new Matrix4f();
     private IntBuffer meshVBOs, meshVAOs;
-    private Vector3f rotation, translation, scale;
     private List<Mesh> meshes;
     private String programName, modelName, modelFile;
     private VertexFormat vertexFormat;
@@ -32,30 +31,20 @@ public class Model implements IMatrix
     }
 
     public void initialize(){
-        rotation = new Vector3f();
-        translation = new Vector3f();
-        scale = new Vector3f(1,1,1);
-
         ShaderProgramManager.getInstance().loadAndBindProgram(programName);
         loadGeometry(Cubes.class.getResource(modelFile));
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());
         meshVAOs = BufferUtils.createIntBuffer(meshes.size());
         genIDs();
         buffer();
-        update();
     }
 
     public void loadGeometry(URL modelFile){
         meshes = new ObjFileParser(modelFile).getMeshes();
     }
 
-    public void update() {
-        modelMatrix = new Matrix4f();
-        modelMatrix.translate(new Vector3f(translation.x, translation.y, -translation.z));
-        modelMatrix.rotate(rotation.x, new Vector3f(1.0F, 0.0F, 0.0F));
-        modelMatrix.rotate(rotation.y, new Vector3f(0.0F, 1.0F, 0.0F));
-        modelMatrix.rotate(rotation.z, new Vector3f(0.0F, 0.0F, 1.0F));
-        modelMatrix.scale(scale);
+    public void setModelMatrix(Matrix4f matrix) {
+        modelMatrix = matrix;
     }
 
     public void buffer() {
@@ -114,31 +103,6 @@ public class Model implements IMatrix
         modelMatrix.store(buf);
         buf.flip();
         GL20.glUniformMatrix4(Cubes.shaderProgramManager.getShaderProgram(programName).getModelMatrixLocation(), false, buf);
-    }
-
-    public void translate(float x, float y, float z){
-        translation = new Vector3f(x,y,z);
-        update();
-    }
-
-    public void scale(float x, float y, float z){
-        scale = new Vector3f(x,y,z);
-        update();
-    }
-
-    public void rotateX(float angle){
-        rotation.x += Renderer.degreesToRadians(angle);
-        update();
-    }
-
-    public void rotateY(float angle){
-        rotation.y += Renderer.degreesToRadians(angle);
-        update();
-    }
-
-    public void rotateZ(float angle){
-        rotation.z += Renderer.degreesToRadians(angle);
-        update();
     }
 
     private int getSizeOfModel(){

@@ -54,10 +54,12 @@ public class Renderer{
         return instance;
     }
 
-    public void render(String modelName) {
+    public void render(String modelName, Matrix4f modelMatrix) {
         renderModel = ModelManager.getInstance().getModel(modelName);
         shaderProgramManager.bindProgram(renderModel.getProgramName());
         projUniformLoc = shaderProgramManager.getShaderProgram(renderModel.getProgramName()).getProjectionMatrixLocation();
+
+        renderModel.setModelMatrix(modelMatrix);
         renderModel.bufferUniforms();
         bufferUniforms();
         cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(renderModel.getProgramName()));

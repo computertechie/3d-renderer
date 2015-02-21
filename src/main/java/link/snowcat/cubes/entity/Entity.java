@@ -8,6 +8,7 @@ import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import link.snowcat.cubes.render.ModelManager;
 import link.snowcat.cubes.render.ShaderProgramManager;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 
@@ -31,13 +32,24 @@ public class Entity {
 
     public void initialize(){
         position = new Vector3f(0,0,0);
-        scale = new Vector3f(0,0,0);
+        scale = new Vector3f(1,1,1);
         rotation = new Vector3f(0,0,0);
         ModelManager.getInstance().loadModel(modelName);
     }
 
     public void update(){
 
+    }
+
+    public Matrix4f getModelMatrix(){
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.translate(new Vector3f(position.x, position.y, -position.z));
+        modelMatrix.rotate(rotation.x, new Vector3f(1.0F, 0.0F, 0.0F));
+        modelMatrix.rotate(rotation.y, new Vector3f(0.0F, 1.0F, 0.0F));
+        modelMatrix.rotate(rotation.z, new Vector3f(0.0F, 0.0F, 1.0F));
+        modelMatrix.scale(scale);
+
+        return modelMatrix;
     }
 
     /**
@@ -128,6 +140,24 @@ public class Entity {
      */
     public void setScale(Vector3f scale) {
         this.scale = scale;
+    }
+
+    public void move(float x, float y, float z){
+        position.setX(position.getX()+x);
+        position.setY(position.getY()+y);
+        position.setZ(position.getZ()+z);
+    }
+    
+    public void scale(float x, float y, float z){
+        scale.setX(scale.getX()+x);
+        scale.setY(scale.getY()+y);
+        scale.setZ(scale.getZ()+z);
+    }
+    
+    public void rotate(float x, float y, float z){
+        rotation.setX(rotation.getX()+x);
+        rotation.setY(rotation.getY()+y);
+        rotation.setZ(rotation.getZ()+z);
     }
 
 }

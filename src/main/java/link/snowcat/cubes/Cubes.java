@@ -37,8 +37,9 @@ public class Cubes {
     public static ModelManager modelManagerInstance = ModelManager.getInstance();
 
     private boolean quit = false, wireframe = false;
+    private static boolean sync = false;
     Camera camera = new Camera(0,0);
-    Entity ring, plane;
+    Entity ring, plane, plane2;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480, fps = 0;
     float mouseSensitivity = 0.5f;
@@ -48,6 +49,7 @@ public class Cubes {
 
     public static void main(String[] args){
         if(args.length > 0) {
+            sync = true;
             FRAMES = Integer.parseInt(args[0]);
         }
         Cubes cube = new Cubes();
@@ -57,8 +59,8 @@ public class Cubes {
     public Cubes(){
         createDisplay();
         System.out.println("oGL Version: " + GL11.glGetString(GL11.GL_VERSION));
-        System.out.println("GLSL Version: "+GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
-        System.out.println("Vendor: "+GL11.glGetString(GL11.GL_VENDOR));
+        System.out.println("GLSL Version: " + GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
+        System.out.println("Vendor: " + GL11.glGetString(GL11.GL_VENDOR));
         System.out.println("Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
         renderInstance.setCamera(camera);
         renderInstance.setShaderProgramManager(shaderProgramManager);
@@ -69,6 +71,8 @@ public class Cubes {
         Gson gson = new Gson();
         plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
         plane.initialize();
+        plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
+        plane2.initialize();
         ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Entity.class);
         ring.initialize();
     }
@@ -142,6 +146,9 @@ public class Cubes {
                     sun.setDirection(new Vector3f(newX, -newY, 0));
                 }
 
+                plane.move(0.1f, 0.1f, 0);
+                plane2.rotate(0, 0.1f, 0);
+                ring.scale(0.1f, 0.1f, 0.1f);
                 availableTime -= designatedTickTime;
             }
 
@@ -149,10 +156,13 @@ public class Cubes {
             renderTick++;
             checkForResize();
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
-            renderInstance.render(ring.getModelName());
-            renderInstance.render(plane.getModelName());
+            renderInstance.render(ring.getModelName(), ring.getModelMatrix());
+            renderInstance.render(plane.getModelName(), plane.getModelMatrix());
+            renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
             Display.update();
-            Display.sync(FRAMES);
+            if(sync) {
+                Display.sync(FRAMES);
+            }
         }
     }
 
