@@ -36,6 +36,7 @@ public class Model implements IMatrix
         translation = new Vector3f();
         scale = new Vector3f(1,1,1);
 
+        ShaderProgramManager.getInstance().loadAndBindProgram(programName);
         loadGeometry(Cubes.class.getResource(modelFile));
         meshVBOs = BufferUtils.createIntBuffer(meshes.size());
         meshVAOs = BufferUtils.createIntBuffer(meshes.size());

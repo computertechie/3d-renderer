@@ -1,6 +1,4 @@
 {
-  "entity_name":"jet",
-  "model_name":"jet",
-  "model_file":"fighter/jet.obj",
-  "render_process":"standard_no_texture"
+  "entityName": "jet",
+  "modelName": "jet"
 }

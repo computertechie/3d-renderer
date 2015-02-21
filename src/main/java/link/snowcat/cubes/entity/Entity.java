@@ -1,11 +1,14 @@
 
-package link.snowcat.cubes.generated;
+package link.snowcat.cubes.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
+import link.snowcat.cubes.render.ModelManager;
+import link.snowcat.cubes.render.ShaderProgramManager;
+import org.lwjgl.util.vector.Vector3f;
 
 
 /**
@@ -20,11 +23,18 @@ public class Entity {
     @Expose
     private String modelName;
     @Expose
-    private List<Object> position = new ArrayList<Object>(Arrays.asList(null, null, null));
+    private Vector3f position;
     @Expose
-    private List<Object> rotation = new ArrayList<Object>(Arrays.asList(null, null, null));
+    private Vector3f rotation;
     @Expose
-    private List<Object> scale = new ArrayList<Object>(Arrays.asList(null, null, null));
+    private Vector3f scale;
+
+    public void initialize(){
+        position = new Vector3f(0,0,0);
+        scale = new Vector3f(0,0,0);
+        rotation = new Vector3f(0,0,0);
+        ModelManager.getInstance().loadModel(modelName);
+    }
 
     /**
      * 
@@ -67,7 +77,7 @@ public class Entity {
      * @return
      *     The position
      */
-    public List<Object> getPosition() {
+    public Vector3f getPosition() {
         return position;
     }
 
@@ -76,7 +86,7 @@ public class Entity {
      * @param position
      *     The position
      */
-    public void setPosition(List<Object> position) {
+    public void setPosition(Vector3f position) {
         this.position = position;
     }
 
@@ -85,7 +95,7 @@ public class Entity {
      * @return
      *     The rotation
      */
-    public List<Object> getRotation() {
+    public Vector3f getRotation() {
         return rotation;
     }
 
@@ -94,7 +104,7 @@ public class Entity {
      * @param rotation
      *     The rotation
      */
-    public void setRotation(List<Object> rotation) {
+    public void setRotation(Vector3f rotation) {
         this.rotation = rotation;
     }
 
@@ -103,7 +113,7 @@ public class Entity {
      * @return
      *     The scale
      */
-    public List<Object> getScale() {
+    public Vector3f getScale() {
         return scale;
     }
 
@@ -112,7 +122,7 @@ public class Entity {
      * @param scale
      *     The scale
      */
-    public void setScale(List<Object> scale) {
+    public void setScale(Vector3f scale) {
         this.scale = scale;
     }
 

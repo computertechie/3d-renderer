@@ -10,6 +10,7 @@ import java.nio.FloatBuffer;
 public class Renderer{
     private static Renderer instance = new Renderer();
     private int projUniformLoc = -1;
+    private Model renderModel;
     Matrix4f projectionMatrix = new Matrix4f();
     Camera camera;
     ShaderProgramManager shaderProgramManager;
@@ -53,14 +54,15 @@ public class Renderer{
         return instance;
     }
 
-    public void render(Model model) {
-        shaderProgramManager.bindProgram(model.getProgramName());
-        projUniformLoc = shaderProgramManager.getShaderProgram(model.getProgramName()).getProjectionMatrixLocation();
-        model.bufferUniforms();
+    public void render(String modelName) {
+        renderModel = ModelManager.getInstance().getModel(modelName);
+        shaderProgramManager.bindProgram(renderModel.getProgramName());
+        projUniformLoc = shaderProgramManager.getShaderProgram(renderModel.getProgramName()).getProjectionMatrixLocation();
+        renderModel.bufferUniforms();
         bufferUniforms();
-        cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(model.getProgramName()));
-        camera.bufferUniforms(shaderProgramManager.getShaderProgram(model.getProgramName()).getViewMatrixLocation());
-        model.render();
+        cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(renderModel.getProgramName()));
+        camera.bufferUniforms(shaderProgramManager.getShaderProgram(renderModel.getProgramName()).getViewMatrixLocation());
+        renderModel.render();
     }
 
     public void bufferUniforms() {

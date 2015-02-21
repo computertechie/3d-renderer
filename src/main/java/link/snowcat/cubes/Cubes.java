@@ -1,6 +1,7 @@
 package link.snowcat.cubes;
 
 import com.google.gson.Gson;
+import link.snowcat.cubes.entity.Entity;
 import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -33,9 +34,11 @@ public class Cubes {
     public static TextureManager textureManagerInstance = TextureManager.getInstance();
     public static MaterialManager materialManagerInstance = MaterialManager.getInstance();
     public static ShaderProgramManager shaderProgramManager = ShaderProgramManager.getInstance();
+    public static ModelManager modelManagerInstance = ModelManager.getInstance();
+
     private boolean quit = false, wireframe = false;
     Camera camera = new Camera(0,0);
-    Model ring, plane;
+    Entity ring, plane;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480, fps = 0;
     float mouseSensitivity = 0.5f;
@@ -62,16 +65,11 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
+
         Gson gson = new Gson();
-
-        ShaderProgram program = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard.json"))),ShaderProgram.class);
-        shaderProgramManager.registerProgram(program);
-        program = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/shader_programs/standard_no_texture.json"))),ShaderProgram.class);
-        shaderProgramManager.registerProgram(program);
-
-        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/jet.json"))), Model.class);
+        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
         plane.initialize();
-        ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Model.class);
+        ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Entity.class);
         ring.initialize();
     }
 
@@ -151,8 +149,8 @@ public class Cubes {
             renderTick++;
             checkForResize();
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
-            renderInstance.render(ring);
-            renderInstance.render(plane);
+            renderInstance.render(ring.getModelName());
+            renderInstance.render(plane.getModelName());
             Display.update();
             Display.sync(FRAMES);
         }
