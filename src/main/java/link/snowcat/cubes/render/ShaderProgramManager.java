@@ -6,6 +6,7 @@ import link.snowcat.cubes.generated.*;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -70,6 +71,11 @@ public class ShaderProgramManager {
         int fragmentShaderID = loadShader(program.getFragmentShaderFile(), GL20.GL_FRAGMENT_SHADER);
         int programID = GL20.glCreateProgram();
 
+        GL30.glBindFragDataLocation(programID, 0, "worldPosition");
+        GL30.glBindFragDataLocation(programID, 1, "diffuseColor");
+        GL30.glBindFragDataLocation(programID, 2, "normal");
+        GL30.glBindFragDataLocation(programID, 3, "texCoords");
+
         if(fragmentShaderID > -1 && vertexShaderID > -1 && createProgram(programID, vertexShaderID, fragmentShaderID)){
             program.setProgramID(programID);
             if(!program.getVertexAttributes().isEmpty()) {
@@ -83,6 +89,7 @@ public class ShaderProgramManager {
             program.setProjectionMatrixLocation(GL20.glGetUniformLocation(programID, "projectionMatrix"));
             program.setViewMatrixLocation(GL20.glGetUniformLocation(programID, "viewMatrix"));
             program.setModelMatrixLocation(GL20.glGetUniformLocation(programID, "modelMatrix"));
+
             nameProgramMap.put(program.getRenderProcessName(), program);
         }
     }

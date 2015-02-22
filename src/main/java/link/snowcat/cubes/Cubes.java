@@ -38,6 +38,9 @@ public class Cubes {
 
     private boolean quit = false, wireframe = false;
     private static boolean sync = false;
+
+    public GBuffer gBuffer;
+
     Camera camera = new Camera(0,0);
     Entity ring, plane, plane2;
     public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
@@ -69,23 +72,26 @@ public class Cubes {
         camera.setPosition(new Vector3f(0, 1, 0));
 
         Gson gson = new Gson();
-        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
-        plane.initialize();
-        plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
-        plane2.initialize();
+//        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
+//        plane.initialize();
+//        plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
+//        plane2.initialize();
         ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Entity.class);
         ring.initialize();
+        ring.scale(5,5,5);
     }
 
     public void createDisplay(){
         try {
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create(new PixelFormat(), new ContextAttribs(3,2).withProfileCore(true).withForwardCompatible(true));
+            Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true));
             Display.setResizable(true);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glViewport(0, 0, width, height);
             GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
+            ARBDebugOutput.glDebugMessageCallbackARB(new ARBDebugOutputCallback());
+            gBuffer = new GBuffer(width, height);
             Mouse.create();
             Mouse.setGrabbed(true);
             Keyboard.create();
@@ -100,6 +106,7 @@ public class Cubes {
             width = Display.getWidth();
             height = Display.getHeight();
             renderInstance.createProjectionMatrix();
+            gBuffer.resize(width, height);
             GL11.glViewport(0, 0, width, height);
         }
     }
@@ -146,19 +153,19 @@ public class Cubes {
                     sun.setDirection(new Vector3f(newX, -newY, 0));
                 }
 
-                plane.move(0.1f, 0.1f, 0);
-                plane2.rotate(0, 0.1f, 0);
-                ring.scale(0.1f, 0.1f, 0.1f);
+//                plane.move(0.1f, 0.1f, 0);
+//                plane2.rotate(0, 0.1f, 0);
+//                ring.scale(0.1f, 0.1f, 0.1f);
                 availableTime -= designatedTickTime;
             }
 
             fps++;
             renderTick++;
             checkForResize();
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
-            renderInstance.render(ring.getModelName(), ring.getModelMatrix());
-            renderInstance.render(plane.getModelName(), plane.getModelMatrix());
-            renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
+            renderInstance.geometryPass(ring.getModelName(), ring.getModelMatrix(), gBuffer);
+            renderInstance.lightPass(gBuffer);
+//            renderInstance.render(plane.getModelName(), plane.getModelMatrix());
+//            renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
             Display.update();
             if(sync) {
                 Display.sync(FRAMES);

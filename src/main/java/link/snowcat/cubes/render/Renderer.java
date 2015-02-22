@@ -1,7 +1,9 @@
 package link.snowcat.cubes.render;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import link.snowcat.cubes.Cubes;
 
@@ -11,6 +13,8 @@ public class Renderer{
     private static Renderer instance = new Renderer();
     private int projUniformLoc = -1;
     private Model renderModel;
+    private boolean geometryPass = false;
+
     Matrix4f projectionMatrix = new Matrix4f();
     Camera camera;
     ShaderProgramManager shaderProgramManager;
@@ -33,7 +37,7 @@ public class Renderer{
     public  void createProjectionMatrix(){
         projectionMatrix = new Matrix4f();
         projectionMatrix.setIdentity();
-        float fieldOfView = 90.0F;
+        float fieldOfView = 60;
         float aspectRatio = (float)cubeInstance.getWidth()/(float)cubeInstance.getHeight();
         float near_plane = 0.1F;
         float far_plane = 500;
@@ -54,6 +58,40 @@ public class Renderer{
         return instance;
     }
 
+    public void geometryPass(String modelName, Matrix4f matrix, GBuffer buffer){
+        geometryPass=true;
+        buffer.bindForWrite();
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        render(modelName, matrix);
+    }
+
+    public void lightPass(GBuffer gBuffer){
+        geometryPass = false;
+
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+        gBuffer.bindForRead();
+
+        int halfHeight = cubeInstance.getHeight()/2, halfWidth = cubeInstance.getWidth()/2;
+
+        //top left position
+        gBuffer.setReadBuffer(0);
+        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), 0, 0, halfWidth, halfHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
+
+        //bottom left diffuseColor
+        gBuffer.setReadBuffer(1);
+        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), 0, halfHeight, halfWidth, cubeInstance.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
+
+        //bottom right normal
+        gBuffer.setReadBuffer(2);
+        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), halfWidth, halfHeight, cubeInstance.getWidth(), cubeInstance.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
+
+        //top right texCoords
+        gBuffer.setReadBuffer(3);
+        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), halfWidth, 0, cubeInstance.getWidth(), halfHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
+    }
+
     public void render(String modelName, Matrix4f modelMatrix) {
         renderModel = ModelManager.getInstance().getModel(modelName);
         shaderProgramManager.bindProgram(renderModel.getProgramName());
@@ -62,7 +100,11 @@ public class Renderer{
         renderModel.setModelMatrix(modelMatrix);
         renderModel.bufferUniforms();
         bufferUniforms();
-        cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(renderModel.getProgramName()));
+
+        if(!geometryPass) {
+            cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(renderModel.getProgramName()));
+        }
+
         camera.bufferUniforms(shaderProgramManager.getShaderProgram(renderModel.getProgramName()).getViewMatrixLocation());
         renderModel.render();
     }
