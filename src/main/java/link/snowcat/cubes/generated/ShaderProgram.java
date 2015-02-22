@@ -38,6 +38,8 @@ public class ShaderProgram {
     @Expose
     private List<Attribute> vertexAttributes = new ArrayList<Attribute>();
     @Expose
+    private List<java.lang.String> fragmentMRTs = new ArrayList<java.lang.String>();
+    @Expose
     private Map<String,  Integer> uniformAttributes;
 
     /**
@@ -236,6 +238,24 @@ public class ShaderProgram {
      */
     public void setVertexAttributes(List<Attribute> vertexAttributes) {
         this.vertexAttributes = vertexAttributes;
+    }
+
+    /**
+     * 
+     * @return
+     *     The fragmentMRTs
+     */
+    public List<java.lang.String> getFragmentMRTs() {
+        return fragmentMRTs;
+    }
+
+    /**
+     * 
+     * @param fragmentMRTs
+     *     The fragmentMRTs
+     */
+    public void setFragmentMRTs(List<java.lang.String> fragmentMRTs) {
+        this.fragmentMRTs = fragmentMRTs;
     }
 
     /**

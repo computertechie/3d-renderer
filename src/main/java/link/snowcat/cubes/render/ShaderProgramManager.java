@@ -71,10 +71,11 @@ public class ShaderProgramManager {
         int fragmentShaderID = loadShader(program.getFragmentShaderFile(), GL20.GL_FRAGMENT_SHADER);
         int programID = GL20.glCreateProgram();
 
-        GL30.glBindFragDataLocation(programID, 0, "worldPosition");
-        GL30.glBindFragDataLocation(programID, 1, "diffuseColor");
-        GL30.glBindFragDataLocation(programID, 2, "normal");
-        GL30.glBindFragDataLocation(programID, 3, "texCoords");
+        int mrtLocation = 0;
+        for(String mrtAttrib : program.getFragmentMRTs()){
+            GL30.glBindFragDataLocation(programID, mrtLocation, mrtAttrib);
+            mrtLocation++;
+        }
 
         if(fragmentShaderID > -1 && vertexShaderID > -1 && createProgram(programID, vertexShaderID, fragmentShaderID)){
             program.setProgramID(programID);

@@ -84,7 +84,7 @@ public class Model
                 GL20.glUniform1i(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformAttributes().get("texMap"), temp.getTexUnit());
             }
             else{
-                GL20.glUniform3(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformAttributes().get("diffuseColor"), Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
+                GL20.glUniform3(Cubes.shaderProgramManager.getShaderProgram(programName).getUniformAttributes().get("diffuseUniform"), Cubes.materialManagerInstance.getMaterialFromName(meshes.get(i).getMaterial()).getDiffuseColor());
             }
             GL30.glBindVertexArray(meshVAOs.get(i));
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, meshes.get(i).getNumberOfVertexes());

@@ -39,6 +39,12 @@
         "$ref" : "Attribute.json"
       }
     },
+    "fragmentMRTs" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
     "uniformAttributes" : {
       "$ref" : "map_string_integer.json"
     }

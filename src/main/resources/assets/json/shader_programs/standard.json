@@ -19,5 +19,11 @@
   ],
   "uniformAttributes" : [
     ["texMap",-1]
+  ],
+  "fragmentMRTs" : [
+    "worldPosition",
+    "diffuseColor",
+    "normal",
+    "texCoords"
   ]
 }

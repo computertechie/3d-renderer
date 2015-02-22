@@ -2,7 +2,6 @@ package link.snowcat.cubes;
 
 import com.google.gson.Gson;
 import link.snowcat.cubes.entity.Entity;
-import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -72,10 +71,10 @@ public class Cubes {
         camera.setPosition(new Vector3f(0, 1, 0));
 
         Gson gson = new Gson();
-//        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
-//        plane.initialize();
-//        plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
-//        plane2.initialize();
+        plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
+        plane.initialize();
+        plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
+        plane2.initialize();
         ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Entity.class);
         ring.initialize();
         ring.scale(5,5,5);
@@ -153,19 +152,21 @@ public class Cubes {
                     sun.setDirection(new Vector3f(newX, -newY, 0));
                 }
 
-//                plane.move(0.1f, 0.1f, 0);
-//                plane2.rotate(0, 0.1f, 0);
-//                ring.scale(0.1f, 0.1f, 0.1f);
+                plane.move(0.01f, 0.01f, 0);
+                plane2.rotate(0, 0.01f, 0);
+                ring.scale(0.01f, 0.01f, 0.01f);
                 availableTime -= designatedTickTime;
             }
 
             fps++;
             renderTick++;
             checkForResize();
-            renderInstance.geometryPass(ring.getModelName(), ring.getModelMatrix(), gBuffer);
+            gBuffer.bindForWrite();
+            renderInstance.beginGeometryPass();
+            renderInstance.render(ring.getModelName(), ring.getModelMatrix());
+            renderInstance.render(plane.getModelName(), plane.getModelMatrix());
+            renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
             renderInstance.lightPass(gBuffer);
-//            renderInstance.render(plane.getModelName(), plane.getModelMatrix());
-//            renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
             Display.update();
             if(sync) {
                 Display.sync(FRAMES);
