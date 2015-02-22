@@ -39,13 +39,11 @@ public class TextureManager {
             String name = pos > 0 ? filePath.getFile().substring(pos1+1, pos) : filePath.getFile();
             Texture texture = new Texture(name, GL11.GL_TEXTURE_2D, GL11.glGenTextures(), decoder.getWidth(), decoder.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureUnit, buf);
 
-            GL13.glActiveTexture(texture.getTexUnit());
+            GL13.glActiveTexture(GL13.GL_TEXTURE0+texture.getTexUnit());
             GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
-
             GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT,1);
 
             GL11.glTexImage2D(texture.getTexTarget(), 0, texture.getDataFormat(), texture.getWidth(), texture.getHeight(), 0, texture.getDataFormat(), texture.getDataType(), texture.getBuffer());
-
             GL30.glGenerateMipmap(texture.getTexTarget());
 
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
@@ -64,7 +62,6 @@ public class TextureManager {
 
     public void bindTexture(String name){
         Texture texture = nameTexMap.get(name);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0+texture.getTexUnit());
         GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
         activeTextureTarget = texture.getTexTarget();
     }
@@ -74,8 +71,7 @@ public class TextureManager {
     }
 
     public void unbindTexture(){
-        GL11.glBindTexture(activeTextureTarget,0);
-        GL13.glActiveTexture(0);
+        GL11.glBindTexture(activeTextureTarget, 0);
         activeTextureTarget = 0;
     }
 
