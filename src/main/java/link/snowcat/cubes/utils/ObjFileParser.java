@@ -30,7 +30,7 @@ public class ObjFileParser {
     private BufferedReader bufferedFileReader;
 
     private static final int VERT_LINE = 0, TEX_LINE = 1, NORM_LINE = 2, PARAM_LINE = 3;
-    private boolean firstGroup = true;
+    private boolean firstGroup = true, hasMaterials = false;
 
     private int totalVertexCount=0, tempVertexCount = 0, totalTextureCount=0, tempTextureCount = 0, totalNormalCount = 0, tempNormalCount = 0;
     private String fileBase;
@@ -89,6 +89,7 @@ public class ObjFileParser {
                 case 'u':
                     String[] words = line.trim().split(" ");
                     material = words[1];
+                    hasMaterials = true;
                     break;
                 case 'm':
                     String[] com = line.trim().split(" ");
@@ -123,7 +124,7 @@ public class ObjFileParser {
         if(materialMeshMap.containsKey(material))
             materialMeshMap.get(material).addVertexes(tempVertList);
         else
-            materialMeshMap.put(material, new Mesh(tempVertList,material));
+            materialMeshMap.put(material, new Mesh(tempVertList,material, hasMaterials));
     }
 
     public void startGroup(){
@@ -193,5 +194,9 @@ public class ObjFileParser {
             }
             indexes.add(tempList);
         }
+    }
+
+    public boolean isHasMaterials() {
+        return hasMaterials;
     }
 }

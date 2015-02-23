@@ -1,0 +1,25 @@
+{
+  "renderProcessName" : "deferred_directional",
+  "vertexShaderFile":"/assets/shaders/deferred/vertex.glsl",
+  "fragmentShaderFile":"/assets/shaders/deferred/directional_fragment.glsl",
+  "stride" : 20,
+  "vertexAttributes" : [
+    {
+      "attributeName" : "position",
+      "attributeLocation" : -1
+    }
+  ],
+  "uniformAttributes" : [
+    ["eyePosition", -1],
+    ["specularIntensity", -1],
+    ["specularPower", -1],
+    ["dirLight.color",-1],
+    ["dirLight.intensity",-1],
+    ["dirLight.position",-1]
+  ],
+  "deferredTextures" : [
+    ["positionTexture", -1],
+    ["normalTexture", -1],
+    ["colorTexture",-1]
+  ]
+}

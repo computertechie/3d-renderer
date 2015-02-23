@@ -1,0 +1,6 @@
+{
+  "modelName" : "quad",
+  "programName" : "deferred_directional",
+  "modelFile" : "/assets/models/quad/quad.obj",
+  "vertexFormat" : "POSITION_NORMAL"
+}

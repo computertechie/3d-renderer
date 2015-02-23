@@ -2,7 +2,6 @@ package link.snowcat.cubes;
 
 import com.google.gson.Gson;
 import link.snowcat.cubes.entity.Entity;
-import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -38,9 +37,13 @@ public class Cubes {
 
     private boolean quit = false, wireframe = false;
     private static boolean sync = false;
+
+    public GBuffer gBuffer;
+
     Camera camera = new Camera(0,0);
     Entity ring, plane, plane2;
-    public DirectionalLight sun = new DirectionalLight(new Vector3f(-10,0,0), new Vector3f(1,1,1), 0.1f);
+    Model quad;
+    public DirectionalLight sun = new DirectionalLight(new Vector3f(10,10,0), new Vector3f(1,1,1), 0.1f);
     int width =854, height=480, fps = 0;
     float mouseSensitivity = 0.5f;
     long physicsTick = 0, renderTick = 0;
@@ -67,25 +70,32 @@ public class Cubes {
         renderInstance.setCubeInstance(this);
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
+        shaderProgramManager.loadAndBindProgram("deferred_directional");
 
         Gson gson = new Gson();
+//        quad = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/quad.json"))), Model.class);
+        ModelManager.getInstance().loadModel("quad");
         plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
         plane.initialize();
         plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
         plane2.initialize();
         ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Entity.class);
         ring.initialize();
+        ring.scale(5,5,5);
     }
 
     public void createDisplay(){
         try {
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create(new PixelFormat(), new ContextAttribs(3,2).withProfileCore(true).withForwardCompatible(true));
+            Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true));
+//            Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true).withForwardCompatible(true).withDebug(true));
             Display.setResizable(true);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glViewport(0, 0, width, height);
-            GL11.glClearColor(0.5f, 0.5f, 0.5f, 0);
+            GL11.glClearColor(0, 0, 0, 0);
+            ARBDebugOutput.glDebugMessageCallbackARB(new ARBDebugOutputCallback());
+            gBuffer = new GBuffer(width, height);
             Mouse.create();
             Mouse.setGrabbed(true);
             Keyboard.create();
@@ -100,6 +110,7 @@ public class Cubes {
             width = Display.getWidth();
             height = Display.getHeight();
             renderInstance.createProjectionMatrix();
+            gBuffer.resize(width, height);
             GL11.glViewport(0, 0, width, height);
         }
     }
@@ -135,7 +146,7 @@ public class Cubes {
                 physicsTick++;
 
                 getInput();
-                if(physicsTick % 100 == 0){
+                if(physicsTick % 10 == 0){
                     float newX=0, newY=0;
                     if(sun.getDirection().x == 10)
                         newX = -9.9f;
@@ -143,23 +154,28 @@ public class Cubes {
                         newX = sun.getDirection().x+0.1f;
 
                     newY = (float)Math.sqrt(100-(Math.pow(newX,2)));
-                    sun.setDirection(new Vector3f(newX, -newY, 0));
+                    sun.setDirection(new Vector3f(newX, newY, 0));
                 }
 
-                plane.move(0.1f, 0.1f, 0);
-                plane2.rotate(0, 0.1f, 0);
-                ring.scale(0.1f, 0.1f, 0.1f);
+                plane.move(0.01f, 0.01f, 0);
+//                plane2.rotate(0, 0.01f, 0);
+                ring.scale(0.01f, 0.01f, 0.01f);
                 availableTime -= designatedTickTime;
             }
 
             fps++;
             renderTick++;
             checkForResize();
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
+            gBuffer.bindForWrite();
+            renderInstance.beginGeometryPass();
             renderInstance.render(ring.getModelName(), ring.getModelMatrix());
             renderInstance.render(plane.getModelName(), plane.getModelMatrix());
             renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
+            renderInstance.endGeometryPass();
+            renderInstance.beginLightPasses();
+            renderInstance.directionalLightPass();
             Display.update();
+//            System.out.println("------------------------------------FRAME END--------------------------");
             if(sync) {
                 Display.sync(FRAMES);
             }
@@ -225,6 +241,13 @@ public class Cubes {
             camera.changeBearing(dx);
         }
         camera.update(movement);
+    }
+
+    public static void checkGLError(String message){
+        int error = GL11.glGetError();
+        if(error!=0){
+            System.err.println("Error: " + error + " " + message);
+        }
     }
 
     static{

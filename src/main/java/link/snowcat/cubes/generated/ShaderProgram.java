@@ -38,7 +38,11 @@ public class ShaderProgram {
     @Expose
     private List<Attribute> vertexAttributes = new ArrayList<Attribute>();
     @Expose
+    private List<java.lang.String> fragmentMRTs = new ArrayList<java.lang.String>();
+    @Expose
     private Map<String,  Integer> uniformAttributes;
+    @Expose
+    private Map<String,  Integer> deferredTextures;
 
     /**
      * 
@@ -241,6 +245,24 @@ public class ShaderProgram {
     /**
      * 
      * @return
+     *     The fragmentMRTs
+     */
+    public List<java.lang.String> getFragmentMRTs() {
+        return fragmentMRTs;
+    }
+
+    /**
+     * 
+     * @param fragmentMRTs
+     *     The fragmentMRTs
+     */
+    public void setFragmentMRTs(List<java.lang.String> fragmentMRTs) {
+        this.fragmentMRTs = fragmentMRTs;
+    }
+
+    /**
+     * 
+     * @return
      *     The uniformAttributes
      */
     public Map<String,  Integer> getUniformAttributes() {
@@ -254,6 +276,24 @@ public class ShaderProgram {
      */
     public void setUniformAttributes(Map<String,  Integer> uniformAttributes) {
         this.uniformAttributes = uniformAttributes;
+    }
+
+    /**
+     * 
+     * @return
+     *     The deferredTextures
+     */
+    public Map<String,  Integer> getDeferredTextures() {
+        return deferredTextures;
+    }
+
+    /**
+     * 
+     * @param deferredTextures
+     *     The deferredTextures
+     */
+    public void setDeferredTextures(Map<String,  Integer> deferredTextures) {
+        this.deferredTextures = deferredTextures;
     }
 
 }

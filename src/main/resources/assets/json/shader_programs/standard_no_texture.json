@@ -14,9 +14,11 @@
     }
   ],
   "uniformAttributes" : [
-    ["diffuseColor",-1],
-    ["dirLight.color",-1],
-    ["dirLight.position",-1],
-    ["dirLight.intensity",-1]
+    ["diffuseUniform",-1]
+  ],
+  "fragmentMRTs" : [
+    "worldPosition",
+    "normal",
+    "diffuseColor"
   ]
 }
