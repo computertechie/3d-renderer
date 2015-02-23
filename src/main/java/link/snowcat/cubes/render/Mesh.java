@@ -16,11 +16,12 @@ public class Mesh {
     private List<Vertex> vertexes;
     private String material;
     private int sizeOfVertCoords = 0, sizeOfTexCoords = 0, sizeOfNormals = 0;
-    private boolean hasUVs = false, hasNormals = false;
+    private boolean hasUVs = false, hasNormals = false, hasMaterial = false;
 
-    public Mesh(List<Vertex> verts, String mat){
+    public Mesh(List<Vertex> verts, String mat, boolean hasMat){
         vertexes = verts;
         material = mat;
+        hasMaterial = hasMat;
         recalcSize();
     }
 
@@ -166,6 +167,10 @@ public class Mesh {
 
     public List<Vertex> getVertexList(){
         return vertexes;
+    }
+
+    public boolean hasMaterial() {
+        return hasMaterial;
     }
 
     public static void combine(Mesh with, Mesh to){

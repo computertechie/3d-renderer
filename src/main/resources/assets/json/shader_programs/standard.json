@@ -22,8 +22,7 @@
   ],
   "fragmentMRTs" : [
     "worldPosition",
-    "diffuseColor",
     "normal",
-    "texCoords"
+    "diffuseColor"
   ]
 }

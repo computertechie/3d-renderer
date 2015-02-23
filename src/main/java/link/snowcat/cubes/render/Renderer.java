@@ -1,13 +1,12 @@
 package link.snowcat.cubes.render;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
 import link.snowcat.cubes.Cubes;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class Renderer{
     private static Renderer instance = new Renderer();
@@ -60,7 +59,51 @@ public class Renderer{
 
     public void beginGeometryPass(){
         geometryPass=true;
+        GL11.glDepthMask(true);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    public void endGeometryPass(){
+        geometryPass = false;
+        GL11.glDepthMask(false);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+    }
+
+    public void beginLightPasses(){
+        GL11.glEnable(GL11.GL_BLEND);
+        GL14.glBlendEquation(GL14.GL_FUNC_ADD);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        cubeInstance.gBuffer.bindForRead();
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        geometryPass = false;
+    }
+
+    public void directionalLightPass(){
+        shaderProgramManager.bindProgram("deferred_directional");
+        cubeInstance.sun.buffer(shaderProgramManager.getCurrentProgram());
+
+        //gbuffer textures
+        int textureUnit = 0;
+        for(String bufferTexture : cubeInstance.gBuffer.getTextures()){
+            if(bufferTexture.equals("depth")){
+                continue;
+            }
+            GL20.glUniform1i(shaderProgramManager.getCurrentProgram().getDeferredTextures().get(bufferTexture), textureUnit);
+            textureUnit++;
+        }
+        //eye position
+        GL20.glUniform3f(shaderProgramManager.getCurrentProgram().getUniformAttributes().get("eyePosition"), camera.getPosition().getX(), camera.getPosition().getY(), camera.getPosition().getZ());
+        //specular intensity
+        GL20.glUniform1f(shaderProgramManager.getCurrentProgram().getUniformAttributes().get("specularIntensity"), 0.5f);
+        //specular power
+        GL20.glUniform1f(shaderProgramManager.getCurrentProgram().getUniformAttributes().get("specularPower"), 0.5f);
+
+        Matrix4f modelMatrix = new Matrix4f();
+        Matrix4f.setIdentity(modelMatrix);
+        //fullscreen quad for lighting fragment
+        render("quad", modelMatrix);
     }
 
     public void lightPass(GBuffer gBuffer){
@@ -69,7 +112,7 @@ public class Renderer{
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        gBuffer.bindForRead();
+        gBuffer.bindForBlit();
 
         int halfHeight = cubeInstance.getHeight()/2, halfWidth = cubeInstance.getWidth()/2;
 
@@ -98,11 +141,6 @@ public class Renderer{
         renderModel.setModelMatrix(modelMatrix);
         renderModel.bufferUniforms();
         bufferUniforms();
-
-        if(!geometryPass) {
-            cubeInstance.sun.buffer(shaderProgramManager.getShaderProgram(renderModel.getProgramName()));
-        }
-
         camera.bufferUniforms(shaderProgramManager.getShaderProgram(renderModel.getProgramName()).getViewMatrixLocation());
         renderModel.render();
     }

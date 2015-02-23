@@ -28,7 +28,7 @@ import java.util.Set;
 public class ShaderProgramManager {
     private static ShaderProgramManager instance = new ShaderProgramManager();
     private Map<String, ShaderProgram> nameProgramMap;
-    private String currentProgram="";
+    private ShaderProgram currentProgram;
     private final String programAssetDir = "/assets/json/shader_programs/";
     private final Gson shaderGson = new Gson();
 
@@ -50,11 +50,11 @@ public class ShaderProgramManager {
     }
 
     public void bindProgram(String name){
-        if(currentProgram.equals(name)){
+        if(currentProgram == nameProgramMap.get(name)){
             return;
         }
         else{
-            currentProgram = name;
+            currentProgram = nameProgramMap.get(name);
             GL20.glUseProgram(nameProgramMap.get(name).getProgramID());
         }
     }
@@ -71,10 +71,12 @@ public class ShaderProgramManager {
         int fragmentShaderID = loadShader(program.getFragmentShaderFile(), GL20.GL_FRAGMENT_SHADER);
         int programID = GL20.glCreateProgram();
 
-        int mrtLocation = 0;
-        for(String mrtAttrib : program.getFragmentMRTs()){
-            GL30.glBindFragDataLocation(programID, mrtLocation, mrtAttrib);
-            mrtLocation++;
+        if(program.getFragmentMRTs() != null) {
+            int mrtLocation = 0;
+            for (String mrtAttrib : program.getFragmentMRTs()) {
+                GL30.glBindFragDataLocation(programID, mrtLocation, mrtAttrib);
+                mrtLocation++;
+            }
         }
 
         if(fragmentShaderID > -1 && vertexShaderID > -1 && createProgram(programID, vertexShaderID, fragmentShaderID)){
@@ -85,6 +87,10 @@ public class ShaderProgramManager {
 
             if(!program.getUniformAttributes().isEmpty()) {
                 program.setUniformAttributes(getUniformAttributeLocations(program.getUniformAttributes().keySet(), programID));
+            }
+
+            if(program.getDeferredTextures ()!= null && !program.getDeferredTextures().isEmpty()){
+                program.setDeferredTextures(getDeferredTextureLocations(program.getDeferredTextures().keySet(), programID));
             }
 
             program.setProjectionMatrixLocation(GL20.glGetUniformLocation(programID, "projectionMatrix"));
@@ -104,6 +110,15 @@ public class ShaderProgramManager {
     }
 
     private Map getUniformAttributeLocations(Set<String> attributes, int programID){
+        Map<String, Integer> attributeLocations = new HashMap<String, Integer>();
+        for(String attribute : attributes){
+            attributeLocations.put(attribute, GL20.glGetUniformLocation(programID, attribute));
+        }
+
+        return attributeLocations;
+    }
+
+    private Map getDeferredTextureLocations(Set<String> attributes, int programID){
         Map<String, Integer> attributeLocations = new HashMap<String, Integer>();
         for(String attribute : attributes){
             attributeLocations.put(attribute, GL20.glGetUniformLocation(programID, attribute));
@@ -163,5 +178,9 @@ public class ShaderProgramManager {
         }
 
         return true;
+    }
+
+    public ShaderProgram getCurrentProgram() {
+        return currentProgram;
     }
 }

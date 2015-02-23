@@ -47,6 +47,9 @@
     },
     "uniformAttributes" : {
       "$ref" : "map_string_integer.json"
+    },
+    "deferredTextures" : {
+      "$ref" : "map_string_integer.json"
     }
   }
 }

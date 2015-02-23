@@ -18,7 +18,7 @@
   ],
   "fragmentMRTs" : [
     "worldPosition",
-    "diffuseColor",
-    "normal"
+    "normal",
+    "diffuseColor"
   ]
 }

@@ -41,6 +41,8 @@ public class ShaderProgram {
     private List<java.lang.String> fragmentMRTs = new ArrayList<java.lang.String>();
     @Expose
     private Map<String,  Integer> uniformAttributes;
+    @Expose
+    private Map<String,  Integer> deferredTextures;
 
     /**
      * 
@@ -274,6 +276,24 @@ public class ShaderProgram {
      */
     public void setUniformAttributes(Map<String,  Integer> uniformAttributes) {
         this.uniformAttributes = uniformAttributes;
+    }
+
+    /**
+     * 
+     * @return
+     *     The deferredTextures
+     */
+    public Map<String,  Integer> getDeferredTextures() {
+        return deferredTextures;
+    }
+
+    /**
+     * 
+     * @param deferredTextures
+     *     The deferredTextures
+     */
+    public void setDeferredTextures(Map<String,  Integer> deferredTextures) {
+        this.deferredTextures = deferredTextures;
     }
 
 }

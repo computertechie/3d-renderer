@@ -62,6 +62,7 @@ public class TextureManager {
 
     public void bindTexture(String name){
         Texture texture = nameTexMap.get(name);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0 + texture.getTexUnit());
         GL11.glBindTexture(texture.getTexTarget(), texture.getTexID());
         activeTextureTarget = texture.getTexTarget();
     }
@@ -90,5 +91,9 @@ public class TextureManager {
     public void addTexture(Texture texture){
         nameTexMap.put(texture.getTexName(), texture);
         idNameMap.put(texture.getTexID(), texture.getTexName());
+    }
+
+    public int getTextureUnit() {
+        return textureUnit;
     }
 }

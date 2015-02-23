@@ -1,5 +1,6 @@
 package link.snowcat.cubes.render;
 
+import link.snowcat.cubes.Cubes;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -7,8 +8,9 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Pepper
@@ -19,8 +21,9 @@ import java.nio.IntBuffer;
 
 
 public class GBuffer {
-    private int FBO, depth, width, height;
-    private int[] textures = new int[4];
+    private int FBO, width, height;
+    private String[] textures = new String[]{"positionTexture","normalTexture","colorTexture","depth"};
+    private Map<String, Integer> bufferTexturesToIDMap = new HashMap<>();
 
     public GBuffer(int width, int height){
         this.width = width;
@@ -32,28 +35,35 @@ public class GBuffer {
         FBO = GL30.glGenFramebuffers();
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, FBO);
 
-        for(int i =0 ; i<textures.length; i++)
-            textures[i] = GL11.glGenTextures();
-        depth = GL11.glGenTextures();
+        for(int i =0 ; i<textures.length; i++){
+            bufferTexturesToIDMap.put(textures[i], GL11.glGenTextures());
+        }
 
         width = w;
         height = h;
-
-
-        for(int i = 0; i<textures.length; i++){
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures[i]);
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_RGBA32F, width, height, 0, GL11.GL_RGBA, GL11.GL_FLOAT, (ByteBuffer) null);
-            GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, (GL30.GL_COLOR_ATTACHMENT0 + i), GL11.GL_TEXTURE_2D, textures[i], 0);
+        int i = 0;
+        for(String key : textures){
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, bufferTexturesToIDMap.get(key));
+            if(key.equals("depth")){
+                GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_DEPTH_COMPONENT32F, width, height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer)null);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+                GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, bufferTexturesToIDMap.get(key), 0);
+            }
+            else {
+                GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_RGBA32F, width, height, 0, GL11.GL_RGBA, GL11.GL_FLOAT, (ByteBuffer) null);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+                GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, (GL30.GL_COLOR_ATTACHMENT0 + i), GL11.GL_TEXTURE_2D, bufferTexturesToIDMap.get(key), 0);
+                i++;
+            }
         }
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, depth);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_DEPTH_COMPONENT32F, width, height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer)null);
-        GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depth, 0);
-
-        int[] drawBuffers = new int[]{GL30.GL_COLOR_ATTACHMENT0,
+        int[] drawBuffers = new int[]{
+                GL30.GL_COLOR_ATTACHMENT0,
                 GL30.GL_COLOR_ATTACHMENT1,
-                GL30.GL_COLOR_ATTACHMENT2,
-                GL30.GL_COLOR_ATTACHMENT3};
+                GL30.GL_COLOR_ATTACHMENT2
+        };
 
         IntBuffer drawBuffersBuffer = BufferUtils.createIntBuffer(drawBuffers.length);
         drawBuffersBuffer.put(drawBuffers);
@@ -80,10 +90,33 @@ public class GBuffer {
     }
 
     public void bindForRead(){
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+//        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, FBO);
+        Cubes.checkGLError("GBuffer.bindForRead:1");
+
+        int textureIndex = 0;
+        for(String key : getTextures()) {
+            if(key.equals("depth"))
+                continue;
+            GL13.glActiveTexture(GL13.GL_TEXTURE0 + textureIndex);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, bufferTexturesToIDMap.get(key));
+            textureIndex++;
+        }
+    }
+
+    public void bindForBlit(){
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, FBO);
     }
 
     public void setReadBuffer(int bufferIndex){
         GL11.glReadBuffer((GL30.GL_COLOR_ATTACHMENT0+bufferIndex));
+    }
+
+    public Map<String, Integer> getBufferTexturesToIDMap() {
+        return bufferTexturesToIDMap;
+    }
+
+    public String[] getTextures() {
+        return textures;
     }
 }
