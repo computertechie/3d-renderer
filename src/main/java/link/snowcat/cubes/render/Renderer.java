@@ -6,7 +6,6 @@ import org.lwjgl.util.vector.Matrix4f;
 import link.snowcat.cubes.Cubes;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 public class Renderer{
     private static Renderer instance = new Renderer();
@@ -82,7 +81,7 @@ public class Renderer{
 
     public void directionalLightPass(){
         shaderProgramManager.bindProgram("deferred_directional");
-        cubeInstance.sun.buffer(shaderProgramManager.getCurrentProgram());
+        cubeInstance.sun.bufferForLighting(shaderProgramManager.getCurrentProgram());
 
         //gbuffer textures
         int textureUnit = 0;

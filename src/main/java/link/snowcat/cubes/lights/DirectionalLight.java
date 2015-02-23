@@ -25,9 +25,13 @@ public class DirectionalLight extends Light {
         super.setPosition(direction);
     }
 
-    public void buffer(ShaderProgram program){
+    public void bufferForLighting(ShaderProgram program){
         GL20.glUniform3(program.getUniformAttributes().get("dirLight.color"), getColorAsFBuffer());
         GL20.glUniform3(program.getUniformAttributes().get("dirLight.position"), getPositionAsFBuffer());
         GL20.glUniform1f(program.getUniformAttributes().get("dirLight.intensity"), getIntensity());
+    }
+
+    public void bufferForGeometry(ShaderProgram program){
+
     }
 }

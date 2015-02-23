@@ -6,6 +6,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import link.snowcat.cubes.lights.DirectionalLight;
 import link.snowcat.cubes.render.*;
@@ -73,8 +74,8 @@ public class Cubes {
         shaderProgramManager.loadAndBindProgram("deferred_directional");
 
         Gson gson = new Gson();
-//        quad = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/quad.json"))), Model.class);
         ModelManager.getInstance().loadModel("quad");
+        ModelManager.getInstance().loadModel("sphere");
         plane = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
         plane.initialize();
         plane2 = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/entities/jet.json"))), Entity.class);
@@ -94,7 +95,7 @@ public class Cubes {
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glViewport(0, 0, width, height);
             GL11.glClearColor(0, 0, 0, 0);
-            ARBDebugOutput.glDebugMessageCallbackARB(new ARBDebugOutputCallback());
+//            ARBDebugOutput.glDebugMessageCallbackARB(new ARBDebugOutputCallback());
             gBuffer = new GBuffer(width, height);
             Mouse.create();
             Mouse.setGrabbed(true);
@@ -154,11 +155,11 @@ public class Cubes {
                         newX = sun.getDirection().x+0.1f;
 
                     newY = (float)Math.sqrt(100-(Math.pow(newX,2)));
-                    sun.setDirection(new Vector3f(newX, newY, 0));
+//                    sun.setDirection(new Vector3f(newX, newY, 0));
                 }
 
                 plane.move(0.01f, 0.01f, 0);
-//                plane2.rotate(0, 0.01f, 0);
+                plane2.rotate(0, 0.01f, 0);
                 ring.scale(0.01f, 0.01f, 0.01f);
                 availableTime -= designatedTickTime;
             }
@@ -171,6 +172,7 @@ public class Cubes {
             renderInstance.render(ring.getModelName(), ring.getModelMatrix());
             renderInstance.render(plane.getModelName(), plane.getModelMatrix());
             renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
+            renderInstance.render("sphere", new Matrix4f().translate(sun.getPosition()));
             renderInstance.endGeometryPass();
             renderInstance.beginLightPasses();
             renderInstance.directionalLightPass();

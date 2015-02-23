@@ -1,0 +1,6 @@
+{
+  "modelName" : "sphere",
+  "programName" : "standard_no_texture",
+  "modelFile" : "/assets/models/sphere/sphere.obj",
+  "vertexFormat" : "POSITION_NORMAL"
+}
