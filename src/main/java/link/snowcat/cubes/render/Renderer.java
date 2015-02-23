@@ -106,33 +106,6 @@ public class Renderer{
         render("quad", modelMatrix);
     }
 
-    public void lightPass(GBuffer gBuffer){
-        geometryPass = false;
-
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
-        gBuffer.bindForBlit();
-
-        int halfHeight = cubeInstance.getHeight()/2, halfWidth = cubeInstance.getWidth()/2;
-
-        //top left diffuse
-        gBuffer.setReadBuffer(0);
-        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), 0, 0, halfWidth, halfHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
-
-        //bottom left UV
-        gBuffer.setReadBuffer(1);
-        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), 0, halfHeight, halfWidth, cubeInstance.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
-
-        //bottom right position
-        gBuffer.setReadBuffer(2);
-        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), halfWidth, halfHeight, cubeInstance.getWidth(), cubeInstance.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
-
-        //top right normal
-        gBuffer.setReadBuffer(3);
-        GL30.glBlitFramebuffer(0,0, cubeInstance.getWidth(), cubeInstance.getHeight(), halfWidth, 0, cubeInstance.getWidth(), halfHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
-    }
-
     public void render(String modelName, Matrix4f modelMatrix) {
         renderModel = ModelManager.getInstance().getModel(modelName);
         shaderProgramManager.bindProgram(renderModel.getProgramName());
