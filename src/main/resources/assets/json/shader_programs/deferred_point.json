@@ -1,0 +1,28 @@
+{
+  "renderProcessName" : "deferred_point",
+  "vertexShaderFile":"/assets/shaders/deferred/vertex.glsl",
+  "fragmentShaderFile":"/assets/shaders/deferred/point_fragment.glsl",
+  "stride" : 20,
+  "vertexAttributes" : [
+    {
+      "attributeName" : "position",
+      "attributeLocation" : -1
+    }
+  ],
+  "uniformAttributes" : [
+    ["eyePosition", -1],
+    ["specularIntensity", -1],
+    ["specularPower", -1],
+    ["pointLight.color",-1],
+    ["pointLight.intensity",-1],
+    ["pointLight.position",-1],
+    ["pointLight.constant", -1],
+    ["pointLight.linear", -1],
+    ["pointLight.quadratic", -1]
+  ],
+  "deferredTextures" : [
+    ["positionTexture", -1],
+    ["normalTexture", -1],
+    ["colorTexture",-1]
+  ]
+}

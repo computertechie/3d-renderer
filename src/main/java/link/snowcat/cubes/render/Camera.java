@@ -39,6 +39,7 @@ public class Camera {
                 (headingMatrix.m10*input.getX())+(headingMatrix.m11*input.getY())+(headingMatrix.m12*input.getZ()),
                 (headingMatrix.m20*input.getX())+(headingMatrix.m21*input.getY())+(headingMatrix.m22*input.getZ()));
 
+        direction = new Vector3f(finalMatrix.m20, finalMatrix.m21, finalMatrix.m22);
         position = new Vector3f(position.getX()+movement.getX(), position.getY()+movement.getY(), position.getZ()+movement.getZ());
         finalMatrix.translate(position);
         finalMatrix.store(viewMatrixBuffer);

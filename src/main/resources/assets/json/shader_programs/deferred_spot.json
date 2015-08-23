@@ -1,0 +1,30 @@
+{
+  "renderProcessName" : "deferred_spot",
+  "vertexShaderFile":"/assets/shaders/deferred/vertex.glsl",
+  "fragmentShaderFile":"/assets/shaders/deferred/spot_fragment.glsl",
+  "stride" : 20,
+  "vertexAttributes" : [
+    {
+      "attributeName" : "position",
+      "attributeLocation" : -1
+    }
+  ],
+  "uniformAttributes" : [
+    ["eyePosition", -1],
+    ["specularIntensity", -1],
+    ["specularPower", -1],
+    ["spotLight.color",-1],
+    ["spotLight.intensity",-1],
+    ["spotLight.position",-1],
+    ["spotLight.direction",-1],
+    ["spotLight.cutOff",-1],
+    ["spotLight.constant", -1],
+    ["spotLight.linear", -1],
+    ["spotLight.quadratic", -1]
+  ],
+  "deferredTextures" : [
+    ["positionTexture", -1],
+    ["normalTexture", -1],
+    ["colorTexture",-1]
+  ]
+}

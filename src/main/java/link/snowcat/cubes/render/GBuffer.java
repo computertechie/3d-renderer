@@ -91,7 +91,6 @@ public class GBuffer {
 
     public void bindForRead(){
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-//        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, FBO);
         Cubes.checkGLError("GBuffer.bindForRead:1");
 
         int textureIndex = 0;

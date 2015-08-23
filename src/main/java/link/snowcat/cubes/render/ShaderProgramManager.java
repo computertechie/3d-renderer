@@ -89,7 +89,7 @@ public class ShaderProgramManager {
                 program.setUniformAttributes(getUniformAttributeLocations(program.getUniformAttributes().keySet(), programID));
             }
 
-            if(program.getDeferredTextures ()!= null && !program.getDeferredTextures().isEmpty()){
+            if(program.getDeferredTextures() != null && !program.getDeferredTextures().isEmpty()){
                 program.setDeferredTextures(getDeferredTextureLocations(program.getDeferredTextures().keySet(), programID));
             }
 

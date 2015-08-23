@@ -2,6 +2,9 @@ package link.snowcat.cubes;
 
 import com.google.gson.Gson;
 import link.snowcat.cubes.entity.Entity;
+import link.snowcat.cubes.lights.Light;
+import link.snowcat.cubes.lights.PointLight;
+import link.snowcat.cubes.lights.SpotLight;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -43,9 +46,12 @@ public class Cubes {
 
     Camera camera = new Camera(0,0);
     Entity ring, plane, plane2;
-    Model quad;
-    public DirectionalLight sun = new DirectionalLight(new Vector3f(10,10,0), new Vector3f(1,1,1), 0.1f);
-    int width =854, height=480, fps = 0;
+
+    public DirectionalLight sun = new DirectionalLight(new Vector3f(1,1,1), 0.75f, 60, 70);
+    PointLight pointLight = new PointLight(new Vector3f(-1, 10, -1), new Vector3f(1,1,0), 1f, 1, 0.045f, 0.0075f);
+    SpotLight spotLight = new SpotLight(new Vector3f(-1, 10, -1), new Vector3f(1,1,0), new Vector3f(1,1,0), 15, 1f, 1, 0.045f, 0.0075f);
+
+    int width =854, height=480, fps = 0, smoothCount = 0, frametimeQuery;
     float mouseSensitivity = 0.5f;
     long physicsTick = 0, renderTick = 0;
 
@@ -72,6 +78,8 @@ public class Cubes {
         renderInstance.createProjectionMatrix();
         camera.setPosition(new Vector3f(0, 1, 0));
         shaderProgramManager.loadAndBindProgram("deferred_directional");
+        shaderProgramManager.loadAndBindProgram("deferred_point");
+        shaderProgramManager.loadAndBindProgram("deferred_spot");
 
         Gson gson = new Gson();
         ModelManager.getInstance().loadModel("quad");
@@ -82,7 +90,7 @@ public class Cubes {
         plane2.initialize();
         ring = gson.fromJson(new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/assets/json/models/disc.json"))), Entity.class);
         ring.initialize();
-        ring.scale(5,5,5);
+//        ring.scale(5,5,5);
     }
 
     public void createDisplay(){
@@ -94,9 +102,10 @@ public class Cubes {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glViewport(0, 0, width, height);
-            GL11.glClearColor(0, 0, 0, 0);
+            GL11.glClearColor(0,0,0f, 0);
 //            ARBDebugOutput.glDebugMessageCallbackARB(new ARBDebugOutputCallback());
             gBuffer = new GBuffer(width, height);
+            frametimeQuery = GL15.glGenQueries();
             Mouse.create();
             Mouse.setGrabbed(true);
             Keyboard.create();
@@ -147,35 +156,47 @@ public class Cubes {
                 physicsTick++;
 
                 getInput();
-                if(physicsTick % 10 == 0){
-                    float newX=0, newY=0;
-                    if(sun.getDirection().x == 10)
-                        newX = -9.9f;
-                    else
-                        newX = sun.getDirection().x+0.1f;
+                if(physicsTick % 100 == 0){
+                    if(sun.getAltitute() > 360){
+                        sun.setAltitute(sun.getAltitute()-359);
+                    }
+                    else{
+                        sun.setAltitute(sun.getAltitute()+1);
+                    }
 
-                    newY = (float)Math.sqrt(100-(Math.pow(newX,2)));
-//                    sun.setDirection(new Vector3f(newX, newY, 0));
+                    if(sun.getAzimuth() > 360){
+                        sun.setAzimuth(sun.getAzimuth() - 359);
+                    }
+                    else {
+                        sun.setAzimuth(sun.getAzimuth() + 1);
+                    }
+
                 }
-
-                plane.move(0.01f, 0.01f, 0);
-                plane2.rotate(0, 0.01f, 0);
-                ring.scale(0.01f, 0.01f, 0.01f);
+//                plane.move(0.01f, 0.01f, 0);
+//                plane2.rotate(0, 0.01f, 0);
+//                ring.scale(0.01f, 0.01f, 0.01f);
                 availableTime -= designatedTickTime;
             }
 
             fps++;
             renderTick++;
             checkForResize();
+            GL15.glBeginQuery(GL33.GL_TIME_ELAPSED, frametimeQuery);
             gBuffer.bindForWrite();
             renderInstance.beginGeometryPass();
             renderInstance.render(ring.getModelName(), ring.getModelMatrix());
             renderInstance.render(plane.getModelName(), plane.getModelMatrix());
             renderInstance.render(plane2.getModelName(), plane2.getModelMatrix());
-            renderInstance.render("sphere", new Matrix4f().translate(sun.getPosition()));
+//            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+//            renderInstance.render("sphere", new Matrix4f().translate(pointLight.getPosition()));
+//            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
             renderInstance.endGeometryPass();
             renderInstance.beginLightPasses();
             renderInstance.directionalLightPass();
+            renderInstance.pointLightPass(pointLight);
+            renderInstance.spotLightPass(spotLight);
+            GL15.glEndQuery(GL33.GL_TIME_ELAPSED);
+            System.out.println("Frame time: "+ (float)GL33.glGetQueryObjecti64(frametimeQuery, GL15.GL_QUERY_RESULT)/1000000f + "ms");
             Display.update();
 //            System.out.println("------------------------------------FRAME END--------------------------");
             if(sync) {
@@ -241,8 +262,11 @@ public class Cubes {
             int dx = (int)(Mouse.getDX()*mouseSensitivity), dy = (int)(Mouse.getDY()*mouseSensitivity);
             camera.changePitch(dy);
             camera.changeBearing(dx);
+
         }
         camera.update(movement);
+        spotLight.setDirection(camera.getDirection());
+        spotLight.setPosition(camera.getPosition());
     }
 
     public static void checkGLError(String message){
@@ -277,7 +301,7 @@ public class Cubes {
             Path nativesPath = fileSystem.getPath(nativePath.toString());
             Path destination;
             File tempFile = new File(tempDir.toUri());
-                tempFile.deleteOnExit();
+            tempFile.deleteOnExit();
             String filePath;
 
             try(DirectoryStream<Path> stream = Files.newDirectoryStream(nativesPath)){

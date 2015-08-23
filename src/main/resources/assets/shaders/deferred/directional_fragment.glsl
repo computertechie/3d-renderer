@@ -25,9 +25,9 @@ void main(){
     vec3 color = texelFetch(colorTexture, tc, 0).xyz;
     vec3 normal = normalize(texelFetch(normalTexture, tc, 0).xyz);
 
-    vec3 ambientColor = color / 0.5;
+    vec3 ambientColor = color * 0.5;
     vec3 specularColor = vec3(1,1,1);
-    vec3 lightDirection = normalize(dirLight.position - worldPosition);
+    vec3 lightDirection = normalize(-dirLight.position);
 
     float lambertian = max(dot(lightDirection, normal), 0);
     float specular = 0;
@@ -40,5 +40,6 @@ void main(){
 
         specular = pow(specAngle, 16);
     }
-    fragColor = vec4(ambientColor + lambertian * color + specular * specularColor, 1);
+
+    fragColor = vec4(ambientColor*dirLight.intensity + (lambertian * color)*dirLight.intensity + (specular * specularColor) * dirLight.intensity, 1);
 }

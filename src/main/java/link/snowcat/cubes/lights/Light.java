@@ -1,5 +1,6 @@
 package link.snowcat.cubes.lights;
 
+import link.snowcat.cubes.generated.ShaderProgram;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -66,7 +67,13 @@ public abstract class Light {
         return intensity;
     }
 
+    public void setIntensity(float intense){
+        intensity = intense;
+    }
+
     public Vector3f getColor(){
         return color;
     }
+
+    public abstract void bufferForLighting(ShaderProgram program);
 }
